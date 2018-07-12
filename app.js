@@ -17,6 +17,18 @@ function getEntryPrice(investment, btcPrice, satPrice) {
     return entryPrice;
 };
 
+// Function returns the average entry price of all investments made
+function getEntryAverage(allEntries) {
+    var total = 0;
+    for (var i = 0; i < allEntries.length; i++) {
+        total = total + allEntries[i];
+    };
+    var avgEntry = total / allEntries.length;
+    // // Display average entry price
+    console.log("Average entry price: " + avgEntry);
+    return avgEntry;
+};
+
 // This array will hold all of our entry prices
 var entries = [];
 
@@ -30,4 +42,4 @@ entries.push(entry2);
 
 // Display entries array
 console.log(entries);
-
+getEntryAverage(entries);
