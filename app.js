@@ -25,7 +25,9 @@ function newEntry(investment, btcPrice, coinName, satPrice) {
     // console.log("Coins: " + totalCoins);
     // console.log("Entry price: $" + entryPrice);
     // console.log("-------------------------------------------------------");
-    var output = "* New entry *\nCryptocurrency: " + coinName + "\nInitial investment: $" + investment + "\n";
+    var output = "* New entry *\nCryptocurrency: $" + coinName + "\nInitial investment: $" + investment + "\nBTC Price bought at: " +
+        btcPrice + "\nBought " + coinName + " at: " + satPrice + " $BTC\nTotal coins bought: " + totalCoins + "\nEntry price: $" + 
+        entryPrice + "\n";
     fs.appendFile('./log.txt', output + "\n", function (error) {
         if (error) throw error;
     });

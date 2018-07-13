@@ -1,6 +1,8 @@
-New entry: OO | Entry price: 0.007626356855990628
-
 * New entry *
-Cryptocurrency: OCN
-Initial investment: 500
+Cryptocurrency: $OCN
+Initial investment: $500
+BTC Price bought at: 6500
+Bought OCN at: 0.0000012 $BTC
+Total coins bought: 61526.79487179488
+Entry price: $0.008126540656666159
 
