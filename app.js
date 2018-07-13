@@ -5,11 +5,12 @@ var fs = require("fs");
 var userCommand = process.argv[2];
 var investment = parseFloat(process.argv[3]);
 var btcPrice = parseFloat(process.argv[4]);
-var satPrice = parseFloat(process.argv[5]);
+var coinName = process.argv[5];
+var satPrice = parseFloat(process.argv[6]);
 
 // Function returns entry amount by passing initial investment, current BTC price when buy was made, and current satoshi price of coin bought.
 // This function assumes you are buying on Coinbase with a 4% purchase fee.
-function getEntryPrice(investment, btcPrice, satPrice) {
+function getEntryPrice(investment, btcPrice, coinName, satPrice) {
     var entryPrice = 0;
     var totalBTC = investment / btcPrice;
     var actualBTC = totalBTC - (totalBTC * .04);
@@ -24,6 +25,10 @@ function getEntryPrice(investment, btcPrice, satPrice) {
     // console.log("Entry price: $" + entryPrice);
     // console.log("-------------------------------------------------------");
     return entryPrice;
+    var output = "New entry: " + coinName + " | Entry price: " + entryPrice + "\n";
+    fs.appendFile('./log.txt', output + "\n", function(error) {
+        if (error) throw error;
+    });
 };
 
 // Function returns the average entry price of all investments made
@@ -40,8 +45,8 @@ function getEntryAverage(allEntries) {
 
 switch (userCommand) {
     case "getEntryPrice":
-    var entryPrice = getEntryPrice(investment, btcPrice, satPrice);
-    console.log("Entry price: " + entryPrice);
+    var entryPrice = getEntryPrice(investment, btcPrice, coinName, satPrice);
+    console.log("Entry price: $" + entryPrice);
 }
 
 // // This array will hold all of our entry prices
