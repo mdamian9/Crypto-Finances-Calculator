@@ -1,3 +1,12 @@
+// Require fs package
+var fs = require("fs");
+
+// Take in user input and store into variables
+var userCommand = process.argv[2];
+var investment = parseFloat(process.argv[3]);
+var btcPrice = parseFloat(process.argv[4]);
+var satPrice = parseFloat(process.argv[5]);
+
 // Function returns entry amount by passing initial investment, current BTC price when buy was made, and current satoshi price of coin bought.
 // This function assumes you are buying on Coinbase with a 4% purchase fee.
 function getEntryPrice(investment, btcPrice, satPrice) {
@@ -29,17 +38,23 @@ function getEntryAverage(allEntries) {
     return avgEntry;
 };
 
-// This array will hold all of our entry prices
-var entries = [];
+switch (userCommand) {
+    case "getEntryPrice":
+    var entryPrice = getEntryPrice(investment, btcPrice, satPrice);
+    console.log("Entry price: " + entryPrice);
+}
 
-// Creating our entries and storing them in variables
-var entry1 = getEntryPrice(100, 6400, .00000110);
-var entry2 = getEntryPrice(200, 6500, .00000120);
+// // This array will hold all of our entry prices
+// var entries = [];
 
-// Pushing entries into array
-entries.push(entry1);
-entries.push(entry2);
+// // Creating our entries and storing them in variables
+// var entry1 = getEntryPrice(100, 6400, .00000110);
+// var entry2 = getEntryPrice(200, 6500, .00000120);
 
-// Display entries array
-console.log(entries);
-getEntryAverage(entries);
+// // Pushing entries into array
+// entries.push(entry1);
+// entries.push(entry2);
+
+// // Display entries array
+// console.log(entries);
+// getEntryAverage(entries);

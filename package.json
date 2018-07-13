@@ -1,0 +1,25 @@
+{
+  "name": "Crypto-Finances-Calculator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "require": "^2.4.20"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdamian9/Crypto-Finances-Calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mdamian9/Crypto-Finances-Calculator/issues"
+  },
+  "homepage": "https://github.com/mdamian9/Crypto-Finances-Calculator#readme"
+}
