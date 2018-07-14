@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "fs": "0.0.1-security",
+    "inquirer": "^6.0.0",
     "require": "^2.4.20"
   },
   "devDependencies": {},
