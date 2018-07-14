@@ -1,4 +1,5 @@
-// Require fs package
+// Require inquirer and fs package
+var inquirer = require("inquirer");
 var fs = require("fs");
 
 // Take in user input and store into variables
