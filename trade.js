@@ -2,67 +2,103 @@
 var inquirer = require("inquirer");
 var fs = require("fs");
 
-// Take in user input and store into variables
-var userCommand = process.argv[2];
-var investment = parseFloat(process.argv[3]);
-var btcPrice = parseFloat(process.argv[4]);
-var coinName = process.argv[5];
-var satPrice = parseFloat(process.argv[6]);
-
-// Function returns entry amount by passing initial investment, current BTC price when buy was made, name of altcoin bought, and 
-// current satoshi price of coin bought. This function assumes you are buying BTC on Coinbase with a 4% purchase fee and a 0.000014 BTC 
-// transfer fee to altcoin exchange.
-function newEntryTrade(investment, btcPrice, coinName, satPrice) {
-    var entryPrice = 0;
-    var totalBTC = investment / btcPrice;
-    var actualBTC = totalBTC - (totalBTC * .04);
-    var transferredBTC = actualBTC - 0.000014;
-    var totalCoins = transferredBTC / satPrice;
-    entryPrice = investment / totalCoins;
-    var output = "* New entry *\nCryptocurrency: " + coinName + "\nInitial investment: $" + investment + "\nBTC Price bought at: $" +
-        btcPrice + " per BTC\nBought " + coinName + " at: " + satPrice + " BTC\nTotal coins bought: " + totalCoins + " " + coinName + 
-        "\nEntry price: $" + entryPrice + " (factoring in exchange fees & transfer fees)\n";
-    console.log(output);
-    // fs.appendFile('./log.txt', output + "\n", function (error) {
-    //     if (error) throw error;
-    // });
-    return entryPrice;
+// "newEntryTrade()" function
+// This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
+// investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
+// (altcoin price is in BTC). This function assumes you are buying BTC on Coinbase with a 4% purchase fee and a 0.000014 BTC transfer fee 
+// to altcoin exchange.
+function newEntryTrade() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "investment",
+            message: "Enter total investment: "
+        },
+        {
+            type: "input",
+            name: "btcPrice",
+            message: "Enter Bitcoin price: "
+        },
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin bought: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price of altcoin (in BTC): "
+        }
+    ]).then(function (response) {
+        var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
+        var actualBTC = totalBTC - (totalBTC * .04);
+        var transferredBTC = actualBTC - 0.000014;
+        var totalCoins = transferredBTC / parseFloat(response.altPrice);
+        var entryPrice = parseFloat(response.investment) / totalCoins;
+        var output = "* New entry *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
+            "\nBTC Price bought at: $" + response.btcPrice + " per BTC\nBought " + response.altName + " at: " + response.altPrice +
+            " BTC\nTotal coins bought: " + totalCoins + " " + response.altName + "\nEntry price: $" + entryPrice +
+            " (factoring in Coinbase fee & transfer fees)\n";
+        console.log(output);
+        fs.appendFile('./log.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
+    });
 };
 
+// This function is incomplete
+// "newExitTrade()" function
+// This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
+// altcoin they sold, the price they sold the altcoin at (altcoin price is in BTC), [comment needs to be completed]
 function newExitTrade() {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin sold: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price altcoin was sold at (in BTC): "
+        }
+        // User still needs to input other parameters to complete function (coins sold, and btcPrice sold)
+    ]).then(function (response) {
+        var output = "* New exit *\nCryptocurrency: " + response.altName + "\nPrice sold at (in BTC): " + response.altPrice + "\n";
+        console.log(output);
+    });
 };
 
 // Function returns the average entry price of all investments made
-function getEntryAverage(allEntries) {
-    var total = 0;
-    for (var i = 0; i < allEntries.length; i++) {
-        total = total + allEntries[i];
+// This function is simply a blueprint for now
+// function getEntryAverage(allEntries) {
+//     var total = 0;
+//     for (var i = 0; i < allEntries.length; i++) {
+//         total = total + allEntries[i];
+//     };
+//     var avgEntry = total / allEntries.length;
+//     // // Display average entry price
+//     console.log("Average entry price: " + avgEntry);
+//     return avgEntry;
+// };
+
+// Main prompt: ask user for command to start proceed
+inquirer.prompt([
+    {
+        type: "list",
+        name: "command",
+        message: "What would you like to do?",
+        choices: ["Make new entry trade", "Make new exit trade"]
+    }
+]).then(function (response) {
+    var userCommand = response.command;
+    console.log(userCommand);
+    switch (userCommand) {
+        case "Make new entry trade":
+            newEntryTrade();
+            break;
+        case "Make new exit trade":
+            newExitTrade();
+            break;
     };
-    var avgEntry = total / allEntries.length;
-    // // Display average entry price
-    console.log("Average entry price: " + avgEntry);
-    return avgEntry;
-};
-
-switch (userCommand) {
-    case "new-entry-trade":
-        newEntryTrade(investment, btcPrice, coinName, satPrice);
-    case "new-exit-trade" :
-        newExitTrade()
-}
-
-// // This array will hold all of our entry prices
-// var entries = [];
-
-// // Creating our entries and storing them in variables
-// var entry1 = getEntryPrice(100, 6400, .00000110);
-// var entry2 = getEntryPrice(200, 6500, .00000120);
-
-// // Pushing entries into array
-// entries.push(entry1);
-// entries.push(entry2);
-
-// // Display entries array
-// console.log(entries);
-// getEntryAverage(entries);
+});

@@ -1,8 +1,8 @@
 * New entry *
-Cryptocurrency: $OCN
-Initial investment: $500
-BTC Price bought at: 6500
-Bought OCN at: 0.0000012 $BTC
-Total coins bought: 61526.79487179488
-Entry price: $0.008126540656666159
+Cryptocurrency: KCS
+Initial investment: $10000
+BTC Price bought at: $6300 per BTC
+Bought KCS at: .00049 BTC
+Total coins bought: 3109.7867832847423 KCS
+Entry price: $3.2156545438261217 (factoring in Coinbase fee & transfer fees)
 
