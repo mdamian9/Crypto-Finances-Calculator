@@ -1,8 +1,0 @@
-* New entry *
-Cryptocurrency: KCS
-Initial investment: $10000
-BTC Price bought at: $6300 per BTC
-Bought KCS at: .00049 BTC
-Total coins bought: 3109.7867832847423 KCS
-Entry price: $3.2156545438261217 (factoring in Coinbase fee & transfer fees)
-

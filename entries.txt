@@ -1,0 +1,24 @@
+* New entry *
+Cryptocurrency: COB
+Initial investment: $1000
+Bought Bitcoin at: $6400 per BTC
+Bought COB at: 0.00000405 BTC
+Total coins bought: 36996.54666666667 COB
+Entry price: $0.02702954978500696 (factoring in Coinbase fee & transfer fees)
+
+* New entry *
+Cryptocurrency: TRON
+Initial investment: $6000
+Bought Bitcoin at: $6500 per BTC
+Bought TRON at: 0.000000102 BTC
+Total coins bought: 8678957.904977376 TRON
+Entry price: $0.0006913272383265052 (factoring in Coinbase fee & transfer fees)
+
+* New entry *
+Cryptocurrency: DGB
+Initial investment: $5000
+Bought Bitcoin at: $6000 per BTC
+Bought DGB at: 0.00000220 BTC
+Total coins bought: 363266.37 DGB
+Entry price: $0.013764004633844857 (factoring in Coinbase fee & transfer fees)
+
