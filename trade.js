@@ -40,7 +40,7 @@ function newEntryTrade() {
         var output = "* New entry *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
             "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nBought " + response.altName + " at: " + response.altPrice +
             " BTC\nTotal coins bought: " + actualCoins + " " + response.altName + "\nEntry price: $" + entryPrice +
-            " (factoring in Coinbase fee & transfer fees)\n";
+            " (factoring in Coinbase fee, transfer fee and Binance fee)\n";
         console.log(output);
         fs.appendFile('./entries.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -84,10 +84,55 @@ function newExitTrade() {
         var actualDivestment = divestment - (divestment * .04);
         var exitPrice = actualDivestment / response.numCoinsSold;
         var output = "* New exit *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " + response.numCoinsSold +
-            " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice + " BTC\nSold Bitcoin at: $" + 
-            response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC + " BTC\nExit price: $" + exitPrice + "\n";
+            " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice + " BTC\nSold Bitcoin at: $" +
+            response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC + " BTC\nFinal divestment: $" + actualDivestment +
+            " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" + exitPrice +
+            " (factoring in Binance fee, transfer fee and Coinbase fee)\n";
         console.log(output);
         fs.appendFile('./exits.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
+    });
+};
+
+// "getROIPercentUSD()" function
+// This function runs when the user wants to find their ROI (return of investment). By using inquirer, the user is prompted for the name 
+// of the altcoin they traded, their initial investment (in $USD), and their final divestment (in $USD). The user can input data logged 
+// in their entries / exits .txt files or enter arbitrary values for testing trades.
+function getROIPercentUSD() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin traded: "
+        },
+        {
+            type: "input",
+            name: "investment",
+            message: "Enter initial investment: "
+        },
+        {
+            type: "input",
+            name: "divestment",
+            message: "Enter final divesment: "
+        }
+    ]).then(function (response) {
+        var netChange = response.divestment - response.investment;
+        var roiDecimalUSD = (response.divestment / response.investment);
+        var roiPercentUSD = (roiDecimalUSD - 1) * 100;
+        var output = "";
+        if (netChange >= 0) {
+            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
+                "\nFinal divestment: $" + response.divestment + "\nReturn of investment (decimal): " + roiDecimalUSD +
+                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD profit: $" + netChange + "\n";
+        } else {
+            netChange = netChange * -1;
+            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
+                "\nFinal divestment: $" + response.divestment + "\nReturn of investment (decimal): " + roiDecimalUSD +
+                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD loss: -$" + netChange + "\n";
+        }
+        console.log(output);
+        fs.appendFile('./roi.txt', output + "\n", function (error) {
             if (error) throw error;
         });
     });
@@ -112,7 +157,7 @@ inquirer.prompt([
         type: "list",
         name: "command",
         message: "What would you like to do?",
-        choices: ["Make new entry trade", "Make new exit trade"]
+        choices: ["Make new entry trade", "Make new exit trade", "Calculate ROI % (in $USD)"]
     }
 ]).then(function (response) {
     var userCommand = response.command;
@@ -123,6 +168,9 @@ inquirer.prompt([
             break;
         case "Make new exit trade":
             newExitTrade();
+            break;
+        case "Calculate ROI % (in $USD)":
+            getROIPercentUSD();
             break;
     };
 });

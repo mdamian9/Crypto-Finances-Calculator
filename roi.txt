@@ -1,0 +1,16 @@
+* New ROI calculation *
+Cryptocurrency: OCN
+Initial investment: $500
+Final divestment: $1000
+Return of investment (decimal): 2x ROI
+Return of investment (percent): 100% ROI
+Total $USD profit: $500
+
+* New ROI calculation *
+Cryptocurrency: OCN
+Initial investment: $100
+Final divestment: $50
+Return of investment (decimal): 0.5x ROI
+Return of investment (percent): -50% ROI
+Total $USD loss: -$50
+

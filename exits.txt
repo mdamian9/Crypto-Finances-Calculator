@@ -1,8 +1,0 @@
-* New exit *
-Cryptocurrency: DGB
-Amount of coins / tokens sold: 150000 DGB
-Sold DGB at: 0.00003 BTC
-Sold Bitcoin at: $22000 per BTC
-Total Bitcoin sold: 4.495486 BTC
-Exit price: $0.6329644287999999
-
