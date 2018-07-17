@@ -1,0 +1,10 @@
+* New exit *
+Cryptocurrency: OCN
+Amount of coins / tokens sold: 70000 OCN
+Sold OCN at: 0.000003 BTC
+Sold Bitcoin at: $7600 per BTC
+Total Bitcoin sold: 0.20977600000000002 BTC
+Final divestment: $1530.5256960000002 (factoring in Binance fee, transfer fee and Coinbase fee)
+Exit price: $0.021864652800000002 (factoring in Binance fee, transfer fee and Coinbase fee)
+Date (trade log): July 17th 2018, 12:45:26 pm
+

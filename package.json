@@ -6,6 +6,7 @@
   "dependencies": {
     "fs": "0.0.1-security",
     "inquirer": "^6.0.0",
+    "moment": "^2.22.2",
     "require": "^2.4.20"
   },
   "devDependencies": {},

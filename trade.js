@@ -1,5 +1,6 @@
-// Require inquirer and fs package
+// Require npm inquirer, npm moment and npm fs packages
 var inquirer = require("inquirer");
+var moment = require("moment");
 var fs = require("fs");
 
 // "newEntryTrade()" function
@@ -40,7 +41,8 @@ function newEntryTrade() {
         var output = "* New entry *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
             "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nBought " + response.altName + " at: " + response.altPrice +
             " BTC\nTotal coins bought: " + actualCoins + " " + response.altName + "\nEntry price: $" + entryPrice +
-            " (factoring in Coinbase fee, transfer fee and Binance fee)\n";
+            " (factoring in Coinbase fee, transfer fee and Binance fee)\nDate (trade log): " +
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./entries.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -87,7 +89,8 @@ function newExitTrade() {
             " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice + " BTC\nSold Bitcoin at: $" +
             response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC + " BTC\nFinal divestment: $" + actualDivestment +
             " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" + exitPrice +
-            " (factoring in Binance fee, transfer fee and Coinbase fee)\n";
+            " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate (trade log): " +
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./exits.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -129,7 +132,8 @@ function getROIPercentUSD() {
             netChange = netChange * -1;
             output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
                 "\nFinal divestment: $" + response.divestment + "\nReturn of investment (decimal): " + roiDecimalUSD +
-                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD loss: -$" + netChange + "\n";
+                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD loss: -$" + netChange + 
+                "\nDate (trade log): " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         }
         console.log(output);
         fs.appendFile('./roi.txt', output + "\n", function (error) {
