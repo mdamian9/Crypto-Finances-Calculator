@@ -1,9 +1,14 @@
 * New ROI calculation *
 Cryptocurrency: OCN
-Initial investment: $100
-Final divestment: $4350
-Return of investment (decimal): 43.5x ROI
-Return of investment (percent): 4250% ROI
-Total $USD profit: $4250
-Date logged: July 17th 2018, 2:12:02 pm
+Initial investment (USD): $100
+Initial investment (BTC): 0.016537724137931035 BTC
+Final divestment (USD): $5228.530104033765
+Final divestment (BTC): 0.49512595682137933 BTC
+Return of investment in $USD (decimal): 52.28530104033766x ROI
+Return of investment in $USD (percent): 5128.530104033765% ROI
+Return of investment in BTC (decimal): 29.939183450626988x ROI
+Return of investment in BTC (percent): 2893.918345062699% ROI
+Total $USD profit: $5128.530104033765
+Total BTC profit: 0.4785882326834483 BTC
+Date logged: July 18th 2018, 11:47:00 pm
 

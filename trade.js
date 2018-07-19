@@ -39,9 +39,9 @@ function newEntryTrade() {
         var actualCoins = totalCoins - exchFee;
         var entryPrice = parseFloat(response.investment) / actualCoins;
         var output = "* New entry trade *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-            "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC 
-            + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " + 
-            response.altName + "\nEntry price: $" + entryPrice + " (factoring in Coinbase fee, transfer fee and Binance fee)" + 
+            "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC
+            + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
+            response.altName + "\nEntry price: $" + entryPrice + " (factoring in Coinbase fee, transfer fee and Binance fee)" +
             "\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./entries.txt', output + "\n", function (error) {
@@ -98,11 +98,11 @@ function newExitTrade() {
     });
 };
 
-// "getROIPercentUSD()" function
+// "calculateROI()" function
 // This function runs when the user wants to find their ROI (return of investment). By using inquirer, the user is prompted for the name 
-// of the altcoin they traded, their initial investment (in $USD), and their final divestment (in $USD). The user can input data logged 
-// in their entries / exits .txt files or enter arbitrary values for testing trades.
-function getROIPercentUSD() {
+// of the altcoin they traded, their initial investment (in $USD and BTC), and their final divestment (in $USD and BTC). The user must input 
+// data logged in their entries / exits .txt files to make a complete ROI calculation.
+function calculateROI() {
     inquirer.prompt([
         {
             type: "input",
@@ -111,35 +111,98 @@ function getROIPercentUSD() {
         },
         {
             type: "input",
-            name: "investment",
-            message: "Enter initial investment: "
+            name: "investmentUSD",
+            message: "Enter initial investment (in $USD): "
         },
         {
             type: "input",
-            name: "divestment",
-            message: "Enter final divesment: "
+            name: "investmentBTC",
+            message: "Enter initial investment (in BTC): "
+        },
+        {
+            type: "input",
+            name: "divestmentUSD",
+            message: "Enter final divesment (in $USD): "
+        },
+        {
+            type: "input",
+            name: "divestmentBTC",
+            message: "Enter final divesment (in BTC): "
         }
     ]).then(function (response) {
-        var netChange = response.divestment - response.investment;
-        var roiDecimalUSD = (response.divestment / response.investment);
+        var netChangeUSD = response.divestmentUSD - response.investmentUSD;
+        var roiDecimalUSD = response.divestmentUSD / response.investmentUSD;
         var roiPercentUSD = (roiDecimalUSD - 1) * 100;
+        var netChangeBTC = response.divestmentBTC - response.investmentBTC;
+        var roiDecimalBTC = response.divestmentBTC / response.investmentBTC;
+        var roiPercentBTC = (roiDecimalBTC - 1) * 100;
         var output = "";
-        if (netChange >= 0) {
-            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-                "\nFinal divestment: $" + response.divestment + "\nReturn of investment (decimal): " + roiDecimalUSD +
-                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD profit: $" + netChange +
-                "\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        if (netChangeUSD >= 0 && netChangeBTC >= 0) {
+            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment (USD): $" +
+                response.investmentUSD + "\nInitial investment (BTC): " + response.investmentBTC + " BTC\nFinal divestment (USD): $" +
+                response.divestmentUSD + "\nFinal divestment (BTC): " + response.divestmentBTC +
+                " BTC\nReturn of investment in $USD (decimal): " + roiDecimalUSD + "x ROI\nReturn of investment in $USD (percent): " +
+                roiPercentUSD + "% ROI\nReturn of investment in BTC (decimal): " + roiDecimalBTC +
+                "x ROI\nReturn of investment in BTC (percent): " + roiPercentBTC + "% ROI\nTotal $USD profit: $" + netChangeUSD +
+                "\nTotal BTC profit: " + netChangeBTC + " BTC\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         } else {
-            netChange = netChange * -1;
+            netChangeUSD = netChangeUSD * -1;
+            netChangeBTC = netChangeBTC * -1;
             output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-                "\nFinal divestment: $" + response.divestment + "\nReturn of investment (decimal): " + roiDecimalUSD +
-                "x ROI\nReturn of investment (percent): " + roiPercentUSD + "% ROI\nTotal $USD loss: -$" + netChange +
-                "\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+                "\nFinal divestment: $" + response.divestment + "\nReturn of investment in $USD (decimal): " + roiDecimalUSD +
+                "x ROI\nReturn of investment in $USD (percent): " + roiPercentUSD + "% ROI\nReturn of investment in BTC (decimal): " +
+                roiDecimalBTC + "x ROI\nReturn of investment in BTC (percent): " + roiPercentBTC + "% ROI\nTotal $USD loss: $" +
+                netChangeUSD + "\nTotal BTC loss: " + netChangeBTC + " BTC\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         }
         console.log(output);
         fs.appendFile('./roi.txt', output + "\n", function (error) {
             if (error) throw error;
         });
+    });
+};
+
+// "getPercentChangeUSD()" function
+// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
+// entry price and a theoretical exit price in $USD to obtain the change in percentage.
+function getPercentChangeUSD() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "entryPriceUSD",
+            message: "Enter entry price (in $USD):"
+        },
+        {
+            type: "input",
+            name: "exitPriceUSD",
+            message: "Enter exit price (in $USD):"
+        }
+    ]).then(function (response) {
+        var decimalChangeUSD = response.exitPriceUSD / response.entryPriceUSD;
+        var percentChangeUSD = (decimalChangeUSD - 1) * 100;
+        console.log("Decimal change: " + decimalChangeUSD + "x\nPercent change: " + percentChangeUSD + "%");
+    });
+};
+
+
+// "getPercentChangeBTC()" function
+// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
+// entry price and a theoretical exit price in BTC to obtain the change in percentage.
+function getPercentChangeBTC() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "entryPriceBTC",
+            message: "Enter entry price (in BTC):"
+        },
+        {
+            type: "input",
+            name: "exitPriceBTC",
+            message: "Enter exit price (in BTC):"
+        }
+    ]).then(function (response) {
+        var decimalChangeBTC = response.exitPriceBTC / response.entryPriceBTC;
+        var percentChangeBTC = (decimalChangeBTC - 1) * 100;
+        console.log("Decimal change: " + decimalChangeBTC + "x\nPercent change: " + percentChangeBTC + "%");
     });
 };
 
@@ -162,7 +225,8 @@ inquirer.prompt([
         type: "list",
         name: "command",
         message: "What would you like to do?",
-        choices: ["Make new entry trade", "Make new exit trade", "Calculate ROI (in $USD)"]
+        choices: ["Make new entry trade", "Make new exit trade", "Full ROI calculation (return of investment)",
+            "Get percent change in $USD", "Get percent change in BTC"]
     }
 ]).then(function (response) {
     var userCommand = response.command;
@@ -174,8 +238,14 @@ inquirer.prompt([
         case "Make new exit trade":
             newExitTrade();
             break;
-        case "Calculate ROI (in $USD)":
-            getROIPercentUSD();
+        case "Full ROI calculation (return of investment)":
+            calculateROI();
+            break;
+        case "Get percent change in $USD":
+            getPercentChangeUSD();
+            break;
+        case "Get percent change in BTC":
+            getPercentChangeBTC();
             break;
     };
 });
