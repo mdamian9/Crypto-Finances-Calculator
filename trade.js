@@ -3,6 +3,12 @@ var inquirer = require("inquirer");
 var moment = require("moment");
 var fs = require("fs");
 
+// "askIfDone()" function
+// This function asks the user if they are done using the app
+function askIfDone() {
+
+};
+
 // "newEntryTrade()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
@@ -167,25 +173,89 @@ function calculateROI() {
 // A2: .20,  B2: 10
 // A3: .30,  B3: 40
 // ((A2 * B2) + (A3 * B3)) / Total Coins
-function getAverageEntryPriceUSD() {
-    var entries = [];
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin: "
-        },
-        {
-            type: "input",
-            name: "entryPrices",
-            message: "Enter all entry prices in $USD one by one, separated by a comma: "
-        }
-    ]).then(function (response) {
-        var entryPricesArr = response.entryPrices.split(", ");
-        console.log(entryPricesArr);
-        console.log(entryPricesArr[0] + entryPricesArr[1]);
-    });
-};
+// function getAvgEntryPriceUSD() {
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "altName",
+//             message: "Enter name of altcoin: "
+//         },
+//         {
+//             type: "input",
+//             name: "entryPrices",
+//             message: "Enter all entry prices in $USD one by one, separated by a comma: "
+//         },
+//         {
+//             type: "input",
+//             name: "numCoinsPerInvestment",
+//             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
+//         }
+//     ]).then(function (response) {
+//         var entryPricesArr = response.entryPrices.split(", ");
+//         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+//         var numOfInvestments = entryPricesArr.length;
+//         var convertedPricesArr = [];
+//         var convertedNumCoinsArr = [];
+//         var sumTotalCoins = 0;
+//         var weightedAvgNumerator = 0;
+//         var avgEntryPrice = 0;
+
+//         for (var i = 0; i < numOfInvestments; i++) {
+//             convertedPricesArr.push(parseFloat(entryPricesArr[i]));
+//             convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
+//             weightedAvgNumerator = weightedAvgNumerator + (convertedPricesArr[i] * convertedNumCoinsArr[i]);
+//             sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
+//         };
+
+//         avgEntryPrice = weightedAvgNumerator / sumTotalCoins;
+
+//         console.log(weightedAvgNumerator + "\n" + sumTotalCoins + "\n" + avgEntryPrice);
+
+//     });
+// };
+
+
+// Function returns the average entry price of all investments made
+// This function is finished but working on better solution
+// function getAvgEntryPriceUSD() {
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "altName",
+//             message: "Enter name of altcoin: "
+//         },
+//         {
+//             type: "input",
+//             name: "investmentsMade",
+//             message: "Enter all investments made in $USD one by one, separated by a comma: "
+//         },
+//         {
+//             type: "input",
+//             name: "numCoinsPerInvestment",
+//             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
+//         }
+//     ]).then(function (response) {
+//         var investmentsArr = response.investmentsMade.split(", ");
+//         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+//         var numOfInvestments = investmentsArr.length;
+//         var convertedInvestmentsArr = [];
+//         var convertedNumCoinsArr = [];
+//         var sumTotalInvestment = 0;
+//         var sumTotalCoins = 0;
+//         var avgEntryPrice = 0;
+//         for (var i = 0; i < numOfInvestments; i++) {
+//             convertedInvestmentsArr.push(parseFloat(investmentsArr[i]));
+//             convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
+//             sumTotalInvestment = sumTotalInvestment + convertedInvestmentsArr[i];
+//             sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
+//         };
+//         avgEntryPrice = sumTotalInvestment / sumTotalCoins;
+//         console.log(convertedInvestmentsArr);
+//         console.log(convertedNumCoinsArr);
+//         console.log(sumTotalInvestment + "\n" + sumTotalCoins);
+//         console.log(avgEntryPrice);
+//     });
+// };
 
 // "getTargetPriceUSD()"
 function getTargetPriceUSD() {
@@ -262,7 +332,7 @@ inquirer.prompt([
             newExitTrade();
             break;
         case "Calculate average entry price in $USD":
-            getAverageEntryPriceUSD();
+            getAvgEntryPriceUSD();
             break;
         case "Full ROI calculation (return of investment)":
             calculateROI();
