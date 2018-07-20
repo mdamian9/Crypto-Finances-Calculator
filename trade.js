@@ -161,6 +161,51 @@ function calculateROI() {
     });
 };
 
+// Function returns the average entry price of all investments made
+// This function is simply a blueprint for now
+// A1: Entry price values, B1: Coins
+// A2: .20,  B2: 10
+// A3: .30,  B3: 40
+// ((A2 * B2) + (A3 * B3)) / Total Coins
+// function getAverageEntryPriceUSD() {
+//     var entries = [];
+//     function askForNewEntry() {
+//         inquirer.prompt([
+//             {
+//                 type: "input",
+//                 name: "newEntryPriceUSD",
+//                 message: "Enter entry price: $"
+//             },
+//             {
+//                 type: "input",
+//                 name: "newExitPriceUSD",
+//                 message: "Enter exit entry price: $"
+//             }
+//         ]).then(function (response) {
+
+//         });
+//     };
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "altName",
+//             message: "Enter name of altcoin: "
+//         }
+//     ]).then(function (response) {
+
+//     });
+// };
+
+// "getTargetPriceUSD()"
+function getTargetPriceUSD() {
+
+};
+
+// "getTargetPriceBTC()"
+function getTargetPriceBTC() {
+
+};
+
 // "getPercentChangeUSD()" function
 // This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
 // entry price and a theoretical exit price in $USD to obtain the change in percentage.
@@ -206,27 +251,14 @@ function getPercentChangeBTC() {
     });
 };
 
-// Function returns the average entry price of all investments made
-// This function is simply a blueprint for now
-// function getEntryAverage(allEntries) {
-//     var total = 0;
-//     for (var i = 0; i < allEntries.length; i++) {
-//         total = total + allEntries[i];
-//     };
-//     var avgEntry = total / allEntries.length;
-//     // // Display average entry price
-//     console.log("Average entry price: " + avgEntry);
-//     return avgEntry;
-// };
-
 // Main prompt: ask user for command to start proceed
 inquirer.prompt([
     {
         type: "list",
         name: "command",
         message: "What would you like to do?",
-        choices: ["Make new entry trade", "Make new exit trade", "Full ROI calculation (return of investment)",
-            "Get percent change in $USD", "Get percent change in BTC"]
+        choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price in $USD",
+            "Full ROI calculation (return of investment)", "Get percent change in $USD", "Get percent change in BTC"]
     }
 ]).then(function (response) {
     var userCommand = response.command;
@@ -237,6 +269,9 @@ inquirer.prompt([
             break;
         case "Make new exit trade":
             newExitTrade();
+            break;
+        case "Calculate average entry price in $USD":
+            getAverageEntryPriceUSD();
             break;
         case "Full ROI calculation (return of investment)":
             calculateROI();

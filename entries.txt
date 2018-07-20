@@ -1,10 +1,29 @@
-* New entry trade *
-Cryptocurrency: OCN
+* New entry trade * - Mike
+Cryptocurrency: ZIL
 Initial investment: $100
-Bought Bitcoin at: $5800 per BTC
-Total BTC available (after all fees): 0.016537724137931035 BTC
-Bought OCN at: 0.000001 BTC
-Total coins bought: 16521.186413793104 OCN
-Entry price: $0.0060528340698651414 (factoring in Coinbase fee, transfer fee and Binance fee)
-Date logged: July 18th 2018, 10:50:05 pm
+Bought Bitcoin at: $7420 per BTC
+Total BTC available (after all fees): 0.01292400539083558 BTC
+Bought ZIL at: 0.00000995 BTC
+Total coins bought: 1297.5961191401752 ZIL
+Entry price: $0.07706558190561089 (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 20th 2018, 12:09:57 am
+
+* New entry trade * - Ramirin
+Cryptocurrency: ZIL
+Initial investment: $100
+Bought Bitcoin at: $7400 per BTC
+Total BTC available (after all fees): 0.012958972972972974 BTC
+Bought ZIL at: 0.00001005 BTC
+Total coins bought: 1288.1605970149253 ZIL
+Entry price: $0.07763007208241858 (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 20th 2018, 12:14:16 am
+* New entry trade *
+Cryptocurrency: XRP
+Initial investment: $100
+Bought Bitcoin at: $7520 per BTC
+Total BTC available (after all fees): 0.01275195744680851 BTC
+Bought XRP at: 0.00006165 BTC
+Total coins bought: 206.63755862711602 XRP
+Entry price: $0.4839391283191317 (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 20th 2018, 1:19:42 am
 
