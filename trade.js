@@ -167,34 +167,25 @@ function calculateROI() {
 // A2: .20,  B2: 10
 // A3: .30,  B3: 40
 // ((A2 * B2) + (A3 * B3)) / Total Coins
-// function getAverageEntryPriceUSD() {
-//     var entries = [];
-//     function askForNewEntry() {
-//         inquirer.prompt([
-//             {
-//                 type: "input",
-//                 name: "newEntryPriceUSD",
-//                 message: "Enter entry price: $"
-//             },
-//             {
-//                 type: "input",
-//                 name: "newExitPriceUSD",
-//                 message: "Enter exit entry price: $"
-//             }
-//         ]).then(function (response) {
-
-//         });
-//     };
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "altName",
-//             message: "Enter name of altcoin: "
-//         }
-//     ]).then(function (response) {
-
-//     });
-// };
+function getAverageEntryPriceUSD() {
+    var entries = [];
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin: "
+        },
+        {
+            type: "input",
+            name: "entryPrices",
+            message: "Enter all entry prices in $USD one by one, separated by a comma: "
+        }
+    ]).then(function (response) {
+        var entryPricesArr = response.entryPrices.split(", ");
+        console.log(entryPricesArr);
+        console.log(entryPricesArr[0] + entryPricesArr[1]);
+    });
+};
 
 // "getTargetPriceUSD()"
 function getTargetPriceUSD() {
