@@ -372,4 +372,3 @@ inquirer.prompt([
     };
 });
 
-Added two new commands to find the target price in $USD and BTC for the percentage gain the user is trying to obtain. Adjusted 'calculateAvgEntryPrice()' function + added logging capability to new 'avg_entries.txt' file created. Still unsure which 'calculateAvgEntryPrice()' function will be used
