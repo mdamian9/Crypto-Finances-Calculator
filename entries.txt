@@ -29,33 +29,4 @@ Date logged: July 20th 2018, 1:19:42 am
 
 -------------------------------------------------------------------------------------------------------------
 
-* New entry trade *
-Cryptocurrency: OCN
-Initial investment: $100
-Bought Bitcoin at: $6000 per BTC
-Total BTC available (after all fees): 0.015986 BTC
-Bought OCN at: 0.00000105 BTC
-Total coins bought: 15209.537142857145 OCN
-Entry price: $0.006574822038352627 (factoring in Coinbase fee, transfer fee and Binance fee)
-Date logged: July 20th 2018, 1:05:51 pm
-
-* New entry trade *
-Cryptocurrency: OCN
-Initial investment: $350
-Bought Bitcoin at: $6100 per BTC
-Total BTC available (after all fees): 0.05506796721311476 BTC
-Bought OCN at: 0.00000115 BTC
-Total coins bought: 47837.30369208839 OCN
-Entry price: $0.007316465874682754 (factoring in Coinbase fee, transfer fee and Binance fee)
-Date logged: July 20th 2018, 1:06:14 pm
-
-* New entry trade *
-Cryptocurrency: OCN
-Initial investment: $195
-Bought Bitcoin at: $7300 per BTC
-Total BTC available (after all fees): 0.02562983561643836 BTC
-Bought OCN at: 0.00000094 BTC
-Total coins bought: 27238.516788108427 OCN
-Entry price: $0.0071589801132318455 (factoring in Coinbase fee, transfer fee and Binance fee)
-Date logged: July 20th 2018, 1:06:42 pm
 

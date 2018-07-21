@@ -43,12 +43,15 @@ function newEntryTrade() {
         var totalCoins = transferredBTC / parseFloat(response.altPrice);
         var exchFee = totalCoins * .001;
         var actualCoins = totalCoins - exchFee;
-        var entryPrice = parseFloat(response.investment) / actualCoins;
+        var entryPriceUSD = parseFloat(response.investment) / actualCoins;
+        var entryPriceBTC = transferredBTC / actualCoins;
         var output = "* New entry trade *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-            "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC
+            "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC.toFixed(8)
             + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price: $" + entryPrice + " (factoring in Coinbase fee, transfer fee and Binance fee)" +
-            "\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+            response.altName + "\nEntry price (BTC): $" + entryPriceBTC.toFixed(8) + 
+            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price ($USD): " + entryPriceUSD.toFixed(6) + 
+            " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " + 
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./entries.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -260,7 +263,6 @@ function calculateAvgEntryPrice() {
             sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
             investmentsStrUSD = investmentsStrUSD + " $" + investmentsUSDArr[i] + ",";
             investmentsStrBTC = investmentsStrBTC + " " + investmentsBTCArr[i] + " BTC,";
-
         };
         avgEntryPriceUSD = sumTotalInvestmentsUSD / sumTotalCoins;
         avgEntryPriceBTC = sumTotalInvestmentsBTC / sumTotalCoins;
