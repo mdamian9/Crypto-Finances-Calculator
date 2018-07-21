@@ -48,9 +48,9 @@ function newEntryTrade() {
         var output = "* New entry trade *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
             "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC.toFixed(8)
             + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price (BTC): $" + entryPriceBTC.toFixed(8) + 
-            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price ($USD): " + entryPriceUSD.toFixed(6) + 
-            " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " + 
+            response.altName + "\nEntry price (BTC): $" + entryPriceBTC.toFixed(8) +
+            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price ($USD): " + entryPriceUSD.toFixed(6) +
+            " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./entries.txt', output + "\n", function (error) {
@@ -170,47 +170,58 @@ function calculateROI() {
     });
 };
 
-// "getavgEntryPriceUSDUSD()" function
+// "calculateAvgEntryPrice()" function
 // This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
 // for their entry prices, separated by a comma, and the amount of altcoins / tokens obtained on each investment separated by a comma. It 
-// then performs a weighted average calculation to find the weighted average.
-function getavgEntryPriceUSDUSD() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin: "
-        },
-        {
-            type: "input",
-            name: "entryPrices",
-            message: "Enter all entry prices in $USD one by one, separated by a comma: "
-        },
-        {
-            type: "input",
-            name: "numCoinsPerInvestment",
-            message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
-        }
-    ]).then(function (response) {
-        var entryPricesArr = response.entryPrices.split(", ");
-        var numCoinsArr = response.numCoinsPerInvestment.split(", ");
-        var numOfInvestments = entryPricesArr.length;
-        var convertedPricesArr = [];
-        var convertedNumCoinsArr = [];
-        var sumTotalCoins = 0;
-        var weightedAvgNumerator = 0;
-        var avgEntryPriceUSD = 0;
-        for (var i = 0; i < numOfInvestments; i++) {
-            convertedPricesArr.push(parseFloat(entryPricesArr[i]));
-            convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
-            weightedAvgNumerator = weightedAvgNumerator + (convertedPricesArr[i] * convertedNumCoinsArr[i]);
-            sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
-        };
-        avgEntryPriceUSD = weightedAvgNumerator / sumTotalCoins;
-        console.log("Sum of total investment: $" + weightedAvgNumerator + "\nSum of total coins / tokens obtained: " + sumTotalCoins +
-            " " + response.altName + "\nAverage entry price: $" + avgEntryPriceUSD + "\n");
-    });
-};
+// then performs a weighted average calculation to find the weighted average. This function is still in progress.
+// function calculateAvgEntryPrice() {
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "altName",
+//             message: "Enter name of altcoin: "
+//         },
+//         {
+//             type: "input",
+//             name: "entryPricesUSD",
+//             message: "Enter all entry prices in $USD one by one, separated by a comma: "
+//         },
+//         {
+//             type: "input",
+//             name: "entryPricesBTC",
+//             message: "Enter all entry prices in BTC one by one, separated by a comma: "
+//         },
+//         {
+//             type: "input",
+//             name: "numCoinsPerInvestment",
+//             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
+//         }
+//     ]).then(function (response) {
+//         var entryPricesUSDArr = response.entryPricesUSD.split(", ");
+//         var entryPricesBTCArr = response.entryPricesBTC.split(", ");
+//         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+//         var numOfInvestments = entryPricesUSDArr.length;
+//         var convertedPricesUSDArr = [];
+//         var convertedPricesBTCArr = [];
+//         var convertedNumCoinsArr = [];
+//         var sumTotalCoins = 0;
+//         var weightedAvgNumeratorUSD = 0;
+//         var weightedAvgNumeratorBTC = 0;
+//         for (var i = 0; i < numOfInvestments; i++) {
+//             convertedPricesUSDArr.push(parseFloat(entryPricesUSDArr[i]));
+//             convertedPricesBTCArr.push(parseFloat(entryPricesBTCArr[i]));
+//             convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
+//             weightedAvgNumeratorUSD = weightedAvgNumeratorUSD + (convertedPricesUSDArr[i] * convertedNumCoinsArr[i]);
+//             weightedAvgNumeratorBTC = weightedAvgNumeratorBTC + (convertedPricesBTCArr[i] * convertedNumCoinsArr[i]);
+//             sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
+//         };
+//         var avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
+//         var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
+//         console.log("Sum of total investment: $" + weightedAvgNumeratorUSD + "\nSum of total coins / tokens obtained: " + sumTotalCoins +
+//             " " + response.altName + "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " +
+//             avgEntryPriceBTC.toFixed(8) + " BTC\n");
+//     });
+// };
 
 // "calculateAvgEntryPrice()" function
 // This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
