@@ -30,3 +30,69 @@ Date logged: July 20th 2018, 1:19:42 am
 
 -------------------------------------------------------------------------------------------------------------
 
+* New entry trade *
+Cryptocurrency: POE
+Initial investment: $100
+Bought Bitcoin at: $6700 per BTC
+Total BTC available (after all fees): 0.01431436 BTC
+Bought POE at: 0.00000245 BTC
+Total coins bought: 5836.752592141334 POE
+Entry price (BTC): 0.00000245 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.017133 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 1:22:39 pm
+
+* New entry trade *
+Cryptocurrency: POE
+Initial investment: $200
+Bought Bitcoin at: $7000 per BTC
+Total BTC available (after all fees): 0.02741457 BTC
+Bought POE at: 0.00000250 BTC
+Total coins bought: 10954.862742857142 POE
+Entry price (BTC): 0.00000250 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.018257 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 1:26:25 pm
+
+* New entry trade *
+Cryptocurrency: OCN
+Initial investment: $100
+Bought Bitcoin at: $6500 per BTC
+Total BTC available (after all fees): 0.01475523 BTC
+Bought OCN at: 0.00000157 BTC
+Total coins bought: 9388.837922586968 OCN
+Entry price (BTC): 0.00000157 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.010651 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 1:49:22 pm
+
+* New entry trade *
+Cryptocurrency: OCN
+Initial investment: $200
+Bought Bitcoin at: $7500 per BTC
+Total BTC available (after all fees): 0.02558600 BTC
+Bought OCN at: 0.0000012 BTC
+Total coins bought: 21300.345 OCN
+Entry price (BTC): 0.00000120 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.009390 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 1:50:29 pm
+
+* New entry trade *
+Cryptocurrency: OCN
+Initial investment: $100
+Bought Bitcoin at: $7500 per BTC
+Total BTC available (after all fees): 0.01278600 BTC
+Bought OCN at: 0.0000010 BTC
+Total coins bought: 12773.214000000002 OCN
+Entry price (BTC): 0.00000100 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.007829 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 2:03:04 pm
+
+* New entry trade *
+Cryptocurrency: NCASH
+Initial investment: $200
+Bought Bitcoin at: $7400 per BTC
+Total BTC available (after all fees): 0.02593195 BTC
+Bought NCASH at: 0.00000185 BTC
+Total coins bought: 14003.250810810812 NCASH
+Entry price (BTC): 0.00000185 (factoring in Coinbase fee, transfer fee and Binance fee)
+Entry price ($USD): $0.014282 BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+Date logged: July 22nd 2018, 2:07:17 pm
+

@@ -47,7 +47,7 @@ function beginApp() {
 };
 
 // "askIfDone()" function
-// This function asks the user if they are done using the app - needs completion
+// This function asks the user if they are done using the app
 function askIfDone() {
     inquirer.prompt([
         {
@@ -58,10 +58,10 @@ function askIfDone() {
         }
     ]).then(function (response) {
         if (response.doneWithApp === "Yes") {
-            process.kill();
+            console.log("Good luck trading.");
         } else {
-
-        }
+            beginApp();
+        };
     });
 };
 
@@ -112,6 +112,7 @@ function newEntryTrade() {
         fs.appendFile('./entries.txt', output + "\n", function (error) {
             if (error) throw error;
         });
+        askIfDone();
     });
 };
 
@@ -160,6 +161,7 @@ function newExitTrade() {
         fs.appendFile('./exits.txt', output + "\n", function (error) {
             if (error) throw error;
         });
+        askIfDone();
     });
 };
 
@@ -222,6 +224,7 @@ function calculateAvgEntryPrice() {
         console.log("Sum of total investment: $" + weightedAvgNumeratorUSD + "\nSum of total coins / tokens obtained: " + sumTotalCoins +
             " " + response.altName + "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " +
             avgEntryPriceBTC.toFixed(8) + " BTC\n");
+            askIfDone();
     });
 };
 
@@ -291,6 +294,7 @@ function calculateROI() {
         fs.appendFile('./roi.txt', output + "\n", function (error) {
             if (error) throw error;
         });
+        askIfDone();
     });
 };
 
@@ -323,6 +327,7 @@ function getPercentChangeUSD() {
         var decimalChangeUSD = response.exitPriceUSD / response.entryPriceUSD;
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
         console.log("Decimal change: " + decimalChangeUSD + "x\nPercent change: " + percentChangeUSD + "%");
+        askIfDone();
     });
 };
 
@@ -346,6 +351,7 @@ function getPercentChangeBTC() {
         var decimalChangeBTC = response.exitPriceBTC / response.entryPriceBTC;
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
         console.log("Decimal change: " + decimalChangeBTC + "x\nPercent change: " + percentChangeBTC + "%");
+        askIfDone();
     });
 };
 
