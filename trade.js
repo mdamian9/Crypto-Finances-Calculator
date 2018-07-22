@@ -6,7 +6,7 @@ var fs = require("fs");
 // "askIfDone()" function
 // This function asks the user if they are done using the app
 function askIfDone() {
-
+    
 };
 
 // "newEntryTrade()" function
@@ -48,8 +48,8 @@ function newEntryTrade() {
         var output = "* New entry trade *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
             "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC.toFixed(8)
             + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price (BTC): $" + entryPriceBTC.toFixed(8) +
-            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price ($USD): " + entryPriceUSD.toFixed(6) +
+            response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) +
+            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price ($USD): $" + entryPriceUSD.toFixed(6) +
             " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);

@@ -8,3 +8,13 @@ Sum of total coins / tokens obtained: 63046.86646478115 OCN
 Average entry price ($USD): $0.01023048465636759
 Average entry price (BTC): 0.00000153352273080157 BTC
 
+* New average entry calculation *
+Cryptocurrency: OCN
+Investments made ($USD): $100, $200, $300
+Investments made (BTC): 0.01475523 BTC, 0.02593195 BTC, 0.03788074 BTC
+Sum of total investments ($USD): $600
+Sum of total investments (BTC): 0.07856792 BTC
+Sum of total coins / tokens obtained: 75247.1348664829 OCN
+Average entry price ($USD): $0.007973725525425369
+Average entry price (BTC): 0.000001044131715305964 BTC
+
