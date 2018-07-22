@@ -3,10 +3,66 @@ var inquirer = require("inquirer");
 var moment = require("moment");
 var fs = require("fs");
 
+// This function holds the main prompt: which asks the user for command to start app
+function beginApp() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "command",
+            message: "What would you like to do?",
+            choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
+                "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
+                "Get percent change ($USD)", "Get percent change (BTC)"]
+        }
+    ]).then(function (response) {
+        var userCommand = response.command;
+        console.log(userCommand);
+        switch (userCommand) {
+            case "Make new entry trade":
+                newEntryTrade();
+                break;
+            case "Make new exit trade":
+                newExitTrade();
+                break;
+            case "Calculate average entry price":
+                calculateAvgEntryPrice();
+                break;
+            case "Full ROI calculation (return of investment)":
+                calculateROI();
+                break;
+            case "Get target price ($USD)":
+                getTargetPriceUSD();
+                break;
+            case "Get target price (BTC)":
+                getTargetPriceBTC();
+                break;
+            case "Get percent change ($USD)":
+                getPercentChangeUSD();
+                break;
+            case "Get percent change (BTC)":
+                getPercentChangeBTC();
+                break;
+        };
+    });
+};
+
 // "askIfDone()" function
-// This function asks the user if they are done using the app
+// This function asks the user if they are done using the app - needs completion
 function askIfDone() {
-    
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "doneWithApp",
+            message: "Are you finished with the app?",
+            choices: ["Yes", "No"]
+        }
+    ]).then(function (response) {
+        if (response.doneWithApp === "Yes") {
+            process.kill();
+        } else {
+
+        }
+    });
 };
 
 // "newEntryTrade()" function
@@ -96,9 +152,9 @@ function newExitTrade() {
         var exitPrice = actualDivestment / response.numCoinsSold;
         var output = "* New exit trade *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
             response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC +
+            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC.toFixed(8) +
             " BTC\nFinal divestment: $" + actualDivestment + " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" +
-            exitPrice + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
+            exitPrice.toFixed(6) + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./exits.txt', output + "\n", function (error) {
@@ -106,6 +162,74 @@ function newExitTrade() {
         });
     });
 };
+
+// "calculateAvgEntryPrice()" function
+// This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
+// for their entry prices, separated by a comma, and the amount of altcoins / tokens obtained on each investment separated by a comma. It 
+// then performs a weighted average calculation to find the weighted average. - needs completion
+function calculateAvgEntryPrice() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin: "
+        },
+        {
+            type: "input",
+            name: "entryPricesUSD",
+            message: "Enter all entry prices in $USD one by one, separated by a comma: "
+        },
+        {
+            type: "input",
+            name: "entryPricesBTC",
+            message: "Enter all entry prices in BTC one by one, separated by a comma: "
+        },
+        {
+            type: "input",
+            name: "numCoinsPerInvestment",
+            message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
+        }
+    ]).then(function (response) {
+        var entryPricesUSDArr = response.entryPricesUSD.split(", ");
+        var entryPricesBTCArr = response.entryPricesBTC.split(", ");
+        var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+        var numOfInvestments = entryPricesUSDArr.length;
+        var convertedPricesUSDArr = [];
+        var convertedPricesBTCArr = [];
+        var convertedNumCoinsArr = [];
+        var sumTotalCoins = 0;
+        var weightedAvgNumeratorUSD = 0;
+        var weightedAvgNumeratorBTC = 0;
+        var entryPricesStrUSD = 0;
+        var entryPricesStrBTC = 0;
+        for (var i = 0; i < numOfInvestments; i++) {
+            convertedPricesUSDArr.push(parseFloat(entryPricesUSDArr[i]));
+            convertedPricesBTCArr.push(parseFloat(entryPricesBTCArr[i]));
+            convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
+            weightedAvgNumeratorUSD = weightedAvgNumeratorUSD + (convertedPricesUSDArr[i] * convertedNumCoinsArr[i]);
+            weightedAvgNumeratorBTC = weightedAvgNumeratorBTC + (convertedPricesBTCArr[i] * convertedNumCoinsArr[i]);
+            sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
+            entryPricesStrUSD = entryPricesStrUSD + " $" + entryPricesUSDArr[i] + ",";
+            entryPricesStrBTC = entryPricesStrBTC + " " + entryPricesBTCArr[i] + " BTC,";
+        };
+        var avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
+        var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
+        var output = "* New average entry calculation *\nCryptocurrency: " + response.altName + "\nEntry prices ($USD): " +
+            entryPricesStrUSD.trim().slice(0, -1) + "\nEntry prices (BTC): " + entryPricesStrBTC.trim().slice(0, -1) +
+            "\nSum of total investments ($USD): $" + sumTotalInvestmentsUSD + "\nSum of total investments (BTC): " + sumTotalInvestmentsBTC +
+            " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName + "\nAverage entry price ($USD): $" +
+            avgEntryPriceUSD + "\nAverage entry price (BTC): " + avgEntryPriceBTC + " BTC\n";
+        console.log("Sum of total investment: $" + weightedAvgNumeratorUSD + "\nSum of total coins / tokens obtained: " + sumTotalCoins +
+            " " + response.altName + "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " +
+            avgEntryPriceBTC.toFixed(8) + " BTC\n");
+    });
+};
+
+//         var output = "* New average entry calculation *\nCryptocurrency: " + response.altName + "\nInvestments made ($USD): " +
+//             investmentsStrUSD.trim().slice(0, -1) + "\nInvestments made (BTC): " + investmentsStrBTC.trim().slice(0, -1) +
+//             "\nSum of total investments ($USD): $" + sumTotalInvestmentsUSD + "\nSum of total investments (BTC): " + sumTotalInvestmentsBTC +
+//             " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName + "\nAverage entry price ($USD): $" +
+//             avgEntryPriceUSD + "\nAverage entry price (BTC): " + avgEntryPriceBTC + " BTC\n";
 
 // "calculateROI()" function
 // This function runs when the user wants to find their ROI (return of investment). By using inquirer, the user is prompted for the name 
@@ -170,125 +294,6 @@ function calculateROI() {
     });
 };
 
-// "calculateAvgEntryPrice()" function
-// This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
-// for their entry prices, separated by a comma, and the amount of altcoins / tokens obtained on each investment separated by a comma. It 
-// then performs a weighted average calculation to find the weighted average. This function is still in progress.
-// function calculateAvgEntryPrice() {
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "altName",
-//             message: "Enter name of altcoin: "
-//         },
-//         {
-//             type: "input",
-//             name: "entryPricesUSD",
-//             message: "Enter all entry prices in $USD one by one, separated by a comma: "
-//         },
-//         {
-//             type: "input",
-//             name: "entryPricesBTC",
-//             message: "Enter all entry prices in BTC one by one, separated by a comma: "
-//         },
-//         {
-//             type: "input",
-//             name: "numCoinsPerInvestment",
-//             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
-//         }
-//     ]).then(function (response) {
-//         var entryPricesUSDArr = response.entryPricesUSD.split(", ");
-//         var entryPricesBTCArr = response.entryPricesBTC.split(", ");
-//         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
-//         var numOfInvestments = entryPricesUSDArr.length;
-//         var convertedPricesUSDArr = [];
-//         var convertedPricesBTCArr = [];
-//         var convertedNumCoinsArr = [];
-//         var sumTotalCoins = 0;
-//         var weightedAvgNumeratorUSD = 0;
-//         var weightedAvgNumeratorBTC = 0;
-//         for (var i = 0; i < numOfInvestments; i++) {
-//             convertedPricesUSDArr.push(parseFloat(entryPricesUSDArr[i]));
-//             convertedPricesBTCArr.push(parseFloat(entryPricesBTCArr[i]));
-//             convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
-//             weightedAvgNumeratorUSD = weightedAvgNumeratorUSD + (convertedPricesUSDArr[i] * convertedNumCoinsArr[i]);
-//             weightedAvgNumeratorBTC = weightedAvgNumeratorBTC + (convertedPricesBTCArr[i] * convertedNumCoinsArr[i]);
-//             sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
-//         };
-//         var avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
-//         var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
-//         console.log("Sum of total investment: $" + weightedAvgNumeratorUSD + "\nSum of total coins / tokens obtained: " + sumTotalCoins +
-//             " " + response.altName + "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " +
-//             avgEntryPriceBTC.toFixed(8) + " BTC\n");
-//     });
-// };
-
-// "calculateAvgEntryPrice()" function
-// This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
-// for their investments, separated by a comma, and the amount of altcoins / tokens obtained on each investment separated by a comma. It 
-// then uses the sum of the total amount of investment divided by the sum of total amount of tokens obtained on all investments to find 
-// the average entry price.
-function calculateAvgEntryPrice() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin: "
-        },
-        {
-            type: "input",
-            name: "investmentsMadeUSD",
-            message: "Enter all investments made in $USD one by one, separated by a comma: "
-        },
-        {
-            type: "input",
-            name: "investmentsMadeBTC",
-            message: "Enter all investments made in BTC one by one, separated by a comma: "
-        },
-        {
-            type: "input",
-            name: "numCoinsPerInvestment",
-            message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
-        }
-    ]).then(function (response) {
-        var investmentsUSDArr = response.investmentsMadeUSD.split(", ");
-        var investmentsBTCArr = response.investmentsMadeBTC.split(", ");
-        var numCoinsArr = response.numCoinsPerInvestment.split(", ");
-        var numOfInvestments = investmentsUSDArr.length;
-        var convertedInvestmentsUSDArr = [];
-        var convertedInvestmentsBTCArr = [];
-        var convertedNumCoinsArr = [];
-        var investmentsStrUSD = "";
-        var investmentsStrBTC = "";
-        var sumTotalInvestmentsUSD = 0;
-        var sumTotalInvestmentsBTC = 0;
-        var sumTotalCoins = 0;
-        var avgEntryPriceUSD = 0;
-        var avgEntryPriceBTC = 0;
-        for (var i = 0; i < numOfInvestments; i++) {
-            convertedInvestmentsUSDArr.push(parseFloat(investmentsUSDArr[i]));
-            convertedInvestmentsBTCArr.push(parseFloat(investmentsBTCArr[i]));
-            convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
-            sumTotalInvestmentsUSD = sumTotalInvestmentsUSD + convertedInvestmentsUSDArr[i];
-            sumTotalInvestmentsBTC = sumTotalInvestmentsBTC + convertedInvestmentsBTCArr[i];
-            sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
-            investmentsStrUSD = investmentsStrUSD + " $" + investmentsUSDArr[i] + ",";
-            investmentsStrBTC = investmentsStrBTC + " " + investmentsBTCArr[i] + " BTC,";
-        };
-        avgEntryPriceUSD = sumTotalInvestmentsUSD / sumTotalCoins;
-        avgEntryPriceBTC = sumTotalInvestmentsBTC / sumTotalCoins;
-        var output = "* New average entry calculation *\nCryptocurrency: " + response.altName + "\nInvestments made ($USD): " +
-            investmentsStrUSD.trim().slice(0, -1) + "\nInvestments made (BTC): " + investmentsStrBTC.trim().slice(0, -1) +
-            "\nSum of total investments ($USD): $" + sumTotalInvestmentsUSD + "\nSum of total investments (BTC): " + sumTotalInvestmentsBTC +
-            " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName + "\nAverage entry price ($USD): $" +
-            avgEntryPriceUSD + "\nAverage entry price (BTC): " + avgEntryPriceBTC + " BTC\n";
-        console.log(output);
-        fs.appendFile('./avg_entries.txt', output + "\n", function (error) {
-            if (error) throw error;
-        });
-    });
-};
-
 // "getTargetPriceUSD()"
 function getTargetPriceUSD() {
 
@@ -344,44 +349,5 @@ function getPercentChangeBTC() {
     });
 };
 
-// Main prompt: ask user for command to start proceed
-inquirer.prompt([
-    {
-        type: "list",
-        name: "command",
-        message: "What would you like to do?",
-        choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
-            "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
-            "Get percent change ($USD)", "Get percent change (BTC)"]
-    }
-]).then(function (response) {
-    var userCommand = response.command;
-    console.log(userCommand);
-    switch (userCommand) {
-        case "Make new entry trade":
-            newEntryTrade();
-            break;
-        case "Make new exit trade":
-            newExitTrade();
-            break;
-        case "Calculate average entry price":
-            calculateAvgEntryPrice();
-            break;
-        case "Full ROI calculation (return of investment)":
-            calculateROI();
-            break;
-        case "Get target price ($USD)":
-            getTargetPriceUSD();
-            break;
-        case "Get target price (BTC)":
-            getTargetPriceBTC();
-            break;
-        case "Get percent change ($USD)":
-            getPercentChangeUSD();
-            break;
-        case "Get percent change (BTC)":
-            getPercentChangeBTC();
-            break;
-    };
-});
-
+// Call "beginApp()" to begin app
+beginApp();
