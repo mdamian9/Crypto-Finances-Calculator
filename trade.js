@@ -220,7 +220,7 @@ function calculateAvgEntryPrice() {
             entryPricesStrUSD.trim().slice(0, -1) + "\nEntries (BTC): " + entryPricesStrBTC.trim().slice(0, -1) +
             "\nSum of total investments ($USD): $" + weightedAvgNumeratorUSD.toFixed(0) + "\nSum of total investments (BTC): " +
             weightedAvgNumeratorBTC.toFixed(8) + " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName +
-            "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" + 
+            "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" +
             avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
         console.log(output);
         fs.appendFile('./avg_entries.txt', output + "\n", function (error) {
@@ -296,12 +296,49 @@ function calculateROI() {
 
 // "getTargetPriceUSD()"
 function getTargetPriceUSD() {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "entryPriceUSD",
+            message: "Enter entry price (in $USD): "
+        },
+        {
+            type: "input",
+            name: "targetPercentChange",
+            message: "Enter percent gain you're looking for: "
+        }
+    ]).then(function (response) {
+        var entryPriceUSD = parseFloat(response.entryPriceUSD);
+        var targetPercentChange = parseFloat(response.targetPercentChange);
+        var convertedPercentChange = targetPercentChange * .01;
+        var targetPriceUSD = entryPriceUSD + (entryPriceUSD * convertedPercentChange);
+        console.log("Entry price: $" + entryPriceUSD + "\nPercent gain looking for: " + convertedPercentChange + "%\nTarget sell price: $" + targetPriceUSD + "\n");
+        askIfDone();
+    });
 };
 
 // "getTargetPriceBTC()"
 function getTargetPriceBTC() {
-
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "entryPriceBTC",
+            message: "Enter entry price (in BTC): "
+        },
+        {
+            type: "input",
+            name: "targetPercentChange",
+            message: "Enter percent gain you're looking for: "
+        }
+    ]).then(function (response) {
+        var entryPriceBTC = parseFloat(response.entryPriceBTC);
+        var targetPercentChange = parseFloat(response.targetPercentChange);
+        var convertedPercentChange = targetPercentChange * .01;
+        var targetPriceBTC = entryPriceBTC + (entryPriceBTC * convertedPercentChange);
+        console.log("Entry price: " + entryPriceBTC + " BTC\nPercent gain looking for: " + convertedPercentChange + "%\nTarget sell price: " + targetPriceBTC.toFixed(8) +
+            " BTC\n");
+        askIfDone();
+    });
 };
 
 // "getPercentChangeUSD()" function
@@ -322,11 +359,11 @@ function getPercentChangeUSD() {
     ]).then(function (response) {
         var decimalChangeUSD = response.exitPriceUSD / response.entryPriceUSD;
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
-        console.log("Decimal change: " + decimalChangeUSD + "x\nPercent change: " + percentChangeUSD + "%");
+        console.log("Entry price: $" + response.entryPriceUSD + "\nExit price: $" + response.exitPriceUSD + "\nDecimal change: " + decimalChangeUSD +
+            "x\nPercent change: " + percentChangeUSD + "%");
         askIfDone();
     });
 };
-
 
 // "getPercentChangeBTC()" function
 // This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
@@ -346,7 +383,8 @@ function getPercentChangeBTC() {
     ]).then(function (response) {
         var decimalChangeBTC = response.exitPriceBTC / response.entryPriceBTC;
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
-        console.log("Decimal change: " + decimalChangeBTC + "x\nPercent change: " + percentChangeBTC + "%");
+        console.log("Entry price: " + response.entryPriceBTC + " BTC\nExit price: " + response.exitPriceBTC + " BTC\nDecimal change: " + decimalChangeBTC +
+            "x\nPercent change: " + percentChangeBTC + "%");
         askIfDone();
     });
 };
