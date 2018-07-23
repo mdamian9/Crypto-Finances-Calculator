@@ -294,7 +294,9 @@ function calculateROI() {
     });
 };
 
-// "getTargetPriceUSD()"
+// "getTargetPriceUSD()" function
+// This function runs whenever a user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
+// The user is asked to enter an entry price in $USD and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceUSD() {
     inquirer.prompt([
         {
@@ -312,12 +314,15 @@ function getTargetPriceUSD() {
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
         var targetPriceUSD = entryPriceUSD + (entryPriceUSD * convertedPercentChange);
-        console.log("Entry price: $" + entryPriceUSD + "\nPercent gain looking for: " + convertedPercentChange + "%\nTarget sell price: $" + targetPriceUSD + "\n");
+        console.log("Entry price: $" + response.entryPriceUSD + "\nPercent gain looking for: " + response.targetPercentChange +
+            "%\nTarget sell price: $" + targetPriceUSD + "\n");
         askIfDone();
     });
 };
 
-// "getTargetPriceBTC()"
+// "getTargetPriceBTC()" function
+// This function runs whenever a user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
+// The user is asked to enter an entry price in BTC and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceBTC() {
     inquirer.prompt([
         {
@@ -335,15 +340,15 @@ function getTargetPriceBTC() {
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
         var targetPriceBTC = entryPriceBTC + (entryPriceBTC * convertedPercentChange);
-        console.log("Entry price: " + entryPriceBTC + " BTC\nPercent gain looking for: " + convertedPercentChange + "%\nTarget sell price: " + targetPriceBTC.toFixed(8) +
-            " BTC\n");
+        console.log("Entry price: " + response.entryPriceBTC + " BTC\nPercent gain looking for: " + response.targetPercentChange +
+            "%\nTarget sell price: " + targetPriceBTC.toFixed(8) + " BTC\n");
         askIfDone();
     });
 };
 
 // "getPercentChangeUSD()" function
-// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
-// entry price and a theoretical exit price in $USD to obtain the change in percentage.
+// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
+// price and an exit price in $USD to obtain the change in percentage.
 function getPercentChangeUSD() {
     inquirer.prompt([
         {
@@ -359,15 +364,15 @@ function getPercentChangeUSD() {
     ]).then(function (response) {
         var decimalChangeUSD = response.exitPriceUSD / response.entryPriceUSD;
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
-        console.log("Entry price: $" + response.entryPriceUSD + "\nExit price: $" + response.exitPriceUSD + "\nDecimal change: " + decimalChangeUSD +
-            "x\nPercent change: " + percentChangeUSD + "%");
+        console.log("Entry price: $" + response.entryPriceUSD + "\nExit price: $" + response.exitPriceUSD + "\nDecimal change: " +
+            decimalChangeUSD + "x\nPercent change: " + percentChangeUSD + "%");
         askIfDone();
     });
 };
 
 // "getPercentChangeBTC()" function
-// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The use must give a theoretical  
-// entry price and a theoretical exit price in BTC to obtain the change in percentage.
+// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
+// price and an exit price in BTC to obtain the change in percentage.
 function getPercentChangeBTC() {
     inquirer.prompt([
         {
@@ -383,8 +388,8 @@ function getPercentChangeBTC() {
     ]).then(function (response) {
         var decimalChangeBTC = response.exitPriceBTC / response.entryPriceBTC;
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
-        console.log("Entry price: " + response.entryPriceBTC + " BTC\nExit price: " + response.exitPriceBTC + " BTC\nDecimal change: " + decimalChangeBTC +
-            "x\nPercent change: " + percentChangeBTC + "%");
+        console.log("Entry price: " + response.entryPriceBTC + " BTC\nExit price: " + response.exitPriceBTC + " BTC\nDecimal change: " +
+            decimalChangeBTC + "x\nPercent change: " + percentChangeBTC + "%");
         askIfDone();
     });
 };
