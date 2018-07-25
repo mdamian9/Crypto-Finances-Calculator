@@ -10,7 +10,8 @@ function beginApp() {
             type: "list",
             name: "command",
             message: "What would you like to do?",
-            choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
+            choices: ["Make new entry trade", "Make new exit trade", "Make new entry trade (BTC)", "Make new exit trade (BTC)",
+                "Make new entry trade (Tether)", "Make new exit trade (Tether)", "Calculate average entry price",
                 "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
                 "Get percent change ($USD)", "Get percent change (BTC)"]
         }
@@ -23,6 +24,18 @@ function beginApp() {
                 break;
             case "Make new exit trade":
                 newExitTrade();
+                break;
+            case "Make new entry trade (BTC)":
+                newEntryBTC();
+                break;
+            case "Make new exit trade (BTC)":
+                newExitBTC();
+                break;
+            case "Make new entry trade (Tether)":
+                newEntryTether();
+                break;
+            case "Make new exit trade (Tether)":
+                newExitTether();
                 break;
             case "Calculate average entry price":
                 calculateAvgEntryPrice();
@@ -161,6 +174,96 @@ function newExitTrade() {
         fs.appendFile('./exits.txt', output + "\n", function (error) {
             if (error) throw error;
         });
+        askIfDone();
+    });
+};
+
+// "newEntryBTC()" function
+// This function runs...
+function newEntryBTC() {
+    inquirer.prompt([
+        {
+
+        }
+    ]).then(function (response) {
+        // Needs completion
+
+        askIfDone();
+    });
+};
+
+// "newExitBTC()" function
+// This function runs...
+function newExitBTC() {
+    inquirer.prompt([
+        {
+
+        }
+    ]).then(function (response) {
+        // Needs completion
+
+        askIfDone();
+    });
+};
+
+// "newEntryTether()" function
+// This function runs...
+function newEntryTether() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "investment",
+            message: "Enter total investment ($USDT): "
+        },
+        {
+            type: "input",
+            name: "btcPrice",
+            message: "Enter Bitcoin price (bought): "
+        },
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin bought: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price of altcoin (in BTC): "
+        }
+    ]).then(function (response) {
+        // Needs completion
+
+        askIfDone();
+    });
+};
+
+// "newExitTether()" function
+// This function runs...
+function newExitTether() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin sold: "
+        },
+        {
+            type: "input",
+            name: "numCoinsSold",
+            message: "Enter amount of coins / tokens sold: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price altcoin was sold at (in BTC): "
+        },
+        {
+            type: "input",
+            name: "btcPrice",
+            message: "Enter Bitcoin price (sold): "
+        }
+    ]).then(function (response) {
+        // Needs completion
+
         askIfDone();
     });
 };

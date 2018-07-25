@@ -1,1 +1,5 @@
 /node_modules
+/entries.txt
+/exits.txt
+/avg_entries.txt
+/roi.txt
