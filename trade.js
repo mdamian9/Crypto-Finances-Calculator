@@ -48,7 +48,7 @@ function newEntryPrompt() {
             type: "list",
             name: "command",
             message: "Choose trade:",
-            choices: ["New entry trade ($USD)", "New entry trade (BTC)", "New entry trade ($USDT)"]
+            choices: ["New entry trade ($USD)", "New entry trade ($USDT)", "New entry trade (BTC)"]
         }
     ]).then(function (response) {
         var userCommand = response.command;
@@ -56,11 +56,11 @@ function newEntryPrompt() {
             case "New entry trade ($USD)":
                 newEntryTradeUSD();
                 break;
-            case "New entry trade (BTC)":
-                newEntryTradeBTC();
-                break;
             case "New entry trade ($USDT)":
                 newEntryTradeUSDT();
+                break;
+            case "New entry trade (BTC)":
+                newEntryTradeBTC();
                 break;
         };
     });
@@ -75,7 +75,7 @@ function newExitPrompt() {
             type: "list",
             name: "command",
             message: "Choose trade:",
-            choices: ["New exit trade ($USD)", "New exit trade (BTC)", "New exit trade ($USDT)"]
+            choices: ["New exit trade ($USD)", "New exit trade ($USDT)", "New exit trade (BTC)"]
         }
     ]).then(function (response) {
         var userCommand = response.command;
@@ -83,11 +83,11 @@ function newExitPrompt() {
             case "New exit trade ($USD)":
                 newExitTradeUSD();
                 break;
-            case "New exit trade (BTC)":
-                newExitTradeBTC();
-                break;
             case "New exit trade ($USDT)":
                 newExitTradeUSDT();
+                break;
+            case "New exit trade (BTC)":
+                newExitTradeBTC();
                 break;
         };
     });
@@ -207,134 +207,11 @@ function newEntryTradeUSD() {
     });
 };
 
-// "newExitTradeUSD()" function
-// This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
-// altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
-// they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade fee, charged a 0.000014 BTC 
-// transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
-function newExitTradeUSD() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin sold: "
-        },
-        {
-            type: "input",
-            name: "numCoinsSold",
-            message: "Enter amount of coins / tokens sold: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price altcoin was sold at (in BTC): "
-        },
-        {
-            type: "input",
-            name: "btcPrice",
-            message: "Enter Bitcoin price (sold): "
-        }
-    ]).then(function (response) {
-        var totalBTC = response.numCoinsSold * response.altPrice;
-        var exchFee = totalBTC * .001;
-        var actualBTC = totalBTC - exchFee;
-        var transferredBTC = actualBTC - .000014;
-        var divestment = transferredBTC * response.btcPrice;
-        var actualDivestment = divestment - (divestment * .04);
-        var exitPrice = actualDivestment / response.numCoinsSold;
-        var output = "* New exit trade ($USD) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
-            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC.toFixed(8) +
-            " BTC\nFinal divestment: $" + actualDivestment + " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" +
-            exitPrice.toFixed(6) + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
-            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
-        console.log(output);
-        fs.appendFile('./exits_USD.txt', output + "\n", function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
-    });
-};
-
-// "newEntryTradeBTC()" function
-// This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for their 
-// initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). This 
-// function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
-function newEntryTradeBTC() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "investmentBTC",
-            message: "Enter total investment (BTC): "
-        },
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin bought: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price of altcoin (in BTC): "
-        }
-    ]).then(function (response) {
-        var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
-        var exchFee = totalCoins * .001;
-        var actualCoins = totalCoins - (exchFee)
-        var entryPriceBTC = actualCoins / parseFloat(response.investmentBTC);
-        var output = "* New entry trade (BTC) *\nCryptocurrency: " + response.altName + "\nInitial investment: " + response.investmentBTC +
-            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " +
-            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
-        console.log(output);
-        fs.appendFile('./entries_BTC.txt', output + "\n", function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
-    });
-};
-
-// "newExitTradeBTC()" function
-// This function runs when the user wants to create a new exit (sell) trade strictly in BTC. By using inquirer, the user is prompted for the 
-// name of the altcoin they bought, the number of coins / tokens sold, and the price they sold the altcoin at (price is in BTC). This function 
-// assumes the user is trading the altcoin on Binance with a 0.1% trade fee when selling altcoins.
-function newExitTradeBTC() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin sold: "
-        },
-        {
-            type: "input",
-            name: "numCoinsSold",
-            message: "Enter amount of coins / tokens sold: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price altcoin was sold at (in BTC): "
-        }
-    ]).then(function (response) {
-        var divestment = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-        var exchFee = divestment * .001;
-        var actualDivestment = divestment - exchFee;
-        var exitPriceBTC = actualDivestment / response.numCoinsSold;
-        var output = "* New exit trade (BTC) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
-            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nFinal divestment: " + actualDivestment.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " +
-            exitPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
-        console.log(output);
-        fs.appendFile('./exits_BTC.txt', output + "\n", function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
-    });
-};
-
 // "newEntryTradeUSDT()" function
-// This function runs...
-// Needs completion
+// This function runs when the user wants to create a new entry (buy) trade using $USDT (Tether). By using inquirer, the user is prompted 
+// for their initial investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin 
+// they bought (altcoin price is in BTC). This function assumes the user is buying BTC / buying altcoin on Binance with a 0.1% purchase 
+// fee on the BTC buy and altcoin buy each.
 function newEntryTradeUSDT() {
     inquirer.prompt([
         {
@@ -379,9 +256,98 @@ function newEntryTradeUSDT() {
     });
 };
 
+// "newEntryTradeBTC()" function
+// This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for 
+// their initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). 
+// This function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
+function newEntryTradeBTC() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "investmentBTC",
+            message: "Enter total investment (BTC): "
+        },
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin bought: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price of altcoin (in BTC): "
+        }
+    ]).then(function (response) {
+        var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
+        var exchFee = totalCoins * .001;
+        var actualCoins = totalCoins - (exchFee)
+        var entryPriceBTC = actualCoins / parseFloat(response.investmentBTC);
+        var output = "* New entry trade (BTC) *\nCryptocurrency: " + response.altName + "\nInitial investment: " + response.investmentBTC +
+            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
+            response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " +
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        console.log(output);
+        fs.appendFile('./entries_BTC.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
+        askIfDone();
+    });
+};
+
+// "newExitTradeUSD()" function
+// This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
+// altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
+// they sold Bitcoin at in the end. This function assumes the user is selling altcoin / selling BTC on Binance with a 0.1% purchase on the 
+// altcoin sell and BTC sell each.
+function newExitTradeUSD() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin sold: "
+        },
+        {
+            type: "input",
+            name: "numCoinsSold",
+            message: "Enter amount of coins / tokens sold: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price altcoin was sold at (in BTC): "
+        },
+        {
+            type: "input",
+            name: "btcPrice",
+            message: "Enter Bitcoin price (sold): "
+        }
+    ]).then(function (response) {
+        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+        var exchFee = totalBTC * .001;
+        var actualBTC = totalBTC - exchFee;
+        var transferredBTC = actualBTC - .000014;
+        var divestment = transferredBTC * parseFloat(response.btcPrice);
+        var actualDivestment = divestment - (divestment * .04);
+        var exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
+        var output = "* New exit trade ($USD) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
+            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC.toFixed(8) +
+            " BTC\nFinal divestment: $" + actualDivestment + " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" +
+            exitPrice.toFixed(6) + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        console.log(output);
+        fs.appendFile('./exits_USD.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
+        askIfDone();
+    });
+};
+
 // "newExitTradeUSDT()" function
-// This function runs...
-// Needs completion
+// This function runs when the user wants to create a new exit (sell) trade back to $USDT (Tether). By using inquirer, the user is prompted 
+// for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
+// BTC), then the price they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade 
+// fee, charged a 0.000014 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
 function newExitTradeUSDT() {
     inquirer.prompt([
         {
@@ -405,11 +371,58 @@ function newExitTradeUSDT() {
             message: "Enter Bitcoin price (sold): "
         }
     ]).then(function (response) {
-        // Needs completion
-
-        var output = "";
+        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+        var exchFee = totalBTC * .001;
+        var actualBTC = totalBTC - exchFee;
+        var totalUSDT = actualBTC * parseFloat(response.btcPrice);
+        var exchFee2 = totalUSDT * .001;
+        var actualUSDT = totalUSDT - exchFee2;
+        var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
+        var output = "* New exit trade ($USDT) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
+            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + actualBTC.toFixed(8) +
+            " BTC\nTotal $USDT: $" + actualUSDT.toFixed(6) + " (factoring in Binance fees)\nExit price: $" +
+            exitPriceUSDT.toFixed(6) + " (factoring in Binance fees)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./exits_USDT.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
+        askIfDone();
+    });
+};
+
+// "newExitTradeBTC()" function
+// This function runs when the user wants to create a new exit (sell) trade strictly in BTC. By using inquirer, the user is prompted for 
+// the name of the altcoin they bought, the number of coins / tokens sold, and the price they sold the altcoin at (price is in BTC). This 
+// function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when selling altcoins.
+function newExitTradeBTC() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin sold: "
+        },
+        {
+            type: "input",
+            name: "numCoinsSold",
+            message: "Enter amount of coins / tokens sold: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price altcoin was sold at (in BTC): "
+        }
+    ]).then(function (response) {
+        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+        var exchFee = totalBTC * .001;
+        var actualBTC = totalBTC - exchFee;
+        var exitPriceBTC = actualBTC / parseFloat(response.numCoinsSold);
+        var output = "* New exit trade (BTC) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
+            " BTC\nTotal BTC: " + actualBTC.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " + exitPriceBTC.toFixed(8) +
+            " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        console.log(output);
+        fs.appendFile('./exits_BTC.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -513,11 +526,11 @@ function calculateROI() {
             message: "Enter final divesment (in BTC): "
         }
     ]).then(function (response) {
-        var netChangeUSD = response.divestmentUSD - response.investmentUSD;
-        var roiDecimalUSD = response.divestmentUSD / response.investmentUSD;
+        var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+        var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
         var roiPercentUSD = (roiDecimalUSD - 1) * 100;
-        var netChangeBTC = response.divestmentBTC - response.investmentBTC;
-        var roiDecimalBTC = response.divestmentBTC / response.investmentBTC;
+        var netChangeBTC = parseFloat(response.divestmentBTC) - parseFloat(response.investmentBTC);
+        var roiDecimalBTC = parseFloat(response.divestmentBTC) / parseFloat(response.investmentBTC);
         var roiPercentBTC = (roiDecimalBTC - 1) * 100;
         var output = "";
         if (netChangeUSD >= 0 && netChangeBTC >= 0) {
@@ -647,4 +660,3 @@ function getPercentChangeBTC() {
 
 // Call "beginApp()" to begin app
 beginApp();
-
