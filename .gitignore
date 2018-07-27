@@ -1,5 +1,9 @@
 /node_modules
-/entries.txt
-/exits.txt
-/avg_entries.txt
+/entries_BTC.txt
+/entries_USD.txt
+/entries_USDT.txt
+/exits_BTC.txt
+/exits_USD.txt
+/exits_USDT.txt
+/avg_entries_USD.txt
 /roi.txt
