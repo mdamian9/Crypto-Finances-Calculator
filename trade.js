@@ -3,6 +3,7 @@ var inquirer = require("inquirer");
 var moment = require("moment");
 var fs = require("fs");
 
+// "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app
 function beginApp() {
     inquirer.prompt([
@@ -10,32 +11,18 @@ function beginApp() {
             type: "list",
             name: "command",
             message: "What would you like to do?",
-            choices: ["Make new entry trade ($USD)", "Make new exit trade ($USD)", "Make new entry trade (BTC)", "Make new exit trade (BTC)",
-                "Make new entry trade (Tether)", "Make new exit trade (Tether)", "Calculate average entry price",
+            choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
                 "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
                 "Get percent change ($USD)", "Get percent change (BTC)"]
         }
     ]).then(function (response) {
         var userCommand = response.command;
-        console.log(userCommand);
         switch (userCommand) {
-            case "Make new entry trade ($USD)":
-                newEntryTradeUSD();
+            case "Make new entry trade":
+                newEntryPrompt();
                 break;
-            case "Make new exit trade ($USD)":
-                newExitTradeUSD();
-                break;
-            case "Make new entry trade (BTC)":
-                newEntryTradeBTC();
-                break;
-            case "Make new exit trade (BTC)":
-                newExitTradeBTC();
-                break;
-            case "Make new entry trade (Tether)":
-                newEntryTradeUSDT();
-                break;
-            case "Make new exit trade (Tether)":
-                newExitTradeUSDT();
+            case "Make new exit trade":
+                newExitPrompt();
                 break;
             case "Calculate average entry price":
                 calculateAvgEntryPrice();
@@ -54,6 +41,60 @@ function beginApp() {
                 break;
             case "Get percent change (BTC)":
                 getPercentChangeBTC();
+                break;
+        };
+    });
+};
+
+// "newEntryPrompt()" function
+// This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
+// trade they would like to make (USD, BTC, or Tether $USDT), and calls the appropriate function based on the user's response.
+function newEntryPrompt() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "command",
+            message: "Choose trade:",
+            choices: ["New entry trade ($USD)", "New entry trade (BTC)", "New entry trade ($USDT)"]
+        }
+    ]).then(function (response) {
+        var userCommand = response.command;
+        switch (userCommand) {
+            case "New entry trade ($USD)":
+                newEntryTradeUSD();
+                break;
+            case "New entry trade (BTC)":
+                newEntryTradeBTC();
+                break;
+            case "New entry trade ($USDT)":
+                newEntryTradeUSDT();
+                break;
+        };
+    });
+};
+
+// "newExitPrompt()" function
+// This function is called when the user chooses to make a new exit trade in the first prompt. It asks the user to choose what type of exit 
+// trade they would like to make (USD, BTC, or Tether $USDT), and calls the appropriate function based on the user's response.
+function newExitPrompt() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "command",
+            message: "Choose trade:",
+            choices: ["New exit trade ($USD)", "New exit trade (BTC)", "New exit trade ($USDT)"]
+        }
+    ]).then(function (response) {
+        var userCommand = response.command;
+        switch (userCommand) {
+            case "New exit trade ($USD)":
+                newExitTradeUSD();
+                break;
+            case "New exit trade (BTC)":
+                newExitTradeBTC();
+                break;
+            case "New exit trade ($USDT)":
+                newExitTradeUSDT();
                 break;
         };
     });
