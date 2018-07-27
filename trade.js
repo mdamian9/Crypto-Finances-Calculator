@@ -122,7 +122,7 @@ function newEntryTradeUSD() {
             " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
-        fs.appendFile('./entries.txt', output + "\n", function (error) {
+        fs.appendFile('./entries_USD.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -171,7 +171,7 @@ function newExitTradeUSD() {
             exitPrice.toFixed(6) + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
-        fs.appendFile('./exits.txt', output + "\n", function (error) {
+        fs.appendFile('./exits_USD.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -209,7 +209,7 @@ function newEntryTradeBTC() {
             response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
-        fs.appendFile('./exits.txt', output + "\n", function (error) {
+        fs.appendFile('./entries_BTC.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -245,6 +245,9 @@ function newExitTradeBTC() {
             " BTC\nFinal divestment: " + actualDivestment.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " +
             exitPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
+        fs.appendFile('./exits_BTC.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
         askIfDone();
     });
 };
@@ -276,6 +279,11 @@ function newEntryTradeUSDT() {
     ]).then(function (response) {
         // Needs completion
 
+        var output = "";
+        console.log(output);
+        fs.appendFile('./entries_USDT.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
         askIfDone();
     });
 };
@@ -307,6 +315,11 @@ function newExitTradeUSDT() {
     ]).then(function (response) {
         // Needs completion
 
+        var output = "";
+        console.log(output);
+        fs.appendFile('./exits_USDT.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
         askIfDone();
     });
 };
@@ -369,7 +382,7 @@ function calculateAvgEntryPrice() {
             "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" +
             avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
         console.log(output);
-        fs.appendFile('./avg_entries.txt', output + "\n", function (error) {
+        fs.appendFile('./avg_entries_USD.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
