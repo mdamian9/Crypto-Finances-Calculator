@@ -4,7 +4,7 @@ var moment = require("moment");
 var fs = require("fs");
 
 // "beginApp()" function
-// This function holds the main prompt: which asks the user for command to start app
+// This function holds the main prompt: which asks the user for command to start app.
 function beginApp() {
     inquirer.prompt([
         {
@@ -12,8 +12,7 @@ function beginApp() {
             name: "command",
             message: "What would you like to do?",
             choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
-                "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
-                "Get percent change ($USD)", "Get percent change (BTC)"]
+                "Full ROI calculation (return of investment)", "Get target price ($)", "Get percent change (%)"]
         }
     ]).then(function (response) {
         var userCommand = response.command;
@@ -30,17 +29,11 @@ function beginApp() {
             case "Full ROI calculation (return of investment)":
                 calculateROI();
                 break;
-            case "Get target price ($USD)":
-                getTargetPriceUSD();
+            case "Get target price ($)":
+                targetPricePrompt();
                 break;
-            case "Get target price (BTC)":
-                getTargetPriceBTC();
-                break;
-            case "Get percent change ($USD)":
-                getPercentChangeUSD();
-                break;
-            case "Get percent change (BTC)":
-                getPercentChangeBTC();
+            case "Get percent change (%)":
+                percentChangePrompt();
                 break;
         };
     });
@@ -100,8 +93,52 @@ function newExitPrompt() {
     });
 };
 
+// "targetPricePrompt()" function
+function targetPricePrompt() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "command",
+            message: "Choose target:",
+            choices: ["Get target price ($USD)", "Get target price (BTC)"]
+        }
+    ]).then(function (response) {
+        var userCommand = response.command;
+        switch (userCommand) {
+            case "Get target price ($USD)":
+                getTargetPriceUSD();
+                break;
+            case "Get target price (BTC)":
+                getTargetPriceBTC();
+                break;
+        };
+    });
+};
+
+// "percentChangePrompt()" function
+function percentChangePrompt() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "command",
+            message: "Choose currency:",
+            choices: ["Get percent change ($USD)", "Get percent change (BTC)"]
+        }
+    ]).then(function (response) {
+        var userCommand = response.command;
+        switch (userCommand) {
+            case "Get percent change ($USD)":
+                getPercentChangeUSD();
+                break;
+            case "Get percent change (BTC)":
+                getPercentChangeBTC();
+                break;
+        };
+    });
+};
+
 // "askIfDone()" function
-// This function asks the user if they are done using the app
+// This function asks the user if they are done using the app.
 function askIfDone() {
     inquirer.prompt([
         {
@@ -258,7 +295,9 @@ function newEntryTradeBTC() {
 };
 
 // "newExitTradeBTC()" function
-// This function runs...
+// This function runs when the user wants to create a new exit (sell) trade strictly in BTC. By using inquirer, the user is prompted for the 
+// name of the altcoin they bought, the number of coins / tokens sold, and the price they sold the altcoin at (price is in BTC). This function 
+// assumes the user is trading the altcoin on Binance with a 0.1% trade fee when selling altcoins.
 function newExitTradeBTC() {
     inquirer.prompt([
         {
@@ -295,6 +334,7 @@ function newExitTradeBTC() {
 
 // "newEntryTradeUSDT()" function
 // This function runs...
+// Needs completion
 function newEntryTradeUSDT() {
     inquirer.prompt([
         {
@@ -331,6 +371,7 @@ function newEntryTradeUSDT() {
 
 // "newExitTradeUSDT()" function
 // This function runs...
+// Needs completion
 function newExitTradeUSDT() {
     inquirer.prompt([
         {
@@ -495,7 +536,7 @@ function calculateROI() {
 };
 
 // "getTargetPriceUSD()" function
-// This function runs whenever a user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
+// This function runs whenever the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
 // The user is asked to enter an entry price in $USD and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceUSD() {
     inquirer.prompt([
@@ -515,13 +556,13 @@ function getTargetPriceUSD() {
         var convertedPercentChange = targetPercentChange * .01;
         var targetPriceUSD = entryPriceUSD + (entryPriceUSD * convertedPercentChange);
         console.log("Entry price: $" + response.entryPriceUSD + "\nPercent gain looking for: " + response.targetPercentChange +
-            "%\nTarget sell price: $" + targetPriceUSD + "\n");
+            "%\nTarget sell price: $" + targetPriceUSD.toFixed(6) + "\n");
         askIfDone();
     });
 };
 
 // "getTargetPriceBTC()" function
-// This function runs whenever a user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
+// This function runs whenever the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage gain. 
 // The user is asked to enter an entry price in BTC and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceBTC() {
     inquirer.prompt([
@@ -547,7 +588,7 @@ function getTargetPriceBTC() {
 };
 
 // "getPercentChangeUSD()" function
-// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
+// This function runs whenever the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
 // price and an exit price in $USD to obtain the change in percentage.
 function getPercentChangeUSD() {
     inquirer.prompt([
@@ -562,16 +603,16 @@ function getPercentChangeUSD() {
             message: "Enter exit price (in $USD):"
         }
     ]).then(function (response) {
-        var decimalChangeUSD = response.exitPriceUSD / response.entryPriceUSD;
+        var decimalChangeUSD = parseFloat(response.exitPriceUSD) / parseFloat(response.entryPriceUSD);
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
         console.log("Entry price: $" + response.entryPriceUSD + "\nExit price: $" + response.exitPriceUSD + "\nDecimal change: " +
-            decimalChangeUSD + "x\nPercent change: " + percentChangeUSD + "%");
+            decimalChangeUSD + "x\nPercent change: " + percentChangeUSD.toFixed(2) + "%");
         askIfDone();
     });
 };
 
 // "getPercentChangeBTC()" function
-// This function runs whenever a user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
+// This function runs whenever the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an entry 
 // price and an exit price in BTC to obtain the change in percentage.
 function getPercentChangeBTC() {
     inquirer.prompt([
@@ -586,10 +627,10 @@ function getPercentChangeBTC() {
             message: "Enter exit price (in BTC):"
         }
     ]).then(function (response) {
-        var decimalChangeBTC = response.exitPriceBTC / response.entryPriceBTC;
+        var decimalChangeBTC = parseFloat(response.exitPriceBTC) / parseFloat(response.entryPriceBTC);
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
         console.log("Entry price: " + response.entryPriceBTC + " BTC\nExit price: " + response.exitPriceBTC + " BTC\nDecimal change: " +
-            decimalChangeBTC + "x\nPercent change: " + percentChangeBTC + "%");
+            decimalChangeBTC + "x\nPercent change: " + percentChangeBTC.toFixed(2) + "%");
         askIfDone();
     });
 };
