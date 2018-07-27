@@ -192,7 +192,7 @@ function newEntryTradeUSD() {
         var actualCoins = totalCoins - exchFee;
         var entryPriceUSD = parseFloat(response.investment) / actualCoins;
         var entryPriceBTC = transferredBTC / actualCoins;
-        var output = "* New entry trade *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
+        var output = "* New entry trade ($USD) *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
             "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC.toFixed(8)
             + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
             response.altName + "\nEntry price ($USD): $" + entryPriceUSD.toFixed(6) +
@@ -242,7 +242,7 @@ function newExitTradeUSD() {
         var divestment = transferredBTC * response.btcPrice;
         var actualDivestment = divestment - (divestment * .04);
         var exitPrice = actualDivestment / response.numCoinsSold;
-        var output = "* New exit trade *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+        var output = "* New exit trade ($USD) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
             response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
             " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC.toFixed(8) +
             " BTC\nFinal divestment: $" + actualDivestment + " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" +
@@ -320,7 +320,7 @@ function newExitTradeBTC() {
         var exchFee = divestment * .001;
         var actualDivestment = divestment - exchFee;
         var exitPriceBTC = actualDivestment / response.numCoinsSold;
-        var output = "* New exit trade *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+        var output = "* New exit trade (BTC) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
             response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
             " BTC\nFinal divestment: " + actualDivestment.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " +
             exitPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
@@ -358,9 +358,19 @@ function newEntryTradeUSDT() {
             message: "Enter price of altcoin (in BTC): "
         }
     ]).then(function (response) {
-        // Needs completion
-
-        var output = "";
+        var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
+        var actualBTC = totalBTC - (totalBTC * .001);
+        var totalCoins = actualBTC / parseFloat(response.altPrice);
+        var exchFee = totalCoins * .001;
+        var actualCoins = totalCoins - exchFee;
+        var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
+        var entryPriceBTC = actualBTC / actualCoins;
+        var output = "* New entry trade ($USDT) *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
+            " (Tether)\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " +
+            actualBTC.toFixed(8) + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " +
+            actualCoins + " " + response.altName + "\nEntry price ($USDT): $" + entryPriceUSDT.toFixed(6) +
+            " (factoring in Binance fees)\nEntry price (BTC): " + entryPriceBTC.toFixed(8) +
+            " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./entries_USDT.txt', output + "\n", function (error) {
             if (error) throw error;
