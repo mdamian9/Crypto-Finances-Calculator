@@ -201,9 +201,12 @@ function newEntryBTC() {
         }
     ]).then(function (response) {
         var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
+        var exchFee = totalCoins * .001;
+        var actualCoins = totalCoins - (exchFee)
+        var entryPriceBTC = actualCoins / parseFloat(response.investmentBTC);
         var output = "* New entry trade (BTC) *\nCryptocurrency: " + response.altName + "\nInitial investment: " + response.investmentBTC +
-            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + totalCoins + " " +
-            response.altName + "\nEntry price (BTC): " + response.altPrice + " BTC (factoring in Binance fee)\nDate logged: " +
+            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
+            response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " +
             moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
         console.log(output);
         fs.appendFile('./exits.txt', output + "\n", function (error) {
@@ -218,11 +221,30 @@ function newEntryBTC() {
 function newExitBTC() {
     inquirer.prompt([
         {
-
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin sold: "
+        },
+        {
+            type: "input",
+            name: "numCoinsSold",
+            message: "Enter amount of coins / tokens sold: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price altcoin was sold at (in BTC): "
         }
     ]).then(function (response) {
-        // Needs completion
-
+        var divestment = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+        var exchFee = divestment * .001;
+        var actualDivestment = divestment - exchFee;
+        var exitPriceBTC = actualDivestment / response.numCoinsSold;
+        var output = "* New exit trade *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
+            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
+            " BTC\nFinal divestment: " + actualDivestment.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " +
+            exitPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        console.log(output);
         askIfDone();
     });
 };
