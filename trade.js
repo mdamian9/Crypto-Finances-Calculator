@@ -82,7 +82,7 @@ function askIfDone() {
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
 // (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a 0.000014 BTC transfer fee 
-// to altcoin exchange, and a 0.1% purchase fee at the altcoin exchange when buying an altcoin.
+// to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
 function newEntryTrade() {
     inquirer.prompt([
         {
@@ -132,8 +132,8 @@ function newEntryTrade() {
 // "newExitTrade()" function
 // This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
 // altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
-// they sold Bitcoin at in the end. This function assumes the user is selling altcoin on altcoin exchange with a 0.1% trade fee, charged a 
-// 0.000014 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
+// they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade fee, charged a 0.000014 BTC 
+// transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
 function newExitTrade() {
     inquirer.prompt([
         {
@@ -179,15 +179,36 @@ function newExitTrade() {
 };
 
 // "newEntryBTC()" function
-// This function runs...
+// This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for their 
+// initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). This 
+// function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
 function newEntryBTC() {
     inquirer.prompt([
         {
-
+            type: "input",
+            name: "investmentBTC",
+            message: "Enter total investment (BTC): "
+        },
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin bought: "
+        },
+        {
+            type: "input",
+            name: "altPrice",
+            message: "Enter price of altcoin (in BTC): "
         }
     ]).then(function (response) {
-        // Needs completion
-
+        var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
+        var output = "* New entry trade (BTC) *\nCryptocurrency: " + response.altName + "\nInitial investment: " + response.investmentBTC +
+            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + totalCoins + " " +
+            response.altName + "\nEntry price (BTC): " + response.altPrice + " BTC (factoring in Binance fee)\nDate logged: " +
+            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        console.log(output);
+        fs.appendFile('./exits.txt', output + "\n", function (error) {
+            if (error) throw error;
+        });
         askIfDone();
     });
 };
