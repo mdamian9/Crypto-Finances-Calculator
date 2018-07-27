@@ -20,22 +20,22 @@ function beginApp() {
         console.log(userCommand);
         switch (userCommand) {
             case "Make new entry trade":
-                newEntryTrade();
+                newEntryTradeUSD();
                 break;
             case "Make new exit trade":
-                newExitTrade();
+                newExitTradeUSD();
                 break;
             case "Make new entry trade (BTC)":
-                newEntryBTC();
+                newEntryTradeBTC();
                 break;
             case "Make new exit trade (BTC)":
-                newExitBTC();
+                newExitTradeBTC();
                 break;
             case "Make new entry trade (Tether)":
-                newEntryTether();
+                newEntryTradeUSDT();
                 break;
             case "Make new exit trade (Tether)":
-                newExitTether();
+                newExitTradeUSDT();
                 break;
             case "Calculate average entry price":
                 calculateAvgEntryPrice();
@@ -78,12 +78,12 @@ function askIfDone() {
     });
 };
 
-// "newEntryTrade()" function
+// "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
 // (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a 0.000014 BTC transfer fee 
 // to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
-function newEntryTrade() {
+function newEntryTradeUSD() {
     inquirer.prompt([
         {
             type: "input",
@@ -129,12 +129,12 @@ function newEntryTrade() {
     });
 };
 
-// "newExitTrade()" function
+// "newExitTradeUSD()" function
 // This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
 // altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
 // they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade fee, charged a 0.000014 BTC 
 // transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
-function newExitTrade() {
+function newExitTradeUSD() {
     inquirer.prompt([
         {
             type: "input",
@@ -178,11 +178,11 @@ function newExitTrade() {
     });
 };
 
-// "newEntryBTC()" function
+// "newEntryTradeBTC()" function
 // This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for their 
 // initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). This 
 // function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
-function newEntryBTC() {
+function newEntryTradeBTC() {
     inquirer.prompt([
         {
             type: "input",
@@ -216,9 +216,9 @@ function newEntryBTC() {
     });
 };
 
-// "newExitBTC()" function
+// "newExitTradeBTC()" function
 // This function runs...
-function newExitBTC() {
+function newExitTradeBTC() {
     inquirer.prompt([
         {
             type: "input",
@@ -249,9 +249,9 @@ function newExitBTC() {
     });
 };
 
-// "newEntryTether()" function
+// "newEntryTradeUSDT()" function
 // This function runs...
-function newEntryTether() {
+function newEntryTradeUSDT() {
     inquirer.prompt([
         {
             type: "input",
@@ -280,9 +280,9 @@ function newEntryTether() {
     });
 };
 
-// "newExitTether()" function
+// "newExitTradeUSDT()" function
 // This function runs...
-function newExitTether() {
+function newExitTradeUSDT() {
     inquirer.prompt([
         {
             type: "input",
