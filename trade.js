@@ -10,7 +10,7 @@ function beginApp() {
             type: "list",
             name: "command",
             message: "What would you like to do?",
-            choices: ["Make new entry trade", "Make new exit trade", "Make new entry trade (BTC)", "Make new exit trade (BTC)",
+            choices: ["Make new entry trade ($USD)", "Make new exit trade ($USD)", "Make new entry trade (BTC)", "Make new exit trade (BTC)",
                 "Make new entry trade (Tether)", "Make new exit trade (Tether)", "Calculate average entry price",
                 "Full ROI calculation (return of investment)", "Get target price ($USD)", "Get target price (BTC)",
                 "Get percent change ($USD)", "Get percent change (BTC)"]
@@ -19,10 +19,10 @@ function beginApp() {
         var userCommand = response.command;
         console.log(userCommand);
         switch (userCommand) {
-            case "Make new entry trade":
+            case "Make new entry trade ($USD)":
                 newEntryTradeUSD();
                 break;
-            case "Make new exit trade":
+            case "Make new exit trade ($USD)":
                 newExitTradeUSD();
                 break;
             case "Make new entry trade (BTC)":
