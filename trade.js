@@ -24,7 +24,7 @@ function beginApp() {
                 newExitPrompt();
                 break;
             case "Calculate average entry price":
-                calculateAvgEntryPrice();
+                calcAvgEntryPrice();
                 break;
             case "Full ROI calculation (return of investment)":
                 calculateROI();
@@ -93,7 +93,18 @@ function newExitPrompt() {
     });
 };
 
+// "calcAvgEntryPrompt()"
+// This function...
+function calcAvgEntryPrompt() {
+    inquirer.prompt([
+
+    ]).then(function (response) {
+
+    });
+};
+
 // "targetPricePrompt()" function
+// This function...
 function targetPricePrompt() {
     inquirer.prompt([
         {
@@ -116,6 +127,7 @@ function targetPricePrompt() {
 };
 
 // "percentChangePrompt()" function
+// This function...
 function percentChangePrompt() {
     inquirer.prompt([
         {
@@ -429,11 +441,11 @@ function newExitTradeBTC() {
     });
 };
 
-// "calculateAvgEntryPrice()" function
+// "calcAvgEntryPrice()" function
 // This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
 // for their entry prices in $USD separated by a comma, entry prices in BTC separated by a comma, and the amount of altcoins / tokens obtained 
 // on each investment separated by a comma. It then performs a weighted average calculation to find the weighted average.
-function calculateAvgEntryPrice() {
+function calcAvgEntryPrice() {
     inquirer.prompt([
         {
             type: "input",
@@ -487,10 +499,21 @@ function calculateAvgEntryPrice() {
             "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" +
             avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
         console.log(output);
-        fs.appendFile('./avg_entries_USD.txt', output + "\n", function (error) {
+        fs.appendFile('./avg_entries.txt', output + "\n", function (error) {
             if (error) throw error;
         });
         askIfDone();
+    });
+};
+
+// "calcAvgEntryPriceBTC()" function
+function calcAvgEntryPriceBTC() {
+    inquirer.prompt([
+        {
+
+        }
+    ]).then(function (response) {
+
     });
 };
 
@@ -660,3 +683,12 @@ function getPercentChangeBTC() {
 
 // Call "beginApp()" to begin app
 beginApp();
+
+// To do:
+// 1. Complete "calcAvgEntryPriceBTC()" function
+// 2. Complete "calcAvgEntryPrompt()" function
+// 3. Rearrange commands to incorporate new prompt
+// 4. Make small adjustments to getPercentChange functions - show decimal change to 2 decimals
+// 5. newExitTradeBTC - console.log "Total BTC obtained: ?" or "Total BTC divestment: ?"
+// 6. Create database to make calculating avg entry prices easier?
+// 7. Double check for comments
