@@ -5,5 +5,6 @@
 /exits_BTC.txt
 /exits_USD.txt
 /exits_USDT.txt
-/avg_entries.txt
+/avg_entries_USD.txt
+/avg_entries_BTC.txt
 /roi.txt

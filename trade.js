@@ -522,11 +522,11 @@ function calcAvgEntryPrice() {
                 "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" +
                 avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
             console.log(output);
-            fs.appendFile('./avg_entries.txt', output + "\n", function (error) {
+            fs.appendFile('./avg_entries_USD.txt', output + "\n", function (error) {
                 if (error) throw error;
             });
             askIfDone();
-        }
+        };
     });
 };
 
@@ -578,7 +578,10 @@ function calcAvgEntryPriceBTC() {
                 " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName + "\nAverage entry price (BTC): " +
                 avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
             console.log(output);
-        }
+            fs.appendFile('./avg_entries_BTC.txt', output + "\n", function (error) {
+                if (error) throw error;
+            });
+        };
     });
 };
 
@@ -637,7 +640,7 @@ function calculateROI() {
                 "x ROI\nReturn of investment in $USD (percent): " + roiPercentUSD + "% ROI\nReturn of investment in BTC (decimal): " +
                 roiDecimalBTC + "x ROI\nReturn of investment in BTC (percent): " + roiPercentBTC + "% ROI\nTotal $USD loss: $" +
                 netChangeUSD + "\nTotal BTC loss: " + netChangeBTC + " BTC\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
-        }
+        };
         console.log(output);
         fs.appendFile('./roi.txt', output + "\n", function (error) {
             if (error) throw error;
