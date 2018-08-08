@@ -196,22 +196,58 @@ function newEntryTradeUSD() {
         {
             type: "input",
             name: "investment",
-            message: "Enter total investment ($USD): "
+            message: "Enter total investment ($USD): ",
+            validate: function validateInvestment(investment) {
+                var flag = true;
+                var values = /^[\d.]+$/;
+                console.log("\n" + values.test(investment));
+                if (!values.test(investment)) {
+                    flag = "Please enter valid input.";
+                }
+                return flag;
+            }
         },
         {
             type: "input",
             name: "btcPrice",
-            message: "Enter Bitcoin price (bought): "
+            message: "Enter Bitcoin price (bought): ",
+            validate: function validateBtcPrice(btcPrice) {
+                var flag = true;
+                var values = /^[\d.]+$/;
+                console.log("\n" + values.test(btcPrice));
+                if (!values.test(btcPrice)) {
+                    flag = "Please enter valid input.";
+                }
+                return flag;
+            }
         },
         {
             type: "input",
             name: "altName",
-            message: "Enter name of altcoin bought: "
+            message: "Enter name of altcoin bought: ",
+            validate: function validateAltName(altName) {
+                var flag = true;
+                var values = /^[\a-zA-z]+$/;
+                console.log("\n" + values.test(altName));
+                if (!values.test(altName)) {
+                    flag = "Please enter valid input.";
+                }
+                return flag;
+            }
         },
         {
             type: "input",
             name: "altPrice",
-            message: "Enter price of altcoin (in BTC): "
+            message: "Enter price of altcoin (in BTC): ",
+            validate: function validateAltPrice(altPrice) {
+                var flag = true;
+                var values = /^[\d.]+$/;
+                console.log("\n" + values.test(altPrice));
+                if (!values.test(altPrice)) {
+                    flag = "Please enter valid input.";
+                }
+                return flag;
+            }
         }
     ]).then(function (response) {
         var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
@@ -754,3 +790,4 @@ beginApp();
 
 // To do:
 // 1. Create database to make calculating avg entry prices easier?
+// 2. Add validation to all functions, make sure to check for input errors
