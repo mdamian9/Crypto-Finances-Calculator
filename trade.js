@@ -39,6 +39,31 @@ function beginApp() {
     });
 };
 
+// // "validatePrice()" function
+// // This function...
+// function validateNumber(number) {
+//     var flag = true;
+//     var values = /^[\d.]+$/;
+//     console.log("\n" + values.test(number));
+//     if (!values.test(number)) {
+//         flag = "Please enter valid input.";
+//     };
+//     return flag;
+// };
+
+// // "validateName()" function
+
+// // This function...
+// function validateName(name) {
+//     var flag = true;
+//     var values = /^[\a-zA-z]+$/;
+//     console.log("\n" + values.test(name));
+//     if (!values.test(name)) {
+//         flag = "Please enter valid input.";
+//     };
+//     return flag;
+// };
+
 // "newEntryPrompt()" function
 // This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
 // trade they would like to make ($USD, $USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
@@ -189,7 +214,7 @@ function askIfDone() {
 // "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
-// (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a 0.000014 BTC transfer fee 
+// (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a 0.00000708 BTC transfer fee 
 // to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
 function newEntryTradeUSD() {
     inquirer.prompt([
@@ -197,13 +222,13 @@ function newEntryTradeUSD() {
             type: "input",
             name: "investment",
             message: "Enter total investment ($USD): ",
+            // validate: validateNumber(investment)
             validate: function validateInvestment(investment) {
                 var flag = true;
                 var values = /^[\d.]+$/;
-                console.log("\n" + values.test(investment));
                 if (!values.test(investment)) {
                     flag = "Please enter valid input.";
-                }
+                };
                 return flag;
             }
         },
@@ -211,13 +236,13 @@ function newEntryTradeUSD() {
             type: "input",
             name: "btcPrice",
             message: "Enter Bitcoin price (bought): ",
+            // validate: validateNumber(btcPrice)
             validate: function validateBtcPrice(btcPrice) {
                 var flag = true;
                 var values = /^[\d.]+$/;
-                console.log("\n" + values.test(btcPrice));
                 if (!values.test(btcPrice)) {
                     flag = "Please enter valid input.";
-                }
+                };
                 return flag;
             }
         },
@@ -225,13 +250,13 @@ function newEntryTradeUSD() {
             type: "input",
             name: "altName",
             message: "Enter name of altcoin bought: ",
+            // validate: validateName(altName)
             validate: function validateAltName(altName) {
                 var flag = true;
                 var values = /^[\a-zA-z]+$/;
-                console.log("\n" + values.test(altName));
                 if (!values.test(altName)) {
                     flag = "Please enter valid input.";
-                }
+                };
                 return flag;
             }
         },
@@ -239,32 +264,35 @@ function newEntryTradeUSD() {
             type: "input",
             name: "altPrice",
             message: "Enter price of altcoin (in BTC): ",
+            // validate: validateNumber(altPrice)
             validate: function validateAltPrice(altPrice) {
                 var flag = true;
                 var values = /^[\d.]+$/;
-                console.log("\n" + values.test(altPrice));
                 if (!values.test(altPrice)) {
                     flag = "Please enter valid input.";
-                }
+                };
                 return flag;
             }
         }
     ]).then(function (response) {
         var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
         var actualBTC = totalBTC - (totalBTC * .04);
-        var transferredBTC = actualBTC - 0.000014;
+        var transferredBTC = actualBTC - 0.00000708;
         var totalCoins = transferredBTC / parseFloat(response.altPrice);
         var exchFee = totalCoins * .001;
         var actualCoins = totalCoins - exchFee;
         var entryPriceUSD = parseFloat(response.investment) / actualCoins;
         var entryPriceBTC = transferredBTC / actualCoins;
-        var output = "* New entry trade ($USD) *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-            "\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " + transferredBTC.toFixed(8)
-            + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price ($USD): $" + entryPriceUSD.toFixed(6) +
-            " (factoring in Coinbase fee, transfer fee and Binance fee)\nEntry price (BTC): " + entryPriceBTC.toFixed(8) +
-            " BTC (factoring in Coinbase fee, transfer fee and Binance fee)\nDate logged: " +
-            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var output = `* New entry trade ($USD) *
+        Cryptocurrency: ${response.altName}
+        Initial investment: $${response.investment}
+        Bought Bitcoin at: $${response.btcPrice} per BTC
+        Total BTC available (after all fees): ${transferredBTC.toFixed(8)} BTC
+        Bought ${response.altName} at: ${response.altPrice} BTC
+        Total coins bought: ${actualCoins} ${response.altName}
+        Entry price ($USD): $${entryPriceUSD.toFixed(6)} (factoring in Coinbase fee, transfer fee and Binance fee)
+        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
         fs.appendFile('./entries_USD.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -413,7 +441,7 @@ function newExitTradeUSD() {
 // This function runs when the user wants to create a new exit (sell) trade back to $USDT (Tether). By using inquirer, the user is prompted 
 // for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
 // BTC), then the price they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade 
-// fee, charged a 0.000014 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
+// fee, charged a 0.00000708 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
 function newExitTradeUSDT() {
     inquirer.prompt([
         {
@@ -790,4 +818,5 @@ beginApp();
 
 // To do:
 // 1. Create database to make calculating avg entry prices easier?
-// 2. Add validation to all functions, make sure to check for input errors
+// 2. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
+// 3. Change str concatenation - use template literals
