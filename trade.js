@@ -52,7 +52,6 @@ function beginApp() {
 // };
 
 // // "validateName()" function
-
 // // This function...
 // function validateName(name) {
 //     var flag = true;
@@ -135,7 +134,7 @@ function calcAvgEntryPrompt() {
         var userCommand = response.command;
         switch (userCommand) {
             case "Average entry price ($USD)":
-                calcAvgEntryPrice();
+                calcAvgEntryPriceUSD();
                 break;
             case "Average entry price (BTC)":
                 calcAvgEntryPriceBTC();
@@ -214,7 +213,7 @@ function askIfDone() {
 // "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
-// (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a 0.00000708 BTC transfer fee 
+// (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a .00000700 BTC transfer fee 
 // to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
 function newEntryTradeUSD() {
     inquirer.prompt([
@@ -277,7 +276,7 @@ function newEntryTradeUSD() {
     ]).then(function (response) {
         var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
         var actualBTC = totalBTC - (totalBTC * .04);
-        var transferredBTC = actualBTC - 0.00000708;
+        var transferredBTC = actualBTC - .00000700;
         var totalCoins = transferredBTC / parseFloat(response.altPrice);
         var exchFee = totalCoins * .001;
         var actualCoins = totalCoins - exchFee;
@@ -294,7 +293,7 @@ function newEntryTradeUSD() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
-        fs.appendFile('./entries_USD.txt', output + "\n", function (error) {
+        fs.appendFile('./entries_USD.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -347,7 +346,7 @@ function newEntryTradeUSDT() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./entries_USDT.txt', output + "\n", function (error) {
+        fs.appendFile('./entries_USDT.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -388,7 +387,7 @@ function newEntryTradeBTC() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./entries_BTC.txt', output + "\n", function (error) {
+        fs.appendFile('./entries_BTC.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -426,18 +425,21 @@ function newExitTradeUSD() {
         var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
         var exchFee = totalBTC * .001;
         var actualBTC = totalBTC - exchFee;
-        var transferredBTC = actualBTC - .000014;
+        var transferredBTC = actualBTC - .0005;
         var divestment = transferredBTC * parseFloat(response.btcPrice);
         var actualDivestment = divestment - (divestment * .04);
         var exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
-        var output = "* New exit trade ($USD) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
-            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + transferredBTC.toFixed(8) +
-            " BTC\nFinal divestment: $" + actualDivestment + " (factoring in Binance fee, transfer fee and Coinbase fee)\nExit price: $" +
-            exitPrice.toFixed(6) + " (factoring in Binance fee, transfer fee and Coinbase fee)\nDate logged: " +
-            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var output = `* New exit trade ($USD) *
+        Cryptocurrency: ${response.altName} 
+        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+        Sold ${response.altName} at: ${response.altPrice} BTC
+        Sold Bitcoin at: $${response.btcPrice} per BTC
+        Total Bitcoin sold: ${transferredBTC.toFixed(8)} BTC
+        Final divestment: $${actualDivestment} (factoring in Binance fee, transfer fee and Coinbase fee)
+        Exit price: $${exitPrice.toFixed(6)} (factoring in Binance fee, transfer fee and Coinbase fee)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_USD.txt', output + "\n", function (error) {
+        fs.appendFile('./exits_USD.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -448,7 +450,7 @@ function newExitTradeUSD() {
 // This function runs when the user wants to create a new exit (sell) trade back to $USDT (Tether). By using inquirer, the user is prompted 
 // for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
 // BTC), then the price they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade 
-// fee, charged a 0.00000708 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
+// fee, charged a 0.00000700 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
 function newExitTradeUSDT() {
     inquirer.prompt([
         {
@@ -479,13 +481,17 @@ function newExitTradeUSDT() {
         var exchFee2 = totalUSDT * .001;
         var actualUSDT = totalUSDT - exchFee2;
         var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
-        var output = "* New exit trade ($USDT) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
-            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nSold Bitcoin at: $" + response.btcPrice + " per BTC\nTotal Bitcoin sold: " + actualBTC.toFixed(8) +
-            " BTC\nTotal $USDT: $" + actualUSDT.toFixed(6) + " (factoring in Binance fees)\nExit price: $" +
-            exitPriceUSDT.toFixed(6) + " (factoring in Binance fees)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var output = `* New exit trade ($USDT) *
+        Cryptocurrency: ${response.altName}
+        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+        Sold ${response.altName} at: ${response.altPrice} BTC
+        Sold Bitcoin at: $${response.btcPrice} per BTC
+        Total Bitcoin sold: ${actualBTC.toFixed(8)} BTC
+        Total $USDT: $${actualUSDT.toFixed(6)} (factoring in Binance fees)
+        Exit price: $${exitPriceUSDT.toFixed(6)} (factoring in Binance fees)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_USDT.txt', output + "\n", function (error) {
+        fs.appendFile('./exits_USDT.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -518,25 +524,28 @@ function newExitTradeBTC() {
         var exchFee = totalBTC * .001;
         var actualBTC = totalBTC - exchFee;
         var exitPriceBTC = actualBTC / parseFloat(response.numCoinsSold);
-        var output = "* New exit trade (BTC) *\nCryptocurrency: " + response.altName + "\nAmount of coins / tokens sold: " +
-            response.numCoinsSold + " " + response.altName + "\nSold " + response.altName + " at: " + response.altPrice +
-            " BTC\nTotal BTC: " + actualBTC.toFixed(8) + " BTC (factoring in Binance fee)\nExit price: " + exitPriceBTC.toFixed(8) +
-            " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var output = `* New exit trade (BTC) *
+        Cryptocurrency: ${response.altName}
+        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+        Sold ${response.altName} at: ${response.altPrice} BTC
+        Total BTC: ${actualBTC.toFixed(8)} BTC (factoring in Binance fee)
+        Exit price: ${exitPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_BTC.txt', output + "\n", function (error) {
+        fs.appendFile('./exits_BTC.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
     });
 };
 
-// "calcAvgEntryPrice()" function
+// "calcAvgEntryPriceUSD()" function
 // This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
 // for their entry prices in $USD separated by a comma, entry prices in BTC separated by a comma, and the amount of altcoins / tokens 
 // obtained on each investment separated by a comma. It then performs a weighted average calculation to find the weighted average entry 
 // prices in both $USD and BTC. The user must input data logged in their entries_USD.txt and entries_BTC.txt files to make an average 
 // $USD / BTC entry price calculation.
-function calcAvgEntryPrice() {
+function calcAvgEntryPriceUSD() {
     inquirer.prompt([
         {
             type: "input",
@@ -562,7 +571,8 @@ function calcAvgEntryPrice() {
         var entryPricesUSDArr = response.entryPricesUSD.split(", ");
         var entryPricesBTCArr = response.entryPricesBTC.split(", ");
         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
-        if (entryPricesUSDArr.length !== entryPricesBTCArr.length !== numCoinsArr.length) {
+        if (entryPricesUSDArr.length !== entryPricesBTCArr.length || entryPricesUSDArr.length !== numCoinsArr.length
+            || entryPricesBTCArr.length !== numCoinsArr.length) {
             console.log("\nERROR: There was an error in your input");
         } else {
             var numOfInvestments = entryPricesUSDArr.length;
@@ -586,14 +596,17 @@ function calcAvgEntryPrice() {
             };
             var avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
             var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
-            var output = "* New average entry calculation *\nCryptocurrency: " + response.altName + "\nEntries ($USD): " +
-                entryPricesStrUSD.trim().slice(0, -1) + "\nEntries (BTC): " + entryPricesStrBTC.trim().slice(0, -1) +
-                "\nSum of total investments ($USD): $" + weightedAvgNumeratorUSD.toFixed(0) + "\nSum of total investments (BTC): " +
-                weightedAvgNumeratorBTC.toFixed(8) + " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName +
-                "\nAverage entry price ($USD): $" + avgEntryPriceUSD.toFixed(6) + "\nAverage entry price (BTC): " + " (after all fees)\n" +
-                avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
+            var output = `* New average entry calculation *
+            Cryptocurrency: ${response.altName}
+            Entries ($USD): ${entryPricesStrUSD.trim().slice(0, -1)}
+            Entries (BTC): ${entryPricesStrBTC.trim().slice(0, -1)}
+            Sum of total investments ($USD): $${weightedAvgNumeratorUSD.toFixed(0)}
+            Sum of total investments (BTC): ${weightedAvgNumeratorBTC.toFixed(8)} BTC
+            Sum of total coins / tokens obtained: ${sumTotalCoins} ${response.altName}
+            Average entry price ($USD): $${avgEntryPriceUSD.toFixed(6)} (after all fees)
+            Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
-            fs.appendFile('./avg_entries_USD.txt', output + "\n", function (error) {
+            fs.appendFile('./avg_entries_USD.txt', `${output}\n`, function (error) {
                 if (error) throw error;
             });
             askIfDone();
@@ -644,12 +657,14 @@ function calcAvgEntryPriceBTC() {
                 entryPricesStrBTC = entryPricesStrBTC + " " + entryPricesBTCArr[i] + " BTC,";
             };
             var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
-            var output = "* New average entry calculation *\nCryptocurrency: " + response.altName + "\nEntries (BTC): " +
-                entryPricesStrBTC.trim().slice(0, -1) + "\nSum of total investments (BTC): " + weightedAvgNumeratorBTC.toFixed(8) +
-                " BTC\nSum of total coins / tokens obtained: " + sumTotalCoins + " " + response.altName + "\nAverage entry price (BTC): " +
-                avgEntryPriceBTC.toFixed(8) + " BTC (after all fees)\n";
+            var output = `* New average entry calculation *
+            Cryptocurrency: ${response.altName}
+            Entries (BTC): ${entryPricesStrBTC.trim().slice(0, -1)}
+            Sum of total investments (BTC): ${weightedAvgNumeratorBTC.toFixed(8)} BTC
+            Sum of total coins / tokens obtained: ${sumTotalCoins} ${response.altName}
+            Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
-            fs.appendFile('./avg_entries_BTC.txt', output + "\n", function (error) {
+            fs.appendFile('./avg_entries_BTC.txt', `${output}\n`, function (error) {
                 if (error) throw error;
             });
         };
@@ -696,24 +711,35 @@ function calculateROI() {
         var roiPercentBTC = (roiDecimalBTC - 1) * 100;
         var output = "";
         if (netChangeUSD >= 0 && netChangeBTC >= 0) {
-            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment (USD): $" +
-                response.investmentUSD + "\nInitial investment (BTC): " + response.investmentBTC + " BTC\nFinal divestment (USD): $" +
-                response.divestmentUSD + "\nFinal divestment (BTC): " + response.divestmentBTC +
-                " BTC\nReturn of investment in $USD (decimal): " + roiDecimalUSD + "x ROI\nReturn of investment in $USD (percent): " +
-                roiPercentUSD + "% ROI\nReturn of investment in BTC (decimal): " + roiDecimalBTC +
-                "x ROI\nReturn of investment in BTC (percent): " + roiPercentBTC + "% ROI\nTotal $USD profit: $" + netChangeUSD +
-                "\nTotal BTC profit: " + netChangeBTC + " BTC\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+            output = `* New ROI calculation *
+            Cryptocurrency: ${response.altName}
+            Initial investment (USD): $" + response.investmentUSD + 
+            Initial investment (BTC): " + response.investmentBTC + " BTC
+            Final divestment (USD): $" + response.divestmentUSD + "
+            Final divestment (BTC): " + response.divestmentBTC + BTC
+            Return of investment in $USD (decimal): " + roiDecimalUSD + "x ROI
+            Return of investment in $USD (percent): " + roiPercentUSD + "% ROI
+            Return of investment in BTC (decimal): " + roiDecimalBTC + x ROI
+            Return of investment in BTC (percent): " + roiPercentBTC + "% ROI
+            Total $USD profit: $" + netChangeUSD + Total BTC profit: " + netChangeBTC + " BTC
+            Date logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n`.replace(/^(\s{3})+/gm, '');
         } else {
             netChangeUSD = netChangeUSD * -1;
             netChangeBTC = netChangeBTC * -1;
-            output = "* New ROI calculation *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-                "\nFinal divestment: $" + response.divestment + "\nReturn of investment in $USD (decimal): " + roiDecimalUSD +
-                "x ROI\nReturn of investment in $USD (percent): " + roiPercentUSD + "% ROI\nReturn of investment in BTC (decimal): " +
-                roiDecimalBTC + "x ROI\nReturn of investment in BTC (percent): " + roiPercentBTC + "% ROI\nTotal $USD loss: $" +
-                netChangeUSD + "\nTotal BTC loss: " + netChangeBTC + " BTC\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+            output = `* New ROI calculation *
+            Cryptocurrency: ${response.altName}
+            Initial investment: $${response.investment}
+            Final divestment: $${response.divestment.toFixed(2)} 
+            Return of investment in $USD (decimal): ${roiDecimalUSD}x ROI
+            Return of investment in $USD (percent): ${roiPercentUSD}% ROI
+            Return of investment in BTC (decimal): ${roiDecimalBTC}x ROI
+            Return of investment in BTC (percent): ${roiPercentBTC}% ROI
+            Total $USD loss: $${netChangeUSD.toFixed(2)}
+            Total BTC loss: ${netChangeBTC} BTC
+            Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{3})+/gm, '');
         };
         console.log(output);
-        fs.appendFile('./roi.txt', output + "\n", function (error) {
+        fs.appendFile('./roi.txt', `${output}\n`, function (error) {
             if (error) throw error;
         });
         askIfDone();
@@ -740,8 +766,9 @@ function getTargetPriceUSD() {
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
         var targetPriceUSD = entryPriceUSD + (entryPriceUSD * convertedPercentChange);
-        console.log("Entry price: $" + response.entryPriceUSD + "\nPercent gain looking for: " + response.targetPercentChange +
-            "%\nTarget sell price: $" + targetPriceUSD.toFixed(6) + "\n");
+        console.log(`Entry price: $ ${response.entryPriceUSD}
+        Percent gain looking for: ${response.targetPercentChange}%
+        Target sell price: $${targetPriceUSD.toFixed(6)}\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
 };
@@ -766,8 +793,9 @@ function getTargetPriceBTC() {
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
         var targetPriceBTC = entryPriceBTC + (entryPriceBTC * convertedPercentChange);
-        console.log("Entry price: " + response.entryPriceBTC + " BTC\nPercent gain looking for: " + response.targetPercentChange +
-            "%\nTarget sell price: " + targetPriceBTC.toFixed(8) + " BTC\n");
+        console.log(`Entry price: ${response.entryPriceBTC} BTC
+        Percent gain looking for: ${response.targetPercentChange}%
+        Target sell price: ${targetPriceBTC.toFixed(8)} BTC\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
 };
@@ -790,8 +818,10 @@ function getPercentChangeUSD() {
     ]).then(function (response) {
         var decimalChangeUSD = parseFloat(response.exitPriceUSD) / parseFloat(response.entryPriceUSD);
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
-        console.log("Entry price: $" + response.entryPriceUSD + "\nExit price: $" + response.exitPriceUSD + "\nDecimal change: " +
-            decimalChangeUSD.toFixed(2) + "x\nPercent change: " + percentChangeUSD.toFixed(2) + "%");
+        console.log(`Entry price: $${response.entryPriceUSD}
+        Exit price: $${response.exitPriceUSD}
+        Decimal change: ${decimalChangeUSD.toFixed(2)}x
+        Percent change: ${percentChangeUSD.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
 };
@@ -814,8 +844,10 @@ function getPercentChangeBTC() {
     ]).then(function (response) {
         var decimalChangeBTC = parseFloat(response.exitPriceBTC) / parseFloat(response.entryPriceBTC);
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
-        console.log("Entry price: " + response.entryPriceBTC + " BTC\nExit price: " + response.exitPriceBTC + " BTC\nDecimal change: " +
-            decimalChangeBTC.toFixed(2) + "x\nPercent change: " + percentChangeBTC.toFixed(2) + "%");
+        console.log(`Entry price: ${response.entryPriceBTC} BTC
+        Exit price: ${response.exitPriceBTC} BTC
+        Decimal change: ${decimalChangeBTC.toFixed(2)}x
+        Percent change: ${percentChangeBTC.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
 };
@@ -826,4 +858,4 @@ beginApp();
 // To do:
 // 1. Create database to make calculating avg entry prices easier?
 // 2. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
-// 3. Change str concatenation - use template literals
+// 3. Double check average entry functions - sum total investments may have bug
