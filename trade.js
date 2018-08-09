@@ -336,12 +336,16 @@ function newEntryTradeUSDT() {
         var actualCoins = totalCoins - exchFee;
         var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
         var entryPriceBTC = actualBTC / actualCoins;
-        var output = "* New entry trade ($USDT) *\nCryptocurrency: " + response.altName + "\nInitial investment: $" + response.investment +
-            " (Tether)\nBought Bitcoin at: $" + response.btcPrice + " per BTC\nTotal BTC available (after all fees): " +
-            actualBTC.toFixed(8) + " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " +
-            actualCoins + " " + response.altName + "\nEntry price ($USDT): $" + entryPriceUSDT.toFixed(6) +
-            " (factoring in Binance fees)\nEntry price (BTC): " + entryPriceBTC.toFixed(8) +
-            " BTC (factoring in Binance fee)\nDate logged: " + moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var output = `* New entry trade ($USDT) *
+        Cryptocurrency: ${response.altName}
+        Initial investment: $${response.investment} (Tether)
+        Bought Bitcoin at: $${response.btcPrice} per BTC
+        Total BTC available (after all fees): ${actualBTC.toFixed(8)} BTC
+        Bought ${response.altName} at: ${response.altPrice} BTC
+        Total coins bought: ${actualCoins} ${response.altName}
+        Entry price ($USDT): $${entryPriceUSDT.toFixed(6)} (factoring in Binance fees)
+        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
         fs.appendFile('./entries_USDT.txt', output + "\n", function (error) {
             if (error) throw error;
@@ -375,11 +379,14 @@ function newEntryTradeBTC() {
         var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
         var exchFee = totalCoins * .001;
         var actualCoins = totalCoins - (exchFee)
-        var entryPriceBTC = actualCoins / parseFloat(response.investmentBTC);
-        var output = "* New entry trade (BTC) *\nCryptocurrency: " + response.altName + "\nInitial investment: " + response.investmentBTC +
-            " BTC\nBought " + response.altName + " at: " + response.altPrice + " BTC\nTotal coins bought: " + actualCoins + " " +
-            response.altName + "\nEntry price (BTC): " + entryPriceBTC.toFixed(8) + " BTC (factoring in Binance fee)\nDate logged: " +
-            moment().format('MMMM Do YYYY, h:mm:ss a') + "\n";
+        var entryPriceBTC = parseFloat(response.investmentBTC) / actualCoins;
+        var output = `* New entry trade (BTC) *
+        Cryptocurrency: ${response.altName}
+        Initial investment: ${response.investmentBTC} BTC
+        Bought ${response.altName} at: ${response.altPrice} BTC
+        Total coins bought: ${actualCoins} ${response.altName}
+        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
+        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
         fs.appendFile('./entries_BTC.txt', output + "\n", function (error) {
             if (error) throw error;
