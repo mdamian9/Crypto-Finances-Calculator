@@ -210,14 +210,14 @@ function askIfDone() {
     });
 };
 
-// "logTrade" function
+// "logTradePrompt" function
 // This function asks the user if they would like to log their trade to the respective .txt file.
-logTrade = (txtFileName, output) => {
+logTradePrompt = (txtFileName, output) => {
     inquirer.prompt([
         {
             type: "list",
             name: "logTrade",
-            message: "Would you like to log this trade?",
+            message: `Would you like to log this to ${txtFileName}?`,
             choices: ["Yes", "No"]
         }
     ]).then(response => {
@@ -313,10 +313,7 @@ function newEntryTradeUSD() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
-        // fs.appendFile('./entries_USD.txt', `${output}\n`, function (error) {
-        //     if (error) throw error;
-        // });
-        logTrade('./entries_USD.txt', output);
+        logTradePrompt('./entries_USD.txt', output);
     });
 };
 
@@ -366,10 +363,7 @@ function newEntryTradeUSDT() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./entries_USDT.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./entries_USDT.txt', output);
     });
 };
 
@@ -407,10 +401,7 @@ function newEntryTradeBTC() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./entries_BTC.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./entries_BTC.txt', output);
     });
 };
 
@@ -459,10 +450,7 @@ function newExitTradeUSD() {
         Exit price: $${exitPrice.toFixed(6)} (factoring in Binance fee, transfer fee and Coinbase fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_USD.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./exits_USD.txt', output);
     });
 };
 
@@ -511,10 +499,7 @@ function newExitTradeUSDT() {
         Exit price: $${exitPriceUSDT.toFixed(6)} (factoring in Binance fees)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_USDT.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./exits_USDT.txt', output);
     });
 };
 
@@ -552,10 +537,7 @@ function newExitTradeBTC() {
         Exit price: ${exitPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        fs.appendFile('./exits_BTC.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./exits_BTC.txt', output);
     });
 };
 
@@ -626,10 +608,7 @@ function calcAvgEntryPriceUSD() {
             Average entry price ($USD): $${avgEntryPriceUSD.toFixed(6)} (after all fees)
             Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
-            fs.appendFile('./avg_entries_USD.txt', `${output}\n`, function (error) {
-                if (error) throw error;
-            });
-            askIfDone();
+            logTradePrompt('./avg_entries_USD.txt', output);
         };
     });
 };
@@ -684,9 +663,7 @@ function calcAvgEntryPriceBTC() {
             Sum of total coins / tokens obtained: ${sumTotalCoins} ${response.altName}
             Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
-            fs.appendFile('./avg_entries_BTC.txt', `${output}\n`, function (error) {
-                if (error) throw error;
-            });
+            logTradePrompt('./avg_entries_BTC.txt', output);
         };
     });
 };
@@ -759,10 +736,7 @@ function calculateROI() {
             Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{3})+/gm, '');
         };
         console.log(output);
-        fs.appendFile('./roi.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        logTradePrompt('./roi.txt', output);
     });
 };
 
