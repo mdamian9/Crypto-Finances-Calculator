@@ -210,6 +210,26 @@ function askIfDone() {
     });
 };
 
+// "logTrade" function
+// This function asks the user if they would like to log their trade to the respective .txt file.
+logTrade = (txtFileName, output) => {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "logTrade",
+            message: "Would you like to log this trade?",
+            choices: ["Yes", "No"]
+        }
+    ]).then(response => {
+        if (response.logTrade === "Yes") {
+            fs.appendFile(`${txtFileName}`, `${output}\n`, (error) => {
+                if (error) throw error;
+            });
+        };
+        askIfDone();
+    });
+};
+
 // "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
@@ -293,10 +313,10 @@ function newEntryTradeUSD() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
-        fs.appendFile('./entries_USD.txt', `${output}\n`, function (error) {
-            if (error) throw error;
-        });
-        askIfDone();
+        // fs.appendFile('./entries_USD.txt', `${output}\n`, function (error) {
+        //     if (error) throw error;
+        // });
+        logTrade('./entries_USD.txt', output);
     });
 };
 
@@ -859,3 +879,7 @@ beginApp();
 // 1. Create database to make calculating avg entry prices easier?
 // 2. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
 // 3. Double check average entry functions - sum total investments may have bug
+// 4. Give user choice to log to .txt file or not (for unwanted logs) --- done but needs to be implemented in every function
+// 5. Refactor functions using ES6 JS
+// 6. Create option to trade in Ethereum
+// 7. Create option to trade in BNB
