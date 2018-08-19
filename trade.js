@@ -26,7 +26,7 @@ function beginApp() {
             case "Calculate average entry price":
                 calcAvgEntryPrompt();
                 break;
-            case "Full ROI calculation (return of investment)":
+            case "Full ROI calculation (BTC as trading pair)":
                 calcUsdBtcRoi();
                 break;
             case "Get target price ($)":
