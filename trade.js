@@ -1,4 +1,4 @@
-// Require npm inquirer, npm moment and npm fs packages
+// Require npm inquirer, moment and fs packages
 var inquirer = require("inquirer");
 var moment = require("moment");
 var fs = require("fs");
@@ -27,7 +27,7 @@ function beginApp() {
                 calcAvgEntryPrompt();
                 break;
             case "Full ROI calculation (return of investment)":
-                calculateROI();
+                calcUsdBtcRoi();
                 break;
             case "Get target price ($)":
                 targetPricePrompt();
@@ -39,7 +39,7 @@ function beginApp() {
     });
 };
 
-// // "validatePrice()" function
+// // "validatePrice()" function ------- still in question
 // // This function...
 // function validateNumber(number) {
 //     var flag = true;
@@ -217,12 +217,12 @@ logTradePrompt = (txtFileName, output) => {
         {
             type: "list",
             name: "logTrade",
-            message: `Would you like to log this to ${txtFileName}?`,
+            message: `Would you like record this to the log file?`,
             choices: ["Yes", "No"]
         }
     ]).then(response => {
         if (response.logTrade === "Yes") {
-            fs.appendFile(`${txtFileName}`, `${output}\n`, (error) => {
+            fs.appendFile(txtFileName, `${output}\n`, (error) => {
                 if (error) throw error;
             });
         };
@@ -313,7 +313,7 @@ function newEntryTradeUSD() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
-        logTradePrompt('./entries_USD.txt', output);
+        logTradePrompt('logs/entries_log/entries_USD.txt', output);
     });
 };
 
@@ -363,7 +363,7 @@ function newEntryTradeUSDT() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        logTradePrompt('./entries_USDT.txt', output);
+        logTradePrompt('logs/entries_log/entries_USDT.txt', output);
     });
 };
 
@@ -401,8 +401,20 @@ function newEntryTradeBTC() {
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        logTradePrompt('./entries_BTC.txt', output);
+        logTradePrompt('logs/entries_log/entries_BTC.txt', output);
     });
+};
+
+// "newEntryTradeETH() function"
+// This functions runs when the user...
+newEntryTradeEth = () => {
+
+};
+
+// "newEntryTradeBNB() function"
+// This functions runs when the user...
+newEntryTradeBNB = () => {
+
 };
 
 // "newExitTradeUSD()" function
@@ -450,7 +462,7 @@ function newExitTradeUSD() {
         Exit price: $${exitPrice.toFixed(6)} (factoring in Binance fee, transfer fee and Coinbase fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        logTradePrompt('./exits_USD.txt', output);
+        logTradePrompt('logs/exits_log/exits_USD.txt', output);
     });
 };
 
@@ -499,7 +511,7 @@ function newExitTradeUSDT() {
         Exit price: $${exitPriceUSDT.toFixed(6)} (factoring in Binance fees)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        logTradePrompt('./exits_USDT.txt', output);
+        logTradePrompt('logs/exits_log/exits_USDT.txt', output);
     });
 };
 
@@ -537,12 +549,24 @@ function newExitTradeBTC() {
         Exit price: ${exitPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
-        logTradePrompt('./exits_BTC.txt', output);
+        logTradePrompt('logs/exits_log/exits_BTC.txt', output);
     });
 };
 
+// "newExitTradeETH() function"
+// This function runs when the user...
+newExitTradeETH = () => {
+
+};
+
+// "newExitTradeBNB() function"
+// This function runs when the user...
+newExitTradeBNB = () => {
+    
+};
+
 // "calcAvgEntryPriceUSD()" function
-// This function runs whenever the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
+// This function runs when the user wants to find the average entry price of multiple entries on a cryptocurrency. It asks the user 
 // for their entry prices in $USD separated by a comma, entry prices in BTC separated by a comma, and the amount of altcoins / tokens 
 // obtained on each investment separated by a comma. It then performs a weighted average calculation to find the weighted average entry 
 // prices in both $USD and BTC. The user must input data logged in their entries_USD.txt and entries_BTC.txt files to make an average 
@@ -614,7 +638,7 @@ function calcAvgEntryPriceUSD() {
 };
 
 // "calcAvgEntryPriceBTC()" function
-// This function runs whenever the user wants to find the average entry price of multiple entries strictly made in BTC on a cryptocurrency. 
+// This function runs when the user wants to find the average entry price of multiple entries strictly made in BTC on a cryptocurrency. 
 // It asks the user for their entry prices in BTC separated by a comma, and the amount of altcoins / tokens obtained on each investment 
 // separated by a comma. It then performs a weighted average calculation to find the weighted average entry price in BTC. The user must 
 // input data logged in their entries_BTC.txt file to make an average BTC entry price calculation.
@@ -668,11 +692,23 @@ function calcAvgEntryPriceBTC() {
     });
 };
 
-// "calculateROI()" function
+// "calcAvgEntryPriceETH() function"
+// This function runs when the user...
+calcAvgEntryPriceETH = () => {
+
+};
+
+// "calcAvgEntryPriceBNB() function"
+// This function runs when the user...
+calcAvgEntryPriceBNB = () => {
+
+};
+
+// "calcUsdBtcRoi()" function
 // This function runs when the user wants to find their ROI (return of investment). By using inquirer, the user is prompted for the name 
 // of the altcoin they traded, their initial investment (in $USD and BTC), and their final divestment (in $USD and BTC). The user must 
 // input data logged in their entries / exits .txt files to make a complete ROI calculation.
-function calculateROI() {
+function calcUsdBtcRoi() {
     inquirer.prompt([
         {
             type: "input",
@@ -740,8 +776,14 @@ function calculateROI() {
     });
 };
 
+// "calcUsdEthRoi() function"
+// This function runs when the user...
+calcUsdEthRoi = () => {
+
+};
+
 // "getTargetPriceUSD()" function
-// This function runs whenever the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
+// This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
 // gain. The user is asked to enter an entry price in $USD and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceUSD() {
     inquirer.prompt([
@@ -768,7 +810,7 @@ function getTargetPriceUSD() {
 };
 
 // "getTargetPriceBTC()" function
-// This function runs whenever the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
+// This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
 // gain. The user is asked to enter an entry price in BTC and the percentage gain they are looking for to find the target sell price.
 function getTargetPriceBTC() {
     inquirer.prompt([
@@ -794,8 +836,20 @@ function getTargetPriceBTC() {
     });
 };
 
+// "getTargetPriceETH() function"
+// This function runs when the user...
+getTargetPriceETH = () => {
+
+};
+
+// "getTargetPriceBNB() function"
+// This function runs when the user...
+getTargetPriceBNB = () => {
+
+};
+
 // "getPercentChangeUSD()" function
-// This function runs whenever the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
+// This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
 // entry price and an exit price in $USD to obtain the change in percentage.
 function getPercentChangeUSD() {
     inquirer.prompt([
@@ -821,7 +875,7 @@ function getPercentChangeUSD() {
 };
 
 // "getPercentChangeBTC()" function
-// This function runs whenever the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
+// This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
 // entry price and an exit price in BTC to obtain the change in percentage.
 function getPercentChangeBTC() {
     inquirer.prompt([
@@ -844,6 +898,18 @@ function getPercentChangeBTC() {
         Percent change: ${percentChangeBTC.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
+};
+
+// "getPercentChangeETH() function"
+// This function funs when the user...
+getPercentChangeETH = () => {
+
+};
+
+// "getPercentChangeBNB() function"
+// This function runs when the user...
+getPercentChangeBNB = () => {
+
 };
 
 // Call "beginApp()" to begin app
