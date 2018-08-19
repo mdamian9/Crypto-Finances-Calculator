@@ -1,8 +1,0 @@
-* New entry trade (BTC) *
-Cryptocurrency: GNT
-Initial investment: .01543032 BTC
-Bought GNT at: .00002956 BTC
-Total coins bought: 521.478 GNT
-Entry price (BTC): 0.00002959 BTC (factoring in Binance fee)
-Date logged: August 8th 2018, 8:34:40 pm
-
