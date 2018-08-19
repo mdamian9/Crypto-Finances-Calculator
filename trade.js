@@ -608,7 +608,7 @@ function calcAvgEntryPriceUSD() {
             Average entry price ($USD): $${avgEntryPriceUSD.toFixed(6)} (after all fees)
             Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
-            logTradePrompt('./avg_entries_USD.txt', output);
+            logTradePrompt('./avg_entries_USDX.txt', output);
         };
     });
 };

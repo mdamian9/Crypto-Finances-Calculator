@@ -1,0 +1,11 @@
+* New entry trade ($USDT) *
+Cryptocurrency: OCN
+Initial investment: $100 (Tether)
+Bought Bitcoin at: $6700 per BTC
+Total BTC available (after all fees): 0.01491045 BTC
+Bought OCN at: .00000069 BTC
+Total coins bought: 21587.735236859186 OCN
+Entry price ($USDT): $0.004632 (factoring in Binance fees)
+Entry price (BTC): 0.00000069 BTC (factoring in Binance fee)
+Date logged: August 8th 2018, 6:11:57 pm
+
