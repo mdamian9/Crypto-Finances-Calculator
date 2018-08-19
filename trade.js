@@ -5,7 +5,7 @@ var fs = require("fs");
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
-function beginApp() {
+beginApp() = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -14,7 +14,7 @@ function beginApp() {
             choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
                 "Full ROI calculation (return of investment)", "Get target price ($)", "Get percent change (%)"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "Make new entry trade":
@@ -66,7 +66,7 @@ function beginApp() {
 // "newEntryPrompt()" function
 // This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
 // trade they would like to make ($USD, $USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
-function newEntryPrompt() {
+newEntryPrompt = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -74,7 +74,7 @@ function newEntryPrompt() {
             message: "Choose trade:",
             choices: ["New entry trade ($USD)", "New entry trade ($USDT)", "New entry trade (BTC)"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "New entry trade ($USD)":
@@ -93,7 +93,7 @@ function newEntryPrompt() {
 // "newExitPrompt()" function
 // This function is called when the user chooses to make a new exit trade in the first prompt. It asks the user to choose what type of exit 
 // trade they would like to make ($USD, $USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
-function newExitPrompt() {
+newExitPrompt = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -101,7 +101,7 @@ function newExitPrompt() {
             message: "Choose trade:",
             choices: ["New exit trade ($USD)", "New exit trade ($USDT)", "New exit trade (BTC)"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "New exit trade ($USD)":
@@ -121,7 +121,7 @@ function newExitPrompt() {
 // This function is called when the user chooses to make an average entry price calculation in the first prompt. It asks the user to 
 // choose what type of average entry price calculation they would like to make ($USD or BTC), and calls the appropriate function based on 
 // the user's response.
-function calcAvgEntryPrompt() {
+calcAvgEntryPrompt = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -130,7 +130,7 @@ function calcAvgEntryPrompt() {
             choices: ["Average entry price ($USD)", "Average entry price (BTC)"]
 
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "Average entry price ($USD)":
@@ -146,7 +146,7 @@ function calcAvgEntryPrompt() {
 // "targetPricePrompt()" function
 // This function is called when the user chooses to get target price in the first prompt. It asks the user to choose what type of target 
 // price calculation they would like to make ($USD or BTC), and calls the appropriate function based on the user's response.
-function targetPricePrompt() {
+targetPricePrompt = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -154,7 +154,7 @@ function targetPricePrompt() {
             message: "Choose target:",
             choices: ["Get target price ($USD)", "Get target price (BTC)"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "Get target price ($USD)":
@@ -170,7 +170,7 @@ function targetPricePrompt() {
 // "percentChangePrompt()" function
 // This function is called when the user chooses to get percent change in the first prompt. It asks the user to choose what type of 
 // percent change calculation they would like to make ($USD or BTC), and calls the appropriate function based on the user's response.
-function percentChangePrompt() {
+percentChangePrompt = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -178,7 +178,7 @@ function percentChangePrompt() {
             message: "Choose currency:",
             choices: ["Get percent change ($USD)", "Get percent change (BTC)"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var userCommand = response.command;
         switch (userCommand) {
             case "Get percent change ($USD)":
@@ -193,7 +193,7 @@ function percentChangePrompt() {
 
 // "askIfDone()" function
 // This function asks the user if they are done using the app.
-function askIfDone() {
+askIfDone = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -201,7 +201,7 @@ function askIfDone() {
             message: "Are you finished with the app?",
             choices: ["Yes", "No"]
         }
-    ]).then(function (response) {
+    ]).then(response => {
         if (response.doneWithApp === "Yes") {
             console.log("Good luck trading.");
         } else {
@@ -235,14 +235,14 @@ logTradePrompt = (txtFileName, output) => {
 // investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
 // (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a .00000700 BTC transfer fee 
 // to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
-function newEntryTradeUSD() {
+newEntryTradeUSD = () => {
     inquirer.prompt([
         {
             type: "input",
             name: "investment",
             message: "Enter total investment ($USD): ",
             // validate: validateNumber(investment)
-            validate: function validateInvestment(investment) {
+            validate: validateInvestment = (investment) => {
                 var flag = true;
                 var values = /^[\d.]+$/;
                 if (!values.test(investment)) {
@@ -256,7 +256,7 @@ function newEntryTradeUSD() {
             name: "btcPrice",
             message: "Enter Bitcoin price (bought): ",
             // validate: validateNumber(btcPrice)
-            validate: function validateBtcPrice(btcPrice) {
+            validate: validateBtcPrice = (btcPrice) => {
                 var flag = true;
                 var values = /^[\d.]+$/;
                 if (!values.test(btcPrice)) {
@@ -270,7 +270,7 @@ function newEntryTradeUSD() {
             name: "altName",
             message: "Enter name of altcoin bought: ",
             // validate: validateName(altName)
-            validate: function validateAltName(altName) {
+            validate: validateAltName = (altName) => {
                 var flag = true;
                 var values = /^[\a-zA-z]+$/;
                 if (!values.test(altName)) {
@@ -284,7 +284,7 @@ function newEntryTradeUSD() {
             name: "altPrice",
             message: "Enter price of altcoin (in BTC): ",
             // validate: validateNumber(altPrice)
-            validate: function validateAltPrice(altPrice) {
+            validate: validateAltPrice = (altPrice) => {
                 var flag = true;
                 var values = /^[\d.]+$/;
                 if (!values.test(altPrice)) {
@@ -293,7 +293,7 @@ function newEntryTradeUSD() {
                 return flag;
             }
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
         var actualBTC = totalBTC - (totalBTC * .04);
         var transferredBTC = actualBTC - .00000700;
@@ -322,7 +322,7 @@ function newEntryTradeUSD() {
 // for their initial investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin 
 // they bought (altcoin price is in BTC). This function assumes the user is buying BTC / buying altcoin on Binance with a 0.1% purchase 
 // fee on the BTC buy and altcoin buy each.
-function newEntryTradeUSDT() {
+newEntryTradeUSDT = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -344,7 +344,7 @@ function newEntryTradeUSDT() {
             name: "altPrice",
             message: "Enter price of altcoin (in BTC): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
         var actualBTC = totalBTC - (totalBTC * .001);
         var totalCoins = actualBTC / parseFloat(response.altPrice);
@@ -371,7 +371,7 @@ function newEntryTradeUSDT() {
 // This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for 
 // their initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). 
 // This function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
-function newEntryTradeBTC() {
+newEntryTradeBTC = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -388,7 +388,7 @@ function newEntryTradeBTC() {
             name: "altPrice",
             message: "Enter price of altcoin (in BTC): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
         var exchFee = totalCoins * .001;
         var actualCoins = totalCoins - (exchFee)
@@ -422,7 +422,7 @@ newEntryTradeBNB = () => {
 // altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
 // they sold Bitcoin at in the end. This function assumes the user is selling altcoin / selling BTC on Binance with a 0.1% purchase on the 
 // altcoin sell and BTC sell each.
-function newExitTradeUSD() {
+newExitTradeUSD = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -444,7 +444,7 @@ function newExitTradeUSD() {
             name: "btcPrice",
             message: "Enter Bitcoin price (sold): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
         var exchFee = totalBTC * .001;
         var actualBTC = totalBTC - exchFee;
@@ -471,7 +471,7 @@ function newExitTradeUSD() {
 // for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
 // BTC), then the price they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade 
 // fee, charged a 0.00000700 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
-function newExitTradeUSDT() {
+newExitTradeUSDT = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -493,7 +493,7 @@ function newExitTradeUSDT() {
             name: "btcPrice",
             message: "Enter Bitcoin price (sold): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
         var exchFee = totalBTC * .001;
         var actualBTC = totalBTC - exchFee;
@@ -519,7 +519,7 @@ function newExitTradeUSDT() {
 // This function runs when the user wants to create a new exit (sell) trade strictly in BTC. By using inquirer, the user is prompted for 
 // the name of the altcoin they bought, the number of coins / tokens sold, and the price they sold the altcoin at (price is in BTC). This 
 // function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when selling altcoins.
-function newExitTradeBTC() {
+newExitTradeBTC = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -536,7 +536,7 @@ function newExitTradeBTC() {
             name: "altPrice",
             message: "Enter price altcoin was sold at (in BTC): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
         var exchFee = totalBTC * .001;
         var actualBTC = totalBTC - exchFee;
@@ -571,7 +571,7 @@ newExitTradeBNB = () => {
 // obtained on each investment separated by a comma. It then performs a weighted average calculation to find the weighted average entry 
 // prices in both $USD and BTC. The user must input data logged in their entries_USD.txt and entries_BTC.txt files to make an average 
 // $USD / BTC entry price calculation.
-function calcAvgEntryPriceUSD() {
+calcAvgEntryPriceUSD = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -593,7 +593,7 @@ function calcAvgEntryPriceUSD() {
             name: "numCoinsPerInvestment",
             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var entryPricesUSDArr = response.entryPricesUSD.split(", ");
         var entryPricesBTCArr = response.entryPricesBTC.split(", ");
         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
@@ -642,7 +642,7 @@ function calcAvgEntryPriceUSD() {
 // It asks the user for their entry prices in BTC separated by a comma, and the amount of altcoins / tokens obtained on each investment 
 // separated by a comma. It then performs a weighted average calculation to find the weighted average entry price in BTC. The user must 
 // input data logged in their entries_BTC.txt file to make an average BTC entry price calculation.
-function calcAvgEntryPriceBTC() {
+calcAvgEntryPriceBTC = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -659,7 +659,7 @@ function calcAvgEntryPriceBTC() {
             name: "numCoinsPerInvestment",
             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var entryPricesBTCArr = response.entryPricesBTC.split(", ");
         var numCoinsArr = response.numCoinsPerInvestment.split(", ");
         // Error check: make sure num of entry prices is the same as num of times tokens were obtained (bought)
@@ -708,7 +708,7 @@ calcAvgEntryPriceBNB = () => {
 // This function runs when the user wants to find their ROI (return of investment). By using inquirer, the user is prompted for the name 
 // of the altcoin they traded, their initial investment (in $USD and BTC), and their final divestment (in $USD and BTC). The user must 
 // input data logged in their entries / exits .txt files to make a complete ROI calculation.
-function calcUsdBtcRoi() {
+calcUsdBtcRoi = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -735,7 +735,7 @@ function calcUsdBtcRoi() {
             name: "divestmentBTC",
             message: "Enter final divesment (in BTC): "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
         var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
         var roiPercentUSD = (roiDecimalUSD - 1) * 100;
@@ -785,7 +785,7 @@ calcUsdEthRoi = () => {
 // "getTargetPriceUSD()" function
 // This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
 // gain. The user is asked to enter an entry price in $USD and the percentage gain they are looking for to find the target sell price.
-function getTargetPriceUSD() {
+getTargetPriceUSD = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -797,7 +797,7 @@ function getTargetPriceUSD() {
             name: "targetPercentChange",
             message: "Enter percent gain you're looking for: "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var entryPriceUSD = parseFloat(response.entryPriceUSD);
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
@@ -812,7 +812,7 @@ function getTargetPriceUSD() {
 // "getTargetPriceBTC()" function
 // This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
 // gain. The user is asked to enter an entry price in BTC and the percentage gain they are looking for to find the target sell price.
-function getTargetPriceBTC() {
+getTargetPriceBTC = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -824,7 +824,7 @@ function getTargetPriceBTC() {
             name: "targetPercentChange",
             message: "Enter percent gain you're looking for: "
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var entryPriceBTC = parseFloat(response.entryPriceBTC);
         var targetPercentChange = parseFloat(response.targetPercentChange);
         var convertedPercentChange = targetPercentChange * .01;
@@ -851,7 +851,7 @@ getTargetPriceBNB = () => {
 // "getPercentChangeUSD()" function
 // This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
 // entry price and an exit price in $USD to obtain the change in percentage.
-function getPercentChangeUSD() {
+getPercentChangeUSD = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -863,7 +863,7 @@ function getPercentChangeUSD() {
             name: "exitPriceUSD",
             message: "Enter exit price (in $USD):"
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var decimalChangeUSD = parseFloat(response.exitPriceUSD) / parseFloat(response.entryPriceUSD);
         var percentChangeUSD = (decimalChangeUSD - 1) * 100;
         console.log(`Entry price: $${response.entryPriceUSD}
@@ -877,7 +877,7 @@ function getPercentChangeUSD() {
 // "getPercentChangeBTC()" function
 // This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
 // entry price and an exit price in BTC to obtain the change in percentage.
-function getPercentChangeBTC() {
+getPercentChangeBTC = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -889,7 +889,7 @@ function getPercentChangeBTC() {
             name: "exitPriceBTC",
             message: "Enter exit price (in BTC):"
         }
-    ]).then(function (response) {
+    ]).then(response => {
         var decimalChangeBTC = parseFloat(response.exitPriceBTC) / parseFloat(response.entryPriceBTC);
         var percentChangeBTC = (decimalChangeBTC - 1) * 100;
         console.log(`Entry price: ${response.entryPriceBTC} BTC
@@ -920,6 +920,5 @@ beginApp();
 // 2. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
 // 3. Double check average entry functions - sum total investments may have bug
 // 4. Give user choice to log to .txt file or not (for unwanted logs) --- done but needs to be implemented in every function
-// 5. Refactor functions using ES6 JS
 // 6. Create option to trade in Ethereum
 // 7. Create option to trade in BNB
