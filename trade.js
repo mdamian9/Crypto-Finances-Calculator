@@ -5,7 +5,7 @@ var fs = require("fs");
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
-beginApp() = () => {
+beginApp= () => {
     inquirer.prompt([
         {
             type: "list",
@@ -168,28 +168,22 @@ targetPricePrompt = () => {
 };
 
 // "percentChangePrompt()" function
-// This function is called when the user chooses to get percent change in the first prompt. It asks the user to choose what type of 
-// percent change calculation they would like to make (USD or BTC), and calls the appropriate function based on the user's response.
+// This function is called when the user chooses to get percent change in the first prompt. It asks the user to choose what currency they  
+// would like to make the percent change calculation in (USD, BTC, ETH, or BNB), and calls the getPercentChange() function, passing in the 
+// currency that was chosen by the user.
 percentChangePrompt = () => {
     inquirer.prompt([
         {
             type: "list",
-            name: "command",
-            message: "Choose currency:",
-            choices: ["Get percent change (USD)", "Get percent change (BTC)"]
+            name: "currency",
+            message: "Choose currency: ",
+            choices: ["USD", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
-        var userCommand = response.command;
-        switch (userCommand) {
-            case "Get percent change (USD)":
-                getPercentChangeUSD();
-                break;
-            case "Get percent change (BTC)":
-                getPercentChangeBTC();
-                break;
-        };
+        getPercentChange(response.currency);
     });
 };
+
 
 // "askIfDone()" function
 // This function asks the user if they are done using the app.
@@ -853,98 +847,47 @@ getTargetPriceBNB = () => {
 
 };
 
-getPercentChangePrompt = () => {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "currency",
-            message: "Choose currency: ",
-            choices: ["USD", "BTC", "ETH", "BNB"]
-        }
-    ]).then(response => {
-        getPercentChange(response.currency);
-    });
-};
-
+// new function
 getPercentChange = (currency) => {
     inquirer.prompt([
         {
             type: "input",
-            name: "entryPriceUSD",
-            message: "Enter entry price (in USD):"
+            name: "entryPrice",
+            message: `Enter entry price (in ${currency}):`
         },
         {
             type: "input",
-            name: "exitPriceUSD",
-            message: "Enter exit price (in USD):"
+            name: "exitPrice",
+            message: `Enter exit price (in ${currency}):`
         }
     ]).then(response => {
-
-    });
-};
-
-// "getPercentChangeUSD()" function
-// This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
-// entry price and an exit price in USD to obtain the change in percentage.
-getPercentChangeUSD = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "entryPriceUSD",
-            message: "Enter entry price (in USD):"
-        },
-        {
-            type: "input",
-            name: "exitPriceUSD",
-            message: "Enter exit price (in USD):"
-        }
-    ]).then(response => {
-        var decimalChangeUSD = parseFloat(response.exitPriceUSD) / parseFloat(response.entryPriceUSD);
-        var percentChangeUSD = (decimalChangeUSD - 1) * 100;
-        console.log(`Entry price: $${response.entryPriceUSD}
-        Exit price: $${response.exitPriceUSD}
-        Decimal change: ${decimalChangeUSD.toFixed(2)}x
-        Percent change: ${percentChangeUSD.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
+        var decimalChange = parseFloat(response.exitPrice) / parseFloat(response.entryPrice);
+        var percentChange = (decimalChange - 1) * 100;
+        var entryOutput, exitOutput;
+        switch (currency) {
+            case "USD":
+                entryOutput = `Entry price: $${response.entryPrice}`;
+                exitOutput = `Exit price: $${response.exitPrice}`;
+                break;
+            case "BTC":
+                entryOutput = `Entry price: ${response.entryPrice} BTC`;
+                exitOutput = `Exit price: ${response.exitPrice} BTC`;
+                break;
+            case "ETH":
+                entryOutput = `Entry price: ${response.entryPrice} ETH`;
+                exitOutput = `Exit price: ${response.exitPrice} ETH`;
+                break;
+            case "BNB":
+                entryOutput = `Entry price: ${response.entryPrice} BNB`;
+                exitOutput = `Exit price: ${response.exitPrice} BNB`;
+                break;
+        };
+        console.log(`${entryOutput}
+        ${exitOutput}
+        Decimal change: ${decimalChange.toFixed(2)}x
+        Percent change: ${percentChange.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
-};
-
-// "getPercentChangeBTC()" function
-// This function runs when the user wants to make a quick calculation for percentage change on a trade. The user is asked to enter an 
-// entry price and an exit price in BTC to obtain the change in percentage.
-getPercentChangeBTC = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "entryPriceBTC",
-            message: "Enter entry price (in BTC):"
-        },
-        {
-            type: "input",
-            name: "exitPriceBTC",
-            message: "Enter exit price (in BTC):"
-        }
-    ]).then(response => {
-        var decimalChangeBTC = parseFloat(response.exitPriceBTC) / parseFloat(response.entryPriceBTC);
-        var percentChangeBTC = (decimalChangeBTC - 1) * 100;
-        console.log(`Entry price: ${response.entryPriceBTC} BTC
-        Exit price: ${response.exitPriceBTC} BTC
-        Decimal change: ${decimalChangeBTC.toFixed(2)}x
-        Percent change: ${percentChangeBTC.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
-        askIfDone();
-    });
-};
-
-// "getPercentChangeETH() function"
-// This function funs when the user...
-getPercentChangeETH = () => {
-
-};
-
-// "getPercentChangeBNB() function"
-// This function runs when the user...
-getPercentChangeBNB = () => {
-
 };
 
 // Call "beginApp()" to begin app
