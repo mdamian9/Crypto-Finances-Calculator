@@ -5,7 +5,7 @@ var fs = require("fs");
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
-beginApp= () => {
+beginApp = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -26,7 +26,7 @@ beginApp= () => {
             case "Calculate average entry price":
                 calcAvgEntryPrompt();
                 break;
-            case "Full ROI calculation (BTC as trading pair)":
+            case "Full ROI calculation (return of investment)": // needs fixing - refactor into one
                 calcUsdBtcRoi();
                 break;
             case "Get target price ($)":
@@ -781,6 +781,46 @@ calcUsdEthRoi = () => {
 
 };
 
+//
+//
+getTargetPrice = (currency) => {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "entryPrice",
+            message: `Enter entry price (in ${currency}): `
+        },
+        {
+            type: "input",
+            name: "targetPercentChange",
+            message: "Enter percent gain you're looking for: "
+        }
+    ]).then(response => {
+        var convertedPercentChange = parseFloat(response.targetPercentChange) * .01;
+        var targetPrice = entryPrice + (parseFloat(response.entryPrice) * convertedPercentChange);
+        var entryPriceOutput, exitPriceOutput;
+        switch (currency) {
+            case "USD":
+                //
+                break;
+            case "BTC":
+                //
+                break;
+            case "ETH":
+                //
+                break;
+            case "BNB":
+                //
+                break;
+        };
+        // console.log(`Entry price: $ ${response.entryPrice}
+        // Percent gain looking for: ${response.targetPercentChange}%
+        // Target sell price: $${targetPrice.toFixed(6)}\n`.replace(/^(\s{2})+/gm, ''));
+        // askIfDone();
+
+    });
+};
+
 // "getTargetPriceUSD()" function
 // This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
 // gain. The user is asked to enter an entry price in USD and the percentage gain they are looking for to find the target sell price.
@@ -864,23 +904,12 @@ getPercentChange = (currency) => {
         var decimalChange = parseFloat(response.exitPrice) / parseFloat(response.entryPrice);
         var percentChange = (decimalChange - 1) * 100;
         var entryOutput, exitOutput;
-        switch (currency) {
-            case "USD":
-                entryOutput = `Entry price: $${response.entryPrice}`;
-                exitOutput = `Exit price: $${response.exitPrice}`;
-                break;
-            case "BTC":
-                entryOutput = `Entry price: ${response.entryPrice} BTC`;
-                exitOutput = `Exit price: ${response.exitPrice} BTC`;
-                break;
-            case "ETH":
-                entryOutput = `Entry price: ${response.entryPrice} ETH`;
-                exitOutput = `Exit price: ${response.exitPrice} ETH`;
-                break;
-            case "BNB":
-                entryOutput = `Entry price: ${response.entryPrice} BNB`;
-                exitOutput = `Exit price: ${response.exitPrice} BNB`;
-                break;
+        if (currency === "USD") {
+            entryOutput = `Entry price: $${response.entryPrice}`;
+            exitOutput = `Exit price: $${response.exitPrice}`;
+        } else {
+            entryOutput = `Entry price: ${response.entryPrice} ${currency}`;
+            exitOutput = `Exit price: ${response.exitPrice} ${currency}`;
         };
         console.log(`${entryOutput}
         ${exitOutput}
