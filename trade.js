@@ -27,7 +27,7 @@ beginApp = () => {
                 calcAvgEntryPrompt();
                 break;
             case "Full ROI calculation (return of investment)": // needs fixing - refactor into one
-                calcUsdBtcRoi();
+                calcRoiPrompt();
                 break;
             case "Get target price ($)":
                 targetPricePrompt();
@@ -143,30 +143,16 @@ calcAvgEntryPrompt = () => {
     });
 };
 
-// "targetPricePrompt()" function
-// This function is called when the user chooses to get target price in the first prompt. It asks the user to choose what type of target 
-// price calculation they would like to make (USD or BTC), and calls the appropriate function based on the user's response.
-// targetPricePrompt = () => {
-//     inquirer.prompt([
-//         {
-//             type: "list",
-//             name: "command",
-//             message: "Choose target:",
-//             choices: ["Get target price (USD)", "Get target price (BTC)"]
-//         }
-//     ]).then(response => {
-//         var userCommand = response.command;
-//         switch (userCommand) {
-//             case "Get target price (USD)":
-//                 getTargetPriceUSD();
-//                 break;
-//             case "Get target price (BTC)":
-//                 getTargetPriceBTC();
-//                 break;
-//         };
-//     });
-// };
+// "calcRoiPrompt() function"
+// New function...
+calcRoiPrompt = () => {
 
+};
+
+// "targetPricePrompt()" function
+// This function is called when the user chooses to get target price in the first prompt. It asks the user to choose what currency they 
+// would like to find the target price in (USD, BTC, ETH, or BNB), and calls the getTargetPrice() function, passing in the currency that 
+// was chosen by the user.
 targetPricePrompt = () => {
     inquirer.prompt([
         {
@@ -711,6 +697,65 @@ calcAvgEntryPriceETH = () => {
 // This function runs when the user...
 calcAvgEntryPriceBNB = () => {
 
+};
+
+//
+//
+calcRoi = (currency) => {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "altName",
+            message: "Enter name of altcoin traded: "
+        },
+        {
+            type: "input",
+            name: "investmentUSD",
+            message: "Enter initial investment (in USD): "
+        },
+        {
+            type: "input",
+            name: "investmentCoin",
+            message: `Enter initial investment (in ${currency}): `
+        },
+        {
+            type: "input",
+            name: "divestmentUSD",
+            message: "Enter final divesment (in USD): "
+        },
+        {
+            type: "input",
+            name: "divestmentCoin",
+            message: `Enter final divesment (in ${currency}): `
+        }
+    ]).then(response => {
+        var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+        var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
+        var roiPercentUSD = (roiDecimalUSD - 1) * 100;
+        var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
+        var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
+        var roiPercentCoin = (roiDecimalCoin - 1) * 100;
+        var output;
+        if (netChangeUSD >= 0 && netChangeBTC >= 0) {
+            output = `* New ROI calculation *
+            Cryptocurrency: ${response.altName}
+            Initial investment (USD): ${response.investmentUSD}
+            Initial investment (${currency}): ${response.investmentBTC} ${currency}
+            Final divestment (USD): ${response.divestmentUSD.toFixed(2)}
+            Final divestment (${currency}): ${response.divestmentBTC.toFixed(8)} ${currency}
+            Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
+            Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
+            Return of investment in BTC (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
+            Return of investment in BTC (percent): ${roiPercentCoin.toFixed(2)}% ROI
+            Total USD profit: $${netChangeUSD.toFixed(2)}
+            Total ${currency} profit: ${netChangeCoin.toFixed(8)} ${currency}
+            Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{3})+/gm, '');
+        } else {
+
+        };
+        console.log(output);
+        logTradePrompt('./roi.txt', output);
+    });
 };
 
 // "calcUsdBtcRoi()" function
