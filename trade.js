@@ -146,24 +146,37 @@ calcAvgEntryPrompt = () => {
 // "targetPricePrompt()" function
 // This function is called when the user chooses to get target price in the first prompt. It asks the user to choose what type of target 
 // price calculation they would like to make (USD or BTC), and calls the appropriate function based on the user's response.
+// targetPricePrompt = () => {
+//     inquirer.prompt([
+//         {
+//             type: "list",
+//             name: "command",
+//             message: "Choose target:",
+//             choices: ["Get target price (USD)", "Get target price (BTC)"]
+//         }
+//     ]).then(response => {
+//         var userCommand = response.command;
+//         switch (userCommand) {
+//             case "Get target price (USD)":
+//                 getTargetPriceUSD();
+//                 break;
+//             case "Get target price (BTC)":
+//                 getTargetPriceBTC();
+//                 break;
+//         };
+//     });
+// };
+
 targetPricePrompt = () => {
     inquirer.prompt([
         {
             type: "list",
-            name: "command",
-            message: "Choose target:",
-            choices: ["Get target price (USD)", "Get target price (BTC)"]
+            name: "currency",
+            message: "Choose currency: ",
+            choices: ["USD", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
-        var userCommand = response.command;
-        switch (userCommand) {
-            case "Get target price (USD)":
-                getTargetPriceUSD();
-                break;
-            case "Get target price (BTC)":
-                getTargetPriceBTC();
-                break;
-        };
+        getTargetPrice(response.currency);
     });
 };
 
@@ -303,7 +316,7 @@ newEntryTradeUSD = () => {
         Total BTC available (after all fees): ${transferredBTC.toFixed(8)} BTC
         Bought ${response.altName} at: ${response.altPrice} BTC
         Total coins bought: ${actualCoins} ${response.altName}
-        Entry price (USD): $${entryPriceUSD.toFixed(6)} (factoring in Coinbase fee, transfer fee and Binance fee)
+        Entry price (USD): $${entryPriceUSD.toFixed(5)} (factoring in Coinbase fee, transfer fee and Binance fee)
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
         console.log(output);
@@ -353,7 +366,7 @@ newEntryTradeUSDT = () => {
         Total BTC available (after all fees): ${actualBTC.toFixed(8)} BTC
         Bought ${response.altName} at: ${response.altPrice} BTC
         Total coins bought: ${actualCoins} ${response.altName}
-        Entry price (USDT): $${entryPriceUSDT.toFixed(6)} (factoring in Binance fees)
+        Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fees)
         Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
@@ -453,7 +466,7 @@ newExitTradeUSD = () => {
         Sold Bitcoin at: $${response.btcPrice} per BTC
         Total Bitcoin sold: ${transferredBTC.toFixed(8)} BTC
         Final divestment: $${actualDivestment} (factoring in Binance fee, transfer fee and Coinbase fee)
-        Exit price: $${exitPrice.toFixed(6)} (factoring in Binance fee, transfer fee and Coinbase fee)
+        Exit price: $${exitPrice.toFixed(5)} (factoring in Binance fee, transfer fee and Coinbase fee)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
         logTradePrompt('logs/exits_log/exits_USD.txt', output);
@@ -501,8 +514,8 @@ newExitTradeUSDT = () => {
         Sold ${response.altName} at: ${response.altPrice} BTC
         Sold Bitcoin at: $${response.btcPrice} per BTC
         Total Bitcoin sold: ${actualBTC.toFixed(8)} BTC
-        Total USDT: $${actualUSDT.toFixed(6)} (factoring in Binance fees)
-        Exit price: $${exitPriceUSDT.toFixed(6)} (factoring in Binance fees)
+        Total USDT: $${actualUSDT.toFixed(5)} (factoring in Binance fees)
+        Exit price: $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
         Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
         console.log(output);
         logTradePrompt('logs/exits_log/exits_USDT.txt', output);
@@ -624,7 +637,7 @@ calcAvgEntryPriceUSD = () => {
             Sum of total investments (USD): $${weightedAvgNumeratorUSD.toFixed(0)}
             Sum of total investments (BTC): ${weightedAvgNumeratorBTC.toFixed(8)} BTC
             Sum of total coins / tokens obtained: ${sumTotalCoins} ${response.altName}
-            Average entry price (USD): $${avgEntryPriceUSD.toFixed(6)} (after all fees)
+            Average entry price (USD): $${avgEntryPriceUSD.toFixed(5)} (after all fees)
             Average entry price (BTC): ${avgEntryPriceBTC.toFixed(8)} BTC (after all fees)\n`.replace(/^(\s{3})+/gm, '');
             console.log(output);
             logTradePrompt('./avg_entries_USDX.txt', output);
@@ -781,8 +794,10 @@ calcUsdEthRoi = () => {
 
 };
 
-//
-//
+// "getTargetPrice()" function
+// This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
+// gain. The user is asked to enter an entry price in the currency they chose in the targetPricePrompt() function and the percentage gain 
+// they are looking for to find the target sell price.
 getTargetPrice = (currency) => {
     inquirer.prompt([
         {
@@ -797,97 +812,36 @@ getTargetPrice = (currency) => {
         }
     ]).then(response => {
         var convertedPercentChange = parseFloat(response.targetPercentChange) * .01;
-        var targetPrice = entryPrice + (parseFloat(response.entryPrice) * convertedPercentChange);
-        var entryPriceOutput, exitPriceOutput;
+        var targetPrice = parseFloat(response.entryPrice) + (parseFloat(response.entryPrice) * convertedPercentChange);
+        var entryPriceOutput, percentChangeOutput, targetPriceOutput;
         switch (currency) {
             case "USD":
-                //
+                entryPriceOutput = `Entry price: $${response.entryPrice}`;
+                percentChangeOutput = `Percent gain looking for: ${response.targetPercentChange}%`;
+                targetPriceOutput = `Target sell price: $${targetPrice.toFixed(5)}`;
                 break;
             case "BTC":
-                //
-                break;
             case "ETH":
-                //
+                entryPriceOutput = `Entry price: ${response.entryPrice} ${currency}`;
+                percentChangeOutput = `Percent gain looking for: ${response.targetPercentChange}%`;
+                targetPriceOutput = `Target sell price: ${targetPrice.toFixed(8)} ${currency}`;
                 break;
             case "BNB":
-                //
+                entryPriceOutput = `Entry price: ${response.entryPrice} ${currency}`;
+                percentChangeOutput = `Percent gain looking for: ${response.targetPercentChange}%`;
+                targetPriceOutput = `Target sell price: ${targetPrice.toFixed(5)} ${currency}`;
                 break;
         };
-        // console.log(`Entry price: $ ${response.entryPrice}
-        // Percent gain looking for: ${response.targetPercentChange}%
-        // Target sell price: $${targetPrice.toFixed(6)}\n`.replace(/^(\s{2})+/gm, ''));
-        // askIfDone();
-
-    });
-};
-
-// "getTargetPriceUSD()" function
-// This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
-// gain. The user is asked to enter an entry price in USD and the percentage gain they are looking for to find the target sell price.
-getTargetPriceUSD = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "entryPriceUSD",
-            message: "Enter entry price (in USD): "
-        },
-        {
-            type: "input",
-            name: "targetPercentChange",
-            message: "Enter percent gain you're looking for: "
-        }
-    ]).then(response => {
-        var entryPriceUSD = parseFloat(response.entryPriceUSD);
-        var targetPercentChange = parseFloat(response.targetPercentChange);
-        var convertedPercentChange = targetPercentChange * .01;
-        var targetPriceUSD = entryPriceUSD + (entryPriceUSD * convertedPercentChange);
-        console.log(`Entry price: $ ${response.entryPriceUSD}
-        Percent gain looking for: ${response.targetPercentChange}%
-        Target sell price: $${targetPriceUSD.toFixed(6)}\n`.replace(/^(\s{2})+/gm, ''));
+        console.log(`\n${entryPriceOutput}
+        ${percentChangeOutput}
+        ${targetPriceOutput}\n`.replace(/^(\s{2})+/gm, ''));
         askIfDone();
     });
 };
 
-// "getTargetPriceBTC()" function
-// This function runs when the user wants to make a quick calculation to find the price they need to sell at, for a certain percentage 
-// gain. The user is asked to enter an entry price in BTC and the percentage gain they are looking for to find the target sell price.
-getTargetPriceBTC = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "entryPriceBTC",
-            message: "Enter entry price (in BTC): "
-        },
-        {
-            type: "input",
-            name: "targetPercentChange",
-            message: "Enter percent gain you're looking for: "
-        }
-    ]).then(response => {
-        var entryPriceBTC = parseFloat(response.entryPriceBTC);
-        var targetPercentChange = parseFloat(response.targetPercentChange);
-        var convertedPercentChange = targetPercentChange * .01;
-        var targetPriceBTC = entryPriceBTC + (entryPriceBTC * convertedPercentChange);
-        console.log(`Entry price: ${response.entryPriceBTC} BTC
-        Percent gain looking for: ${response.targetPercentChange}%
-        Target sell price: ${targetPriceBTC.toFixed(8)} BTC\n`.replace(/^(\s{2})+/gm, ''));
-        askIfDone();
-    });
-};
-
-// "getTargetPriceETH() function"
-// This function runs when the user...
-getTargetPriceETH = () => {
-
-};
-
-// "getTargetPriceBNB() function"
-// This function runs when the user...
-getTargetPriceBNB = () => {
-
-};
-
-// new function
+// "getPercentChange()" function
+// This function runs when the user wants to find the percentage change of a trade. The user is asked to enter an entry price and exit 
+// price in the currency they chose in the percentChangePrompt() function to find the percentage change.
 getPercentChange = (currency) => {
     inquirer.prompt([
         {
@@ -911,7 +865,7 @@ getPercentChange = (currency) => {
             entryOutput = `Entry price: ${response.entryPrice} ${currency}`;
             exitOutput = `Exit price: ${response.exitPrice} ${currency}`;
         };
-        console.log(`${entryOutput}
+        console.log(`\n${entryOutput}
         ${exitOutput}
         Decimal change: ${decimalChange.toFixed(2)}x
         Percent change: ${percentChange.toFixed(2)}%\n`.replace(/^(\s{2})+/gm, ''));
