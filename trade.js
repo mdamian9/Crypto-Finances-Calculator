@@ -12,7 +12,7 @@ beginApp = () => {
             name: "command",
             message: "What would you like to do?",
             choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
-                "Full ROI calculation (return of investment)", "Get target price ($)", "Get percent change (%)"]
+                "Calculate ROI (return of investment)", "Get target price ($)", "Get percent change (%)"]
         }
     ]).then(response => {
         var userCommand = response.command;
@@ -26,7 +26,7 @@ beginApp = () => {
             case "Calculate average entry price":
                 calcAvgEntryPrompt();
                 break;
-            case "Full ROI calculation (return of investment)": // needs fixing - refactor into one
+            case "Calculate ROI (return of investment)": // needs fixing - refactor into one
                 calcRoiPrompt();
                 break;
             case "Get target price ($)":
@@ -716,92 +716,123 @@ calcRoi = (currency) => {
 
     usdRoi = () => {
         inquirer.prompt([
-            
+
         ]).then(response => {
 
         });
     };
 
-    fullRoi = () => {
+    // The cryptoRoi() function is executed to calculate ROI if the user traded alts in BTC
+    cryptoRoi = () => {
+
+        // The cryptoProfit() function is executed if the user chooses to keep ROI in the currency they traded in.
+        cryptoProfit = () => {
+            console.log("in progress");
+        };
+
+        // The usdProfit() function is executed if the user chooses to take ROI in USD.
+        usdProfit = () => {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin traded: "
+                },
+                {
+                    type: "input",
+                    name: "investmentUSD",
+                    message: "Enter initial investment (in USD): "
+                },
+                {
+                    type: "input",
+                    name: "investmentCoin",
+                    message: `Enter initial investment (in ${currency}): `
+                },
+                {
+                    type: "input",
+                    name: "divestmentUSD",
+                    message: "Enter final divesment (in USD): "
+                },
+                {
+                    type: "input",
+                    name: "divestmentCoin",
+                    message: `Enter final divesment (in ${currency}): `
+                }
+            ]).then(response => {
+                var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+                var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
+                var roiPercentUSD = (roiDecimalUSD - 1) * 100;
+                var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
+                var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
+                var roiPercentCoin = (roiDecimalCoin - 1) * 100;
+                var output;
+                if (netChangeUSD >= 0 && netChangeCoin >= 0) {
+                    if (currency === "BNB") {
+                        netChangeCoin = netChangeCoin.toFixed(5);
+                    } else {
+                        netChangeCoin = netChangeCoin.toFixed(8);
+                    };
+                    output = `* New ROI calculation *
+                    Cryptocurrency: ${response.altName}
+                    Initial investment (USD): ${response.investmentUSD}
+                    Initial investment (${currency}): ${response.investmentCoin} ${currency} 
+                    Final divestment (USD): ${response.divestmentUSD}
+                    Final divestment (${currency}): ${response.divestmentCoin} ${currency}
+                    Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
+                    Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
+                    Return of investment in ${currency} (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
+                    Return of investment in ${currency} (percent): ${roiPercentCoin.toFixed(2)}% ROI
+                    Total USD profit: $${netChangeUSD.toFixed(2)}
+                    Total ${currency} profit: ${netChangeCoin} ${currency}
+                    Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                } else {
+                    if (currency === "BNB") {
+                        netChangeCoin = netChangeCoin.toFixed(5) * -1;
+                    } else {
+                        netChangeCoin = netChangeCoin.toFixed(8) * -1;
+                    };
+                    netChangeUSD = netChangeUSD * -1;
+                    output = `* New ROI calculation *
+                    Cryptocurrency: ${response.altName}
+                    Initial investment (USD): $${response.investmentUSD}
+                    Initial investment (BTC): ${response.investmentCoin} ${currency}
+                    Final divestment: $${response.divestmentUSD} 
+                    Final divestment (BTC): ${response.divestmentCoin} ${currency}
+                    Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
+                    Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
+                    Return of investment in ${currency} (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
+                    Return of investment in ${currency} (percent): ${roiPercentCoin.toFixed(2)}% ROI
+                    Total USD loss: $${netChangeUSD.toFixed(2)}
+                    Total ${currency} loss: ${netChangeCoin} ${currency}
+                    Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{5})+/gm, '');
+                };
+                console.log(output);
+                logTradePrompt('./roi.txt', output);
+            });
+        };
+
+        // Start of prompt inside cryptoRoi(): user chooses to keep their ROI in crypto, or trade it back to USD
         inquirer.prompt([
             {
-                type: "input",
-                name: "altName",
-                message: "Enter name of altcoin traded: "
-            },
-            {
-                type: "input",
-                name: "investmentUSD",
-                message: "Enter initial investment (in USD): "
-            },
-            {
-                type: "input",
-                name: "investmentCoin",
-                message: `Enter initial investment (in ${currency}): `
-            },
-            {
-                type: "input",
-                name: "divestmentUSD",
-                message: "Enter final divesment (in USD): "
-            },
-            {
-                type: "input",
-                name: "divestmentCoin",
-                message: `Enter final divesment (in ${currency}): `
+                type: "list",
+                name: "type",
+                message: "Choose from the following:",
+                choices: [`Calculate ${currency} ROI`, `Calculate USD & ${currency} ROI`]
             }
         ]).then(response => {
-            var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
-            var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
-            var roiPercentUSD = (roiDecimalUSD - 1) * 100;
-            var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
-            var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
-            var roiPercentCoin = (roiDecimalCoin - 1) * 100;
-            var output;
-            if (netChangeUSD >= 0 && netChangeCoin >= 0) { // function needs review / completion
-                if (currency === "BNB") {
-                    netChangeCoin = netChangeCoin.toFixed(5);
-                } else {
-                    netChangeCoin = netChangeCoin.toFixed(8);
-                };
-                output = `* New ROI calculation *
-                Cryptocurrency: ${response.altName}
-                Initial investment (USD): ${response.investmentUSD}
-                Initial investment (${currency}): ${response.investmentCoin} ${currency} 
-                Final divestment (USD): ${response.divestmentUSD}
-                Final divestment (${currency}): ${response.divestmentCoin} ${currency}
-                Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
-                Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
-                Return of investment in BTC (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
-                Return of investment in BTC (percent): ${roiPercentCoin.toFixed(2)}% ROI
-                Total USD profit: $${netChangeUSD.toFixed(2)}
-                Total ${currency} profit: ${netChangeCoin} ${currency}
-                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+            if (response.type === `Calculate ${currency} ROI`) {
+                console.log("in progress");
             } else {
-                netChangeUSD = netChangeUSD * -1;
-                netChangeBTC = netChangeBTC * -1;
-                output = `* New ROI calculation *
-                Cryptocurrency: ${response.altName}
-                Initial investment (USD): $${response.investmentUSD}
-                Initial investment (BTC): ${response.investmentBTC} BTC
-                Final divestment: $${response.divestmentUSD.toFixed(2)} 
-                Final divestment (BTC): ${response.divestmentBTC.toFixed(8)} BTC
-                Return of investment in USD (decimal): ${roiDecimalUSD}x ROI
-                Return of investment in USD (percent): ${roiPercentUSD}% ROI
-                Return of investment in BTC (decimal): ${roiDecimalBTC}x ROI
-                Return of investment in BTC (percent): ${roiPercentBTC}% ROI
-                Total USD loss: $${netChangeUSD.toFixed(2)}
-                Total BTC loss: ${netChangeBTC.toFixed(8)} BTC
-                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                usdProfit();
             };
-            console.log(output);
-            logTradePrompt('./roi.txt', output);
         });
     };
 
+    // Logic to choose function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run cryptoRoi().
     if (currency === "USD") {
-
+        usdRoi();
     } else {
-        fullRoi();
+        cryptoRoi();
     };
 
 };
