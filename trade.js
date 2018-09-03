@@ -256,9 +256,9 @@ logTradePrompt = (txtFileName, output) => {
 newEntryTrade = (currency) => {
 
     usdEntryTrade = (tradingPair) => {
-        if (tradingPair === "USDT") {
-            console.log("in progress"); // this part of the function needs completion
-        } else {
+        
+        // This type of entry is when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
+        coinbaseEntry = () => {
             inquirer.prompt([
                 {
                     type: "input",
@@ -355,6 +355,35 @@ newEntryTrade = (currency) => {
                 logTradePrompt(query, output);
             });
         };
+
+        // This type of entry is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
+        // (tradingPair === "none").
+        robinhoodEntry = () => {
+
+        };
+
+        // This type of entry is when a user makes an entry using USDT (Tether) on Binance.
+        usdtEntry = () => {
+
+        };
+
+        // Logic that determins what trading pair was used / what function to be executed.
+
+        switch (tradingPair) {
+            case "BTC":
+            case "ETH":
+                coinbaseEntry();
+                break;
+            case "USDT":
+                // Needs completion
+                // usdtEntry();
+                break;
+            case "None":
+                // Needs completion
+                // robinhoodEntry();
+                break;
+        };
+
     };
 
     // This function runs if the user chooses to trade alts in BTC, ETH, or BNB.
@@ -371,7 +400,7 @@ newEntryTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "USDT"]
+                choices: ["BTC", "ETH", "USDT", "None"]
             }
         ]).then(response => {
             usdEntryTrade(response.tradingPair);
