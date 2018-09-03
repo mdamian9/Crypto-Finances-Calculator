@@ -256,7 +256,7 @@ logTradePrompt = (txtFileName, output) => {
 newEntryTrade = (currency) => {
 
     usdEntryTrade = (tradingPair) => {
-        
+
         // This type of entry is when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
         coinbaseEntry = () => {
             inquirer.prompt([
@@ -317,21 +317,6 @@ newEntryTrade = (currency) => {
                     }
                 }
             ]).then(response => {
-                var query, entryTitle;
-                switch (tradingPair) {
-                    case "BTC":
-                        query = "logs/entries_log/entries_USD_BTC.txt";
-                        entryTitle = "* New entry trade (USD/BTC) *"
-                        break;
-                    case "ETH":
-                        query = "logs/entries_log/entries_USD_ETH.txt";
-                        entryTitle = "* New entry trade (USD/ETH) *";
-                        break;
-                    case "USDT":
-                        query = "logs/entries_log/entries_USD_USDT.txt";
-                        entryTitle = "* New entry trade (USDT) *";
-                        break;
-                };
                 var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
                 var actualCrypto = totalCrypto - (totalCrypto * .04);
                 var transferredCrypto = actualCrypto - .00000700;
@@ -340,6 +325,14 @@ newEntryTrade = (currency) => {
                 var actualCoins = totalCoins - exchFee;
                 var entryPriceUSD = parseFloat(response.investment) / actualCoins;
                 var entryPriceCrypto = transferredCrypto / actualCoins;
+                var query, entryTitle;
+                if (tradingPair === "BTC") {
+                    query = "logs/entries_log/entries_USD_BTC.txt";
+                    entryTitle = "* New entry trade (USD/BTC) *";
+                } else {
+                    query = "logs/entries_log/entries_USD_ETH.txt";
+                    entryTitle = "* New entry trade (USD/ETH) *";
+                };
                 var output = `${entryTitle}
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment}
@@ -356,19 +349,72 @@ newEntryTrade = (currency) => {
             });
         };
 
-        // This type of entry is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
-        // (tradingPair === "none").
-        robinhoodEntry = () => {
-
-        };
-
         // This type of entry is when a user makes an entry using USDT (Tether) on Binance.
         usdtEntry = () => {
 
         };
 
-        // Logic that determins what trading pair was used / what function to be executed.
+        // This type of entry is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
+        // (tradingPair === "none").
+        robinhoodEntry = () => {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "investment",
+                    message: "Enter total investment (USD):",
+                    // validate: validateNumber(investment)
+                    validate: validateInvestment = (investment) => {
+                        var flag = true;
+                        var values = /^[\d.]+$/;
+                        if (!values.test(investment)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                },
+                {
+                    type: "input",
+                    name: "coinName",
+                    message: "Enter name of cryptocurrency bought:",
+                    // validate: validateName(coinName)
+                    validate: validateCoinName = (coinName) => {
+                        var flag = true;
+                        var values = /^[\a-zA-z]+$/;
+                        if (!values.test(coinName)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: "Enter price of cryptocurrency:",
+                    // validate: validateNumber(coinPrice)
+                    validate: validateCoinPrice = (coinPrice) => {
+                        var flag = true;
+                        var values = /^[\d.]+$/;
+                        if (!values.test(coinPrice)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                }
+            ]).then(response => {
+                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                var output = `* New entry trade (USD) - Robinhood *
+                Cryptocurrency: ${response.coinName}
+                Initial investment: $${response.investment}
+                Bought ${response.coinName} at: $${response.coinPrice}
+                Total coins bought: ${totalCrypto}
+                Entry price $${parseFloat(response.coinPrice).toFixed(6)}
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
+                console.log(output);
+                logTradePrompt("logs/entries_log/entries_USD.txt", output);
+            });
+        };
 
+        // Logic that determins what trading pair was used / what function to be executed.
         switch (tradingPair) {
             case "BTC":
             case "ETH":
@@ -378,9 +424,8 @@ newEntryTrade = (currency) => {
                 // Needs completion
                 // usdtEntry();
                 break;
-            case "None":
-                // Needs completion
-                // robinhoodEntry();
+            case "None (Robinhood Trade)":
+                robinhoodEntry();
                 break;
         };
 
@@ -400,7 +445,7 @@ newEntryTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "USDT", "None"]
+                choices: ["BTC", "ETH", "USDT", "None (Robinhood Trade)"]
             }
         ]).then(response => {
             usdEntryTrade(response.tradingPair);
@@ -408,193 +453,6 @@ newEntryTrade = (currency) => {
     } else {
         cryptoEntryTrade();
     };
-
-};
-
-// "newEntryTradeUSD()" function
-// This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
-// investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin they bought 
-// (altcoin price is in BTC). This function assumes the user is buying BTC on Coinbase with a 4% purchase fee, a .00000700 BTC transfer fee 
-// to altcoin exchange, and a 0.1% purchase fee on Binance when buying an altcoin.
-newEntryTradeUSD = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "investment",
-            message: "Enter total investment (USD): ",
-            // validate: validateNumber(investment)
-            validate: validateInvestment = (investment) => {
-                var flag = true;
-                var values = /^[\d.]+$/;
-                if (!values.test(investment)) {
-                    flag = "Please enter valid input.";
-                };
-                return flag;
-            }
-        },
-        {
-            type: "input",
-            name: "btcPrice",
-            message: "Enter Bitcoin price (bought): ",
-            // validate: validateNumber(btcPrice)
-            validate: validateBtcPrice = (btcPrice) => {
-                var flag = true;
-                var values = /^[\d.]+$/;
-                if (!values.test(btcPrice)) {
-                    flag = "Please enter valid input.";
-                };
-                return flag;
-            }
-        },
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin bought: ",
-            // validate: validateName(altName)
-            validate: validateAltName = (altName) => {
-                var flag = true;
-                var values = /^[\a-zA-z]+$/;
-                if (!values.test(altName)) {
-                    flag = "Please enter valid input.";
-                };
-                return flag;
-            }
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price of altcoin (in BTC): ",
-            // validate: validateNumber(altPrice)
-            validate: validateAltPrice = (altPrice) => {
-                var flag = true;
-                var values = /^[\d.]+$/;
-                if (!values.test(altPrice)) {
-                    flag = "Please enter valid input.";
-                };
-                return flag;
-            }
-        }
-    ]).then(response => {
-        var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
-        var actualBTC = totalBTC - (totalBTC * .04);
-        var transferredBTC = actualBTC - .00000700;
-        var totalCoins = transferredBTC / parseFloat(response.altPrice);
-        var exchFee = totalCoins * .001;
-        var actualCoins = totalCoins - exchFee;
-        var entryPriceUSD = parseFloat(response.investment) / actualCoins;
-        var entryPriceBTC = transferredBTC / actualCoins;
-        var output = `* New entry trade (USD) *
-        Cryptocurrency: ${response.altName}
-        Initial investment: $${response.investment}
-        Bought Bitcoin at: $${response.btcPrice} per BTC
-        Total BTC available (after all fees): ${transferredBTC.toFixed(8)} BTC
-        Bought ${response.altName} at: ${response.altPrice} BTC
-        Total coins bought: ${actualCoins} ${response.altName}
-        Entry price (USD): $${entryPriceUSD.toFixed(5)} (factoring in Coinbase fee, transfer fee and Binance fee)
-        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Coinbase fee, transfer fee and Binance fee)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '')
-        console.log(output);
-        logTradePrompt('logs/entries_log/entries_USD.txt', output);
-    });
-};
-
-// "newEntryTradeUSDT()" function
-// This function runs when the user wants to create a new entry (buy) trade using USDT (Tether). By using inquirer, the user is prompted 
-// for their initial investment, the price of Bitcoin when they bought, the name of the altcoin they bought, and the price of the altcoin 
-// they bought (altcoin price is in BTC). This function assumes the user is buying BTC / buying altcoin on Binance with a 0.1% purchase 
-// fee on the BTC buy and altcoin buy each.
-newEntryTradeUSDT = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "investment",
-            message: "Enter total investment (USDT): "
-        },
-        {
-            type: "input",
-            name: "btcPrice",
-            message: "Enter Bitcoin price (bought): "
-        },
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin bought: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price of altcoin (in BTC): "
-        }
-    ]).then(response => {
-        var totalBTC = parseFloat(response.investment) / parseFloat(response.btcPrice);
-        var actualBTC = totalBTC - (totalBTC * .001);
-        var totalCoins = actualBTC / parseFloat(response.altPrice);
-        var exchFee = totalCoins * .001;
-        var actualCoins = totalCoins - exchFee;
-        var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
-        var entryPriceBTC = actualBTC / actualCoins;
-        var output = `* New entry trade (USDT) *
-        Cryptocurrency: ${response.altName}
-        Initial investment: $${response.investment} (Tether)
-        Bought Bitcoin at: $${response.btcPrice} per BTC
-        Total BTC available (after all fees): ${actualBTC.toFixed(8)} BTC
-        Bought ${response.altName} at: ${response.altPrice} BTC
-        Total coins bought: ${actualCoins} ${response.altName}
-        Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fees)
-        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-        console.log(output);
-        logTradePrompt('logs/entries_log/entries_USDT.txt', output);
-    });
-};
-
-// "newEntryTradeBTC()" function
-// This function runs when the user wants to create a new entry (buy) trade strictly in BTC. By using inquirer, the user is prompted for 
-// their initial investment in BTC, the name of the altcoin they bought, and the price of the altcoin they bought (altcoin price is in BTC). 
-// This function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when buying altcoins.
-newEntryTradeBTC = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "investmentBTC",
-            message: "Enter total investment (BTC): "
-        },
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin bought: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price of altcoin (in BTC): "
-        }
-    ]).then(response => {
-        var totalCoins = parseFloat(response.investmentBTC) / parseFloat(response.altPrice);
-        var exchFee = totalCoins * .001;
-        var actualCoins = totalCoins - (exchFee)
-        var entryPriceBTC = parseFloat(response.investmentBTC) / actualCoins;
-        var output = `* New entry trade (BTC) *
-        Cryptocurrency: ${response.altName}
-        Initial investment: ${response.investmentBTC} BTC
-        Bought ${response.altName} at: ${response.altPrice} BTC
-        Total coins bought: ${actualCoins} ${response.altName}
-        Entry price (BTC): ${entryPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-        console.log(output);
-        logTradePrompt('logs/entries_log/entries_BTC.txt', output);
-    });
-};
-
-// "newEntryTradeETH() function"
-// This functions runs when the user...
-newEntryTradeEth = () => {
-
-};
-
-// "newEntryTradeBNB() function"
-// This functions runs when the user...
-newEntryTradeBNB = () => {
 
 };
 
