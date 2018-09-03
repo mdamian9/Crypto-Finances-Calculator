@@ -72,7 +72,7 @@ newEntryPrompt = () => {
         {
             type: "list",
             name: "currency",
-            message: "Choose currency to trade in:",
+            message: "Choose currency to make new entry in:",
             choices: ["USD", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
@@ -256,7 +256,7 @@ logTradePrompt = (txtFileName, output) => {
 newEntryTrade = (currency) => {
 
     usdEntryTrade = (tradingPair) => {
-        if (tradingPair === "None") {
+        if (tradingPair === "USDT") {
             console.log("in progress"); // this part of the function needs completion
         } else {
             inquirer.prompt([
@@ -317,6 +317,21 @@ newEntryTrade = (currency) => {
                     }
                 }
             ]).then(response => {
+                var query, entryTitle;
+                switch (tradingPair) {
+                    case "BTC":
+                        query = "logs/entries_log/entries_USD_BTC.txt";
+                        entryTitle = "* New entry trade (USD/BTC) *"
+                        break;
+                    case "ETH":
+                        query = "logs/entries_log/entries_USD_ETH.txt";
+                        entryTitle = "* New entry trade (USD/ETH) *";
+                        break;
+                    case "USDT":
+                        query = "logs/entries_log/entries_USD_USDT.txt";
+                        entryTitle = "* New entry trade (USDT) *";
+                        break;
+                };
                 var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
                 var actualCrypto = totalCrypto - (totalCrypto * .04);
                 var transferredCrypto = actualCrypto - .00000700;
@@ -325,7 +340,7 @@ newEntryTrade = (currency) => {
                 var actualCoins = totalCoins - exchFee;
                 var entryPriceUSD = parseFloat(response.investment) / actualCoins;
                 var entryPriceCrypto = transferredCrypto / actualCoins;
-                var output = `* New entry trade (USD) *
+                var output = `${entryTitle}
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment}
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
@@ -337,17 +352,18 @@ newEntryTrade = (currency) => {
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
                 console.log(output);
                 // create query depending on trading pair, to log to appropriate file: needs completion.
-                var query;
-                logTradePrompt('logs/entries_log/entries_USD.txt', output);
+                logTradePrompt(query, output);
             });
         };
     };
 
+    // This function runs if the user chooses to trade alts in BTC, ETH, or BNB.
     cryptoEntryTrade = () => {
 
     };
 
-    // Logic that determins which function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run 
+    // Logic that determins which function to run: if currency traded in was USD, prompt user to choose trading pair and call 
+    // usdEntryTrade() function, passing in the user's response as a parameter. If user traded in a cryptocurrency, run 
     // cryptoRoi().
     if (currency === "USD") {
         inquirer.prompt([
@@ -355,7 +371,7 @@ newEntryTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "None"]
+                choices: ["BTC", "ETH", "USDT"]
             }
         ]).then(response => {
             usdEntryTrade(response.tradingPair);
@@ -1152,3 +1168,4 @@ beginApp();
 // 3. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
 // 4. Double check average entry functions - sum total investments may have bug
 // 5. Create database on MongoDB to make calculating avg entry prices easier
+// 6. ES6 - use const and let instead of var
