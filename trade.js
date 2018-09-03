@@ -83,29 +83,29 @@ newEntryPrompt = () => {
 // "newEntryPrompt()" function
 // This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
 // trade they would like to make (USD, USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
-newEntryPrompt = () => {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "command",
-            message: "Choose currency to trade in:",
-            choices: ["New entry trade (USD)", "New entry trade (USDT)", "New entry trade (BTC)"]
-        }
-    ]).then(response => {
-        var userCommand = response.command;
-        switch (userCommand) {
-            case "New entry trade (USD)":
-                newEntryTradeUSD();
-                break;
-            case "New entry trade (USDT)":
-                newEntryTradeUSDT();
-                break;
-            case "New entry trade (BTC)":
-                newEntryTradeBTC();
-                break;
-        };
-    });
-};
+// newEntryPrompt = () => {
+//     inquirer.prompt([
+//         {
+//             type: "list",
+//             name: "command",
+//             message: "Choose currency to trade in:",
+//             choices: ["New entry trade (USD)", "New entry trade (USDT)", "New entry trade (BTC)"]
+//         }
+//     ]).then(response => {
+//         var userCommand = response.command;
+//         switch (userCommand) {
+//             case "New entry trade (USD)":
+//                 newEntryTradeUSD();
+//                 break;
+//             case "New entry trade (USDT)":
+//                 newEntryTradeUSDT();
+//                 break;
+//             case "New entry trade (BTC)":
+//                 newEntryTradeBTC();
+//                 break;
+//         };
+//     });
+// };
 
 // "newExitPrompt()" function
 // This function is called when the user chooses to make a new exit trade in the first prompt. It asks the user to choose what type of exit 
@@ -255,7 +255,116 @@ logTradePrompt = (txtFileName, output) => {
 //
 newEntryTrade = (currency) => {
 
-}
+    usdEntryTrade = (tradingPair) => {
+        if (tradingPair === "None") {
+            console.log("in progress"); // this part of the function needs completion
+        } else {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "investment",
+                    message: "Enter total investment (USD):",
+                    // validate: validateNumber(investment)
+                    validate: validateInvestment = (investment) => {
+                        var flag = true;
+                        var values = /^[\d.]+$/;
+                        if (!values.test(investment)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: `Enter ${tradingPair} price (bought):`,
+                    // validate: validateNumber(btcPrice)
+                    validate: validateCoinPrice = (coinPrice) => {
+                        var flag = true;
+                        var values = /^[\d.]+$/;
+                        if (!values.test(coinPrice)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                },
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin bought:",
+                    // validate: validateName(altName)
+                    validate: validateAltName = (altName) => {
+                        var flag = true;
+                        var values = /^[\a-zA-z]+$/;
+                        if (!values.test(altName)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                },
+                {
+                    type: "input",
+                    name: "altPrice",
+                    message: `Enter price of altcoin (in ${tradingPair}):`,
+                    // validate: validateNumber(altPrice)
+                    validate: validateAltPrice = (altPrice) => {
+                        var flag = true;
+                        var values = /^[\d.]+$/;
+                        if (!values.test(altPrice)) {
+                            flag = "Please enter valid input.";
+                        };
+                        return flag;
+                    }
+                }
+            ]).then(response => {
+                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                var actualCrypto = totalCrypto - (totalCrypto * .04);
+                var transferredCrypto = actualCrypto - .00000700;
+                var totalCoins = transferredCrypto / parseFloat(response.altPrice);
+                var exchFee = totalCoins * .001;
+                var actualCoins = totalCoins - exchFee;
+                var entryPriceUSD = parseFloat(response.investment) / actualCoins;
+                var entryPriceCrypto = transferredCrypto / actualCoins;
+                var output = `* New entry trade (USD) *
+                Cryptocurrency: ${response.altName}
+                Initial investment: $${response.investment}
+                Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
+                Total ${tradingPair} available (after all fees): ${transferredCrypto.toFixed(8)} ${tradingPair}
+                Bought ${response.altName} at: ${response.altPrice} ${tradingPair}
+                Total coins bought: ${actualCoins} ${response.altName}
+                Entry price (USD): $${entryPriceUSD.toFixed(5)} (factoring in Coinbase fee, transfer fee and Binance fee)
+                Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Coinbase fee, transfer fee and Binance fee)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
+                console.log(output);
+                // create query depending on trading pair, to log to appropriate file: needs completion.
+                var query;
+                logTradePrompt('logs/entries_log/entries_USD.txt', output);
+            });
+        };
+    };
+
+    cryptoEntryTrade = () => {
+
+    };
+
+    // Logic that determins which function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run 
+    // cryptoRoi().
+    if (currency === "USD") {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "tradingPair",
+                message: "Choose your trading pair:",
+                choices: ["BTC", "ETH", "None"]
+            }
+        ]).then(response => {
+            usdEntryTrade(response.tradingPair);
+        });
+    } else {
+        cryptoEntryTrade();
+    };
+
+};
 
 // "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
@@ -945,7 +1054,8 @@ calcRoi = (currency) => {
         });
     };
 
-    // Logic to choose function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run cryptoRoi().
+    // Logic that determins which function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run 
+    // cryptoRoi().
     if (currency === "USD") {
         usdRoi();
     } else {
