@@ -73,39 +73,12 @@ newEntryPrompt = () => {
             type: "list",
             name: "currency",
             message: "Choose currency to make new entry in:",
-            choices: ["USD", "BTC", "ETH", "BNB"]
+            choices: ["USD", "USDT", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
         newEntryTrade(response.currency);
     });
 }
-
-// "newEntryPrompt()" function
-// This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
-// trade they would like to make (USD, USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
-// newEntryPrompt = () => {
-//     inquirer.prompt([
-//         {
-//             type: "list",
-//             name: "command",
-//             message: "Choose currency to trade in:",
-//             choices: ["New entry trade (USD)", "New entry trade (USDT)", "New entry trade (BTC)"]
-//         }
-//     ]).then(response => {
-//         var userCommand = response.command;
-//         switch (userCommand) {
-//             case "New entry trade (USD)":
-//                 newEntryTradeUSD();
-//                 break;
-//             case "New entry trade (USDT)":
-//                 newEntryTradeUSDT();
-//                 break;
-//             case "New entry trade (BTC)":
-//                 newEntryTradeBTC();
-//                 break;
-//         };
-//     });
-// };
 
 // "newExitPrompt()" function
 // This function is called when the user chooses to make a new exit trade in the first prompt. It asks the user to choose what type of exit 
@@ -327,10 +300,10 @@ newEntryTrade = (currency) => {
                 var entryPriceCrypto = transferredCrypto / actualCoins;
                 var query, entryTitle;
                 if (tradingPair === "BTC") {
-                    query = "logs/entries_log/entries_USD_BTC.txt";
+                    query = "logs/entries_log/entries_USD/entries_USD_BTC.txt";
                     entryTitle = "* New entry trade (USD/BTC) *";
                 } else {
-                    query = "logs/entries_log/entries_USD_ETH.txt";
+                    query = "logs/entries_log/entries_USD/entries_USD_ETH.txt";
                     entryTitle = "* New entry trade (USD/ETH) *";
                 };
                 var output = `${entryTitle}
@@ -347,11 +320,6 @@ newEntryTrade = (currency) => {
                 // create query depending on trading pair, to log to appropriate file: needs completion.
                 logTradePrompt(query, output);
             });
-        };
-
-        // This type of entry is when a user makes an entry using USDT (Tether) on Binance.
-        usdtEntry = () => {
-
         };
 
         // This type of entry is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
@@ -410,23 +378,88 @@ newEntryTrade = (currency) => {
                 Entry price $${parseFloat(response.coinPrice).toFixed(6)}
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
                 console.log(output);
-                logTradePrompt("logs/entries_log/entries_USD.txt", output);
+                logTradePrompt("logs/entries_log/entries_USD/entries_USD.txt", output);
             });
         };
 
         // Logic that determins what trading pair was used / what function to be executed.
-        switch (tradingPair) {
-            case "BTC":
-            case "ETH":
-                coinbaseEntry();
-                break;
-            case "USDT":
-                // Needs completion
-                // usdtEntry();
-                break;
-            case "None (Robinhood Trade)":
-                robinhoodEntry();
-                break;
+        if (tradingPair === "None (Robinhood Trade)") {
+            robinhoodEntry();
+        } else {
+            coinbaseEntry();
+        };
+
+    };
+
+    // This function runs if the user chooses to trade alts using USDT. They can trade USDT-BTC-Alts, USDT-ETH-Alts, or strictly using 
+    // USDT paired with an alt.
+    usdtEntryTrade = (tradingPair) => {
+
+        // If the user chooses to make an entry strictly with USDT
+        usdtOnlyEntry = () => {
+
+        };
+
+
+        // If the user chooses to make a USDT entry through BTC or ETH
+        cryptoPairEntry = () => {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "investment",
+                    message: "Enter total investment (USDT): "
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: `Enter ${tradingPair} price (bought): `
+                },
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin bought: "
+                },
+                {
+                    type: "input",
+                    name: "altPrice",
+                    message: `Enter price of altcoin (in ${tradingPair}): `
+                }
+            ]).then(response => {
+                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                var actualCrypto = totalCrypto - (totalCrypto * .001);
+                var totalCoins = actualCrypto / parseFloat(response.altPrice);
+                var exchFee = totalCoins * .001;
+                var actualCoins = totalCoins - exchFee;
+                var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
+                var entryPriceCrypto = actualCrypto / actualCoins;
+                var query, entryTitle;
+                if (tradingPair === "BTC") {
+                    query = "logs/entries_log/entries_USDT/entries_USDT_BTC.txt";
+                    entryTitle = "* New entry trade (USDT/BTC) *";
+                } else {
+                    query = "logs/entries_log/entries_USDT/entries_USDT_ETH.txt";
+                    entryTitle = "* New entry trade (USDT/ETH) *";
+                };
+                var output = `${entryTitle}
+                Cryptocurrency: ${response.altName}
+                Initial investment: $${response.investment} (Tether)
+                Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
+                Total ${tradingPair} available (after all fees): ${actualCrypto.toFixed(8)} ${tradingPair}
+                Bought ${response.altName} at: ${response.altPrice} ${tradingPair}
+                Total coins bought: ${actualCoins} ${response.altName}
+                Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fees)
+                Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} BTC (factoring in Binance fee)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
+                console.log(output);
+                logTradePrompt(query, output);
+            });
+        };
+
+        // Logic that determins what trading pair was used / what function to be executed.
+        if (tradingPair === "None") {
+            usdtOnlyEntry();
+        } else {
+            cryptoPairEntry();
         };
 
     };
@@ -445,10 +478,21 @@ newEntryTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "USDT", "None (Robinhood Trade)"]
+                choices: ["BTC", "ETH", "None (Robinhood Trade)"]
             }
         ]).then(response => {
             usdEntryTrade(response.tradingPair);
+        });
+    } else if (currency === "USDT") {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "tradingPair",
+                message: "Choose your trading pair:",
+                choices: ["BTC", "ETH", "None"]
+            }
+        ]).then(response => {
+            usdtEntryTrade(response.tradingPair);
         });
     } else {
         cryptoEntryTrade();
