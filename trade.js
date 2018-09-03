@@ -722,12 +722,65 @@ calcRoi = (currency) => {
         });
     };
 
-    // The cryptoRoi() function is executed to calculate ROI if the user traded alts in BTC
+    // The cryptoRoi() function is executed to calculate ROI if the user traded alts in BTC, ETH, or BNB.
     cryptoRoi = () => {
 
         // The cryptoProfit() function is executed if the user chooses to keep ROI in the currency they traded in.
         cryptoProfit = () => {
-            console.log("in progress");
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin traded: "
+                },
+                {
+                    type: "input",
+                    name: "investmentCoin",
+                    message: `Enter initial investment (in ${currency}): `
+                },
+                {
+                    type: "input",
+                    name: "divestmentCoin",
+                    message: `Enter final divesment (in ${currency}): `
+                }
+            ]).then(response => {
+                var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
+                var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
+                var roiPercentCoin = (roiDecimalCoin - 1) * 100;
+                var output;
+                if (netChangeCoin >= 0) {
+                    if (currency === "BNB") {
+                        netChangeCoin = netChangeCoin.toFixed(5);
+                    } else {
+                        netChangeCoin = netChangeCoin.toFixed(8);
+                    };
+                    output = `* New ROI calculation *
+                    Cryptocurrency: ${response.altName}
+                    Initial investment: ${response.investmentCoin} ${currency} 
+                    Final divestment: ${response.divestmentCoin} ${currency}
+                    Return of investment (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
+                    Return of investment (percent): ${roiPercentCoin.toFixed(2)}% ROI
+                    Total profit: ${netChangeCoin} ${currency}
+                    Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                } else {
+                    if (currency === "BNB") {
+                        netChangeCoin = netChangeCoin.toFixed(5) * -1;
+                    } else {
+                        netChangeCoin = netChangeCoin.toFixed(8) * -1;
+                    };
+                    netChangeUSD = netChangeUSD * -1;
+                    output = `* New ROI calculation *
+                    Cryptocurrency: ${response.altName}
+                    Initial investment: ${response.investmentCoin} ${currency}
+                    Final divestment: ${response.divestmentCoin} ${currency}
+                    Return of investment (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
+                    Return of investment (percent): ${roiPercentCoin.toFixed(2)}% ROI
+                    Total loss: ${netChangeCoin} ${currency}
+                    Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{5})+/gm, '');
+                };
+                console.log(output);
+                logTradePrompt('./roi.txt', output);
+            });
         };
 
         // The usdProfit() function is executed if the user chooses to take ROI in USD.
@@ -795,9 +848,9 @@ calcRoi = (currency) => {
                     output = `* New ROI calculation *
                     Cryptocurrency: ${response.altName}
                     Initial investment (USD): $${response.investmentUSD}
-                    Initial investment (BTC): ${response.investmentCoin} ${currency}
-                    Final divestment: $${response.divestmentUSD} 
-                    Final divestment (BTC): ${response.divestmentCoin} ${currency}
+                    Initial investment (${currency}): ${response.investmentCoin} ${currency}
+                    Final divestment (USD): $${response.divestmentUSD} 
+                    Final divestment (${currency}): ${response.divestmentCoin} ${currency}
                     Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
                     Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
                     Return of investment in ${currency} (decimal): ${roiDecimalCoin.toFixed(2)}x ROI
@@ -821,7 +874,7 @@ calcRoi = (currency) => {
             }
         ]).then(response => {
             if (response.type === `Calculate ${currency} ROI`) {
-                console.log("in progress");
+                cryptoProfit();
             } else {
                 usdProfit();
             };
