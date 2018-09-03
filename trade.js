@@ -64,6 +64,23 @@ beginApp = () => {
 // };
 
 // "newEntryPrompt()" function
+// This function is called when the user chooses to make a new entry trade in the main prompt. It asks the user to choose what currency 
+// they would like to make (USD, BTC, ETH, or BNB) and calls the newEntryTrade() function, passing in the user's response as a
+// parameter.
+newEntryPrompt = () => {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "currency",
+            message: "Choose currency to trade in:",
+            choices: ["USD", "BTC", "ETH", "BNB"]
+        }
+    ]).then(response => {
+        newEntryTrade(response.currency);
+    });
+}
+
+// "newEntryPrompt()" function
 // This function is called when the user chooses to make a new entry trade in the first prompt. It asks the user to choose what type of entry 
 // trade they would like to make (USD, USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
 newEntryPrompt = () => {
@@ -71,7 +88,7 @@ newEntryPrompt = () => {
         {
             type: "list",
             name: "command",
-            message: "Choose trade:",
+            message: "Choose currency to trade in:",
             choices: ["New entry trade (USD)", "New entry trade (USDT)", "New entry trade (BTC)"]
         }
     ]).then(response => {
@@ -233,6 +250,12 @@ logTradePrompt = (txtFileName, output) => {
         askIfDone();
     });
 };
+
+//
+//
+newEntryTrade = (currency) => {
+
+}
 
 // "newEntryTradeUSD()" function
 // This function runs when the user wants to create a new entry (buy) trade. By using inquirer, the user is prompted for their initial 
@@ -710,8 +733,10 @@ calcAvgEntryPriceBNB = () => {
 
 };
 
-//
-//
+// "calcRoi()" function
+// This function runs when the user wants to calculate their return of investment. The user has 4 currencies they can calculate ROI in:
+// USD, BTC, ETH, and BNB. If the user chooses USD, the ROI is calculated in strictly USD. If the user chooses a cryptocurrency, they 
+// can choose to keep their ROI in the cryptocurrency they were trading in, or take their ROI back in USD.
 calcRoi = (currency) => {
 
     usdRoi = () => {
