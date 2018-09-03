@@ -716,9 +716,48 @@ calcRoi = (currency) => {
 
     usdRoi = () => {
         inquirer.prompt([
-
+            {
+                type: "input",
+                name: "cryptoName",
+                message: "Enter name of cryptocurrency traded: "
+            },
+            {
+                type: "input",
+                name: "investmentUSD",
+                message: "Enter initial investment (in USD): "
+            },
+            {
+                type: "input",
+                name: "divestmentUSD",
+                message: "Enter final divesment (in USD): "
+            },
         ]).then(response => {
-
+            var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+            var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
+            var roiPercentUSD = (roiDecimalUSD - 1) * 100;
+            var output;
+            if (netChangeUSD >= 0) {
+                output = `* New ROI calculation *
+                Cryptocurrency: ${response.cryptoName}
+                Initial investment (USD): $${response.investmentUSD}
+                Final divestment (USD): $${response.divestmentUSD}
+                Return of investment (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
+                Return of investment (percent): ${roiPercentUSD.toFixed(2)}% ROI
+                Total profit: $${netChangeUSD.toFixed(2)}
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+            } else {
+                netChangeUSD = netChangeUSD * -1;
+                output = `* New ROI calculation *
+                Cryptocurrency: ${response.cryptoName}
+                Initial investment: $${response.investmentUSD}
+                Final divestment: $${response.divestmentUSD} 
+                Return of investment (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
+                Return of investment (percent): ${roiPercentUSD.toFixed(2)}% ROI
+                Total USD loss: $${netChangeUSD.toFixed(2)}
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+            };
+            console.log(output);
+            logTradePrompt('./roi.txt', output);
         });
     };
 
@@ -827,9 +866,9 @@ calcRoi = (currency) => {
                     };
                     output = `* New ROI calculation *
                     Cryptocurrency: ${response.altName}
-                    Initial investment (USD): ${response.investmentUSD}
+                    Initial investment (USD): $${response.investmentUSD}
                     Initial investment (${currency}): ${response.investmentCoin} ${currency} 
-                    Final divestment (USD): ${response.divestmentUSD}
+                    Final divestment (USD): $${response.divestmentUSD}
                     Final divestment (${currency}): ${response.divestmentCoin} ${currency}
                     Return of investment in USD (decimal): ${roiDecimalUSD.toFixed(2)}x ROI
                     Return of investment in USD (percent): ${roiPercentUSD.toFixed(2)}% ROI
