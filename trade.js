@@ -10,7 +10,7 @@ beginApp = () => {
         {
             type: "list",
             name: "command",
-            message: "What would you like to do?",
+            message: "Choose from the following:",
             choices: ["Make new entry trade", "Make new exit trade", "Calculate average entry price",
                 "Calculate ROI (return of investment)", "Get target price ($)", "Get percent change (%)"]
         }
@@ -142,7 +142,7 @@ calcRoiPrompt = () => {
         {
             type: "list",
             name: "currency",
-            message: "Choose currency: ",
+            message: "Choose currency:",
             choices: ["USD", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
@@ -224,13 +224,16 @@ logTradePrompt = (txtFileName, output) => {
     });
 };
 
-//
-//
+// "newEntryTrade()" function
+// This function runs when the user wants to create a new entry (buy) trade.
 newEntryTrade = (currency) => {
 
+    // This function runs if the user chooses to trade alts using USD. They can trade USD-BTC-Alts, USD-ETH-Alts, or strictly using 
+    // USD paired with a cryptocurrency (the last option is for trading on Robinhood.)
     usdEntryTrade = (tradingPair) => {
 
-        // This type of entry is when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
+        // This function is called when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
+        // (tradingPair === "BTC" or "ETH")
         coinbaseEntry = () => {
             inquirer.prompt([
                 {
@@ -313,7 +316,7 @@ newEntryTrade = (currency) => {
             });
         };
 
-        // This type of entry is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
+        // This function is called is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
         // (tradingPair === "none").
         robinhoodEntry = () => {
             inquirer.prompt([
@@ -369,11 +372,11 @@ newEntryTrade = (currency) => {
                 Entry price: $${parseFloat(response.coinPrice).toFixed(6)}
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
                 console.log(output);
-                logTradePrompt("logs/entries_log/entries_USD/entries_USD.txt", output);
+                logTradePrompt("logs/entries_log/entries_USD/entries_USD_RH.txt", output);
             });
         };
 
-        // Logic that determins what trading pair was used / what function to be executed.
+        // Logic that determines what trading pair was used / what function to be executed.
         if (tradingPair === "None (Robinhood Trade)") {
             robinhoodEntry();
         } else {
@@ -466,7 +469,7 @@ newEntryTrade = (currency) => {
             });
         };
 
-        // Logic that determins what trading pair was used / what function to be executed.
+        // Logic that determines what trading pair was used / what function to be executed.
         if (tradingPair === "None") {
             usdtOnlyEntry();
         } else {
@@ -518,9 +521,10 @@ newEntryTrade = (currency) => {
         });
     };
 
-    // Logic that determins which function to run: if currency traded in was USD, prompt user to choose trading pair and call 
-    // usdEntryTrade() function, passing in the user's response as a parameter. If user traded in a cryptocurrency, run 
-    // cryptoRoi().
+    // Logic that determines which function to run: if the currency chosen is USD, prompt user to choose trading pair and call the 
+    // usdEntryTrade() function, passing in the user's response as a parameter. If the currency chosen is USDT, prompt the user to choose 
+    // trading pair, and call the usdtEntryTrade() function, passing in the user's response as a parameter. If the currency chosen is 
+    // BTC, ETH, or BNB, call the cryptoEntryTrade() function.
     if (currency === "USD") {
         inquirer.prompt([
             {
@@ -548,6 +552,99 @@ newEntryTrade = (currency) => {
     };
 
 };
+
+// This space will hold the new command functions to make a new exit trade.
+//=======================================================================================================================================
+
+// "newExitTrade()" function
+// This function runs when the user wants to create a new exit (sell) trade.
+newExitTrade = (currency) => {
+
+    // This function runs if the user chooses to trade alts using USD. They can trade USD-BTC-Alts, USD-ETH-Alts, or strictly using 
+    // USD paired with a cryptocurrency (the last option is for trading on Robinhood.)
+    usdExitTrade = (tradingPair) => {
+
+        // This function is called when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
+        coinbaseExit = () => {
+
+        };
+
+        // This function is called is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
+        // (tradingPair === "none").
+        robinhoodExit = () => {
+
+        };
+
+        // Logic that determines what trading pair was used / what function to be executed.
+        if (tradingPair === "None (Robinhood Trade)") {
+            robinhoodExit();
+        } else {
+            coinbaseExit();
+        };
+
+    };
+
+    // This function runs if the user chooses to trade alts using USDT. They can trade USDT-BTC-Alts, USDT-ETH-Alts, or strictly using 
+    // USDT paired with an alt.
+    usdtExitTrade = (tradingPair) => {
+
+        // If the user chooses to make an exit strictly with USDT (tradingPair === "None")
+        usdtOnlyExit = () => {
+
+        };
+
+        // If the user chooses to make a USDT entry through BTC or ETH (tradingPair === "BTC" || tradingPair === "ETH")
+        cryptoPairExit = () => {
+
+        };
+
+        // Logic that determines what trading pair was used / what function to be executed.
+        if (tradingPair === "None") {
+            usdtOnlyExit();
+        } else {
+            cryptoPairExit();
+        };
+
+    };
+
+    // This function runs if the user chooses to trade alts in BTC, ETH, or BNB.
+    cryptoExitTrade = () => {
+
+    };
+
+    // Logic that determines which function to run: if the currency chosen is USD, prompt user to choose trading pair and call the 
+    // usdExitTrade() function, passing in the user's response as a parameter. If the currency chosen is USDT, prompt the user to choose 
+    // trading pair, and call the usdtExitTrade() function, passing in the user's response as a parameter. If the currency chosen is 
+    // BTC, ETH, or BNB, call the cryptoExitTrade() function.
+    if (currency === "USD") {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "tradingPair",
+                message: "Choose your trading pair:",
+                choices: ["BTC", "ETH", "None (Robinhood Trade)"]
+            }
+        ]).then(response => {
+            usdExitTrade(response.tradingPair);
+        });
+    } else if (currency === "USDT") {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "tradingPair",
+                message: "Choose your trading pair:",
+                choices: ["BTC", "ETH", "None"]
+            }
+        ]).then(response => {
+            usdtExitTrade(response.tradingPair);
+        });
+    } else {
+        cryptoExitTrade();
+    };
+
+};
+
+//=======================================================================================================================================
 
 // "newExitTradeUSD()" function
 // This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
@@ -1050,7 +1147,7 @@ calcRoi = (currency) => {
         });
     };
 
-    // Logic that determins which function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run 
+    // Logic that determines which function to run: if currency traded in was USD, run usdROI(). If user traded in a cryptocurrency, run 
     // cryptoRoi().
     if (currency === "USD") {
         usdRoi();
@@ -1069,12 +1166,12 @@ getTargetPrice = (currency) => {
         {
             type: "input",
             name: "entryPrice",
-            message: `Enter entry price (in ${currency}): `
+            message: `Enter entry price (in ${currency}):`
         },
         {
             type: "input",
             name: "targetPercentChange",
-            message: "Enter percent gain you're looking for: "
+            message: "Enter percent gain you're looking for:"
         }
     ]).then(response => {
         var convertedPercentChange = parseFloat(response.targetPercentChange) * .01;
