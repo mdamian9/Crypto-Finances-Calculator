@@ -298,15 +298,7 @@ newEntryTrade = (currency) => {
                 var actualCoins = totalCoins - exchFee;
                 var entryPriceUSD = parseFloat(response.investment) / actualCoins;
                 var entryPriceCrypto = transferredCrypto / actualCoins;
-                var logQuery, entryTitle;
-                if (tradingPair === "BTC") {
-                    logQuery = "logs/entries_log/entries_USD/entries_USD_BTC.txt";
-                    entryTitle = "* New entry trade (USD/BTC) *";
-                } else {
-                    logQuery = "logs/entries_log/entries_USD/entries_USD_ETH.txt";
-                    entryTitle = "* New entry trade (USD/ETH) *";
-                };
-                var output = `${entryTitle}
+                var output = `* New entry trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment}
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
@@ -317,8 +309,7 @@ newEntryTrade = (currency) => {
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Coinbase fee, transfer fee and Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
                 console.log(output);
-                // create logQuery depending on trading pair, to log to appropriate file: needs completion.
-                logTradePrompt(logQuery, output);
+                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output);
             });
         };
 
@@ -460,15 +451,7 @@ newEntryTrade = (currency) => {
                 var actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
                 var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
                 var entryPriceCrypto = actualCrypto / actualCoins;
-                var logQuery, entryTitle;
-                if (tradingPair === "BTC") {
-                    logQuery = "logs/entries_log/entries_USDT/entries_USDT_BTC.txt";
-                    entryTitle = "* New entry trade (USDT/BTC) *";
-                } else {
-                    logQuery = "logs/entries_log/entries_USDT/entries_USDT_ETH.txt";
-                    entryTitle = "* New entry trade (USDT/ETH) *";
-                };
-                var output = `${entryTitle}
+                var output = `* New entry trade (USDT/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment} (Tether)
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
@@ -479,7 +462,7 @@ newEntryTrade = (currency) => {
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Binance fees)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
                 console.log(output);
-                logTradePrompt(logQuery, output);
+                logTradePrompt(`logs/entries_log/entries_USDT/entries_USDT_${tradingPair}.txt`, output);
             });
         };
 
@@ -514,7 +497,6 @@ newEntryTrade = (currency) => {
             var totalCoins = parseFloat(response.investment) / parseFloat(response.altPrice);
             var actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
             var entryPrice = parseFloat(response.investment) / actualCoins;
-            var logQuery, entryTitle;
             switch (currency) {
                 case "BTC":
                 case "ETH":
