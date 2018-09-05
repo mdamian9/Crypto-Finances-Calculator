@@ -65,8 +65,8 @@ beginApp = () => {
 
 // "newEntryPrompt()" function
 // This function is called when the user chooses to make a new entry trade in the main prompt. It asks the user to choose what currency 
-// they would like to make (USD, BTC, ETH, or BNB) and calls the newEntryTrade() function, passing in the user's response as a
-// parameter.
+// they would like to make their trade in (USD, USDT, BTC, ETH, or BNB) and calls the newEntryTrade() function, passing in the user's 
+// response as a parameter.
 newEntryPrompt = () => {
     inquirer.prompt([
         {
@@ -81,29 +81,19 @@ newEntryPrompt = () => {
 }
 
 // "newExitPrompt()" function
-// This function is called when the user chooses to make a new exit trade in the first prompt. It asks the user to choose what type of exit 
-// trade they would like to make (USD, USDT (Tether), or BTC), and calls the appropriate function based on the user's response.
+// This function is called when the user chooses to make a new exit trade in the main prompt. It asks the user to choose what currency 
+// they would like to make their trade in (USD, USDT, BTC, ETH, or BNB) and calls the newExitTrade() function, passing in the user's 
+// response as a parameter.
 newExitPrompt = () => {
     inquirer.prompt([
         {
             type: "list",
-            name: "command",
-            message: "Choose trade:",
-            choices: ["New exit trade (USD)", "New exit trade (USDT)", "New exit trade (BTC)"]
+            name: "currency",
+            message: "Choose currency to make new entry in:",
+            choices: ["USD", "USDT", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
-        var userCommand = response.command;
-        switch (userCommand) {
-            case "New exit trade (USD)":
-                newExitTradeUSD();
-                break;
-            case "New exit trade (USDT)":
-                newExitTradeUSDT();
-                break;
-            case "New exit trade (BTC)":
-                newExitTradeBTC();
-                break;
-        };
+        newExitTrade(response.currency);
     });
 };
 
@@ -566,7 +556,52 @@ newExitTrade = (currency) => {
 
         // This function is called when a user makes an entry through Coinbase (buying BTC or ETH) then using it to trade alts on Binance.
         coinbaseExit = () => {
-
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin sold:"
+                },
+                {
+                    type: "input",
+                    name: "numCoinsSold",
+                    message: "Enter amount of coins / tokens sold:"
+                },
+                {
+                    type: "input",
+                    name: "altPrice",
+                    message: `Enter price altcoin was sold at (in ${tradingPair}):`
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: `Enter ${tradingPair} price (sold):`
+                }
+            ]).then(response => {
+                var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+                var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trade fee
+                var transferFee;
+                if (tradingPair === "BTC") {
+                    transferFee = .0005;
+                } else {
+                    transferFee = .01;
+                };
+                var transferredCrypto = actualCrypto - transferFee; // -.0005 BTC transfer fee from Binance
+                var divestment = transferredCrypto * parseFloat(response.coinPrice);
+                var actualDivestment = divestment - (divestment * .04); // -4% Coinbase trade fee
+                var exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
+                var output = `* New exit trade (USD/${tradingPair}) *
+                Cryptocurrency: ${response.altName} 
+                Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+                Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
+                Sold ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
+                Total ${tradingPair} sold: ${transferredCrypto.toFixed(8)} ${tradingPair}
+                Final divestment: $${actualDivestment.toFixed(2)} (factoring in Binance fee, transfer fee and Coinbase fee)
+                Exit price: $${exitPrice.toFixed(5)} (factoring in Binance fee, transfer fee and Coinbase fee)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                console.log(output);
+                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_${tradingPair}.txt`, output);
+            });
         };
 
         // This function is called is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
