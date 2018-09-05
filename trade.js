@@ -403,8 +403,8 @@ newEntryTrade = (currency) => {
                 var entryPriceUSDT = parseFloat(response.investment) / actualCrypto;
                 var output = `* New entry trade (USDT) *
                 Cryptocurrency: ${response.coinName}
-                Initial investment: $${response.investment} (Tether)
-                Bought ${response.coinName} at: $${response.coinPrice}
+                Initial investment: $${response.investment} (USDT)
+                Bought ${response.coinName} at: $${response.coinPrice} (USDT)
                 Total ${response.coinName} bought: ${actualCrypto} ${response.coinName}
                 Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
@@ -446,7 +446,7 @@ newEntryTrade = (currency) => {
                 var entryPriceCrypto = actualCrypto / actualCoins;
                 var output = `* New entry trade (USDT/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
-                Initial investment: $${response.investment} (Tether)
+                Initial investment: $${response.investment} (USDT)
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
                 Total ${tradingPair} available (after all fees): ${actualCrypto.toFixed(8)} ${tradingPair}
                 Bought ${response.altName} at: ${response.altPrice} ${tradingPair}
@@ -652,7 +652,36 @@ newExitTrade = (currency) => {
 
         // If the user chooses to make an exit strictly with USDT (tradingPair === "None")
         usdtOnlyExit = () => {
-
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "coinName",
+                    message: "Enter name of cryptocurrency sold:"
+                },
+                {
+                    type: "input",
+                    name: "numCoinsSold",
+                    message: "Enter amount of coins / tokens sold:"
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: `Enter price cryptocurrency was sold at (USDT):`
+                }
+            ]).then(response => {
+                var totalUSDT = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
+                var actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
+                var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
+                var output = `* New exit trade (USDT) *
+                Cryptocurrency: ${response.coinName}
+                Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
+                Sold ${response.coinName} at: $${response.coinPrice} (USDT)
+                Final divestment (USDT): $${actualUSDT.toFixed(5)} (factoring in Binance fee)
+                Exit price (USDT): $${exitPriceUSDT.toFixed(5)} (factoring in Binance)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                console.log(output);
+                logTradePrompt(`logs/exits_log/exits_USDT/exits_USDT.txt`, output);
+            });
         };
 
         // If the user chooses to make a USDT entry through BTC or ETH (tradingPair === "BTC" || tradingPair === "ETH")
@@ -690,8 +719,8 @@ newExitTrade = (currency) => {
                 Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
                 Sold ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
                 Total ${tradingPair} sold: ${actualCrypto.toFixed(8)} ${tradingPair}
-                Total USDT: $${actualUSDT.toFixed(5)} (factoring in Binance fees)
-                Exit price: $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
+                Final divestment (USDT): $${actualUSDT.toFixed(5)} (factoring in Binance fees)
+                Exit price (USDT): $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
                 logTradePrompt(`logs/exits_log/exits_USDT/exits_USDT_${tradingPair}.txt`, output);
