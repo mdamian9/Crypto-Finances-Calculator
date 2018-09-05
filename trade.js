@@ -708,55 +708,6 @@ newExitTrade = (currency) => {
 
 //=======================================================================================================================================
 
-// "newExitTradeUSD()" function
-// This function runs when the user wants to create a new exit (sell) trade. By using inquirer, the user is prompted for the name of the 
-// altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in BTC), then the price
-// they sold Bitcoin at in the end. This function assumes the user is selling altcoin / selling BTC on Binance with a 0.1% purchase on the 
-// altcoin sell and BTC sell each.
-newExitTradeUSD = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin sold: "
-        },
-        {
-            type: "input",
-            name: "numCoinsSold",
-            message: "Enter amount of coins / tokens sold: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price altcoin was sold at (in BTC): "
-        },
-        {
-            type: "input",
-            name: "btcPrice",
-            message: "Enter Bitcoin price (sold): "
-        }
-    ]).then(response => {
-        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-        var exchFee = totalBTC * .001;
-        var actualBTC = totalBTC - exchFee;
-        var transferredBTC = actualBTC - .0005;
-        var divestment = transferredBTC * parseFloat(response.btcPrice);
-        var actualDivestment = divestment - (divestment * .04);
-        var exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
-        var output = `* New exit trade (USD) *
-        Cryptocurrency: ${response.altName} 
-        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
-        Sold ${response.altName} at: ${response.altPrice} BTC
-        Sold Bitcoin at: $${response.btcPrice} per BTC
-        Total Bitcoin sold: ${transferredBTC.toFixed(8)} BTC
-        Final divestment: $${actualDivestment} (factoring in Binance fee, transfer fee and Coinbase fee)
-        Exit price: $${exitPrice.toFixed(5)} (factoring in Binance fee, transfer fee and Coinbase fee)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-        console.log(output);
-        logTradePrompt('logs/exits_log/exits_USD.txt', output);
-    });
-};
-
 // "newExitTradeUSDT()" function
 // This function runs when the user wants to create a new exit (sell) trade back to USDT (Tether). By using inquirer, the user is prompted 
 // for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
