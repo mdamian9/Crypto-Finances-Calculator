@@ -89,7 +89,7 @@ newExitPrompt = () => {
         {
             type: "list",
             name: "currency",
-            message: "Choose currency to make new entry in:",
+            message: "Choose currency to make new exit in:",
             choices: ["USD", "USDT", "BTC", "ETH", "BNB"]
         }
     ]).then(response => {
@@ -297,7 +297,7 @@ newEntryTrade = (currency) => {
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
                 Total ${tradingPair} available (after all fees): ${transferredCrypto.toFixed(8)} ${tradingPair}
                 Bought ${response.altName} at: ${response.altPrice} ${tradingPair}
-                Total coins bought: ${actualCoins} ${response.altName}
+                Total ${response.altName} bought: ${actualCoins} ${response.altName}
                 Entry price (USD): $${entryPriceUSD.toFixed(5)} (factoring in Coinbase fee, transfer fee and Binance fee)
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Coinbase fee, transfer fee and Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
@@ -358,7 +358,7 @@ newEntryTrade = (currency) => {
                 Cryptocurrency: ${response.coinName}
                 Initial investment: $${response.investment}
                 Bought ${response.coinName} at: $${response.coinPrice}
-                Total coins bought: ${totalCrypto} ${response.coinName}
+                Total ${response.coinName} bought: ${totalCrypto} ${response.coinName}
                 Entry price: $${parseFloat(response.coinPrice).toFixed(6)}
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
                 console.log(output);
@@ -405,7 +405,7 @@ newEntryTrade = (currency) => {
                 Cryptocurrency: ${response.coinName}
                 Initial investment: $${response.investment} (Tether)
                 Bought ${response.coinName} at: $${response.coinPrice}
-                Total coins bought: ${actualCrypto} ${response.coinName}
+                Total ${response.coinName} bought: ${actualCrypto} ${response.coinName}
                 Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
                 console.log(output);
@@ -450,7 +450,7 @@ newEntryTrade = (currency) => {
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
                 Total ${tradingPair} available (after all fees): ${actualCrypto.toFixed(8)} ${tradingPair}
                 Bought ${response.altName} at: ${response.altPrice} ${tradingPair}
-                Total coins bought: ${actualCoins} ${response.altName}
+                Total ${response.altName} bought: ${actualCoins} ${response.altName}
                 Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fees)
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Binance fees)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
@@ -503,7 +503,7 @@ newEntryTrade = (currency) => {
             Cryptocurrency: ${response.altName}
             Initial investment: ${response.investment} ${currency}
             Bought ${response.altName} at: ${response.altPrice} ${currency}
-            Total coins bought: ${actualCoins} ${response.altName}
+            Total ${response.altName} bought: ${actualCoins} ${response.altName}
             Entry price (${currency}): ${entryPrice} ${currency} (factoring in Binance fee)
             Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
             console.log(output);
@@ -582,9 +582,9 @@ newExitTrade = (currency) => {
                 var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trade fee
                 var transferFee;
                 if (tradingPair === "BTC") {
-                    transferFee = .0005;
+                    transferFee = .0005; // if trading pair is BTC, transter fee from Binance to Coinbase is .0005 BTC
                 } else {
-                    transferFee = .01;
+                    transferFee = .01; // if trading pair is ETH, transter fee from Binance to Coinbase is .01 ETH
                 };
                 var transferredCrypto = actualCrypto - transferFee; // -.0005 BTC transfer fee from Binance
                 var divestment = transferredCrypto * parseFloat(response.coinPrice);
@@ -607,7 +607,34 @@ newExitTrade = (currency) => {
         // This function is called is when a user trades on Robinhood - a zero fee platform, strictly trading in USD.
         // (tradingPair === "none").
         robinhoodExit = () => {
-
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "coinName",
+                    message: "Enter name of cryptocurrency sold:"
+                },
+                {
+                    type: "input",
+                    name: "numCoinsSold",
+                    message: "Enter amount of coins / tokens sold:"
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: "Enter price cryptocurrency was sold at:"
+                }
+            ]).then(response => {
+                var divestment = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
+                var output = `* New exit trade (USD) - Robinhood *
+                Cryptocurrency: ${response.coinName} 
+                Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
+                Sold ${response.coinName} at: $${response.coinPrice}
+                Final divestment: $${divestment.toFixed(2)}
+                Exit price: $${response.coinPrice}
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                console.log(output);
+                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_RH.txt`, output);
+            });
         };
 
         // Logic that determines what trading pair was used / what function to be executed.
