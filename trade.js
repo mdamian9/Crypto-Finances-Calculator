@@ -688,8 +688,8 @@ newExitTrade = (currency) => {
                 Cryptocurrency: ${response.altName}
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
                 Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
-                Sold ${tradingPair} at: $${response.btcPrice} per ${tradingPair}
-                Total ${tradingPair} sold: ${actualBTC.toFixed(8)} ${tradingPair}
+                Sold ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
+                Total ${tradingPair} sold: ${actualCrypto.toFixed(8)} ${tradingPair}
                 Total USDT: $${actualUSDT.toFixed(5)} (factoring in Binance fees)
                 Exit price: $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
