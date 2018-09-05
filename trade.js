@@ -657,7 +657,45 @@ newExitTrade = (currency) => {
 
         // If the user chooses to make a USDT entry through BTC or ETH (tradingPair === "BTC" || tradingPair === "ETH")
         cryptoPairExit = () => {
-
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "altName",
+                    message: "Enter name of altcoin sold:"
+                },
+                {
+                    type: "input",
+                    name: "numCoinsSold",
+                    message: "Enter amount of coins / tokens sold:"
+                },
+                {
+                    type: "input",
+                    name: "altPrice",
+                    message: `Enter price altcoin was sold at (in ${tradingPair}):`
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: `Enter ${tradingPair} price (sold):`
+                }
+            ]).then(response => {
+                var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+                var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
+                var totalUSDT = actualCrypto * parseFloat(response.coinPrice);
+                var actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
+                var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
+                var output = `* New exit trade (USDT/${tradingPair}) *
+                Cryptocurrency: ${response.altName}
+                Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+                Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
+                Sold ${tradingPair} at: $${response.btcPrice} per ${tradingPair}
+                Total ${tradingPair} sold: ${actualBTC.toFixed(8)} ${tradingPair}
+                Total USDT: $${actualUSDT.toFixed(5)} (factoring in Binance fees)
+                Exit price: $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+                console.log(output);
+                logTradePrompt(`logs/exits_log/exits_USDT/exits_USDT_${tradingPair}.txt`, output);
+            });
         };
 
         // Logic that determines what trading pair was used / what function to be executed.
