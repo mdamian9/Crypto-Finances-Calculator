@@ -543,9 +543,6 @@ newEntryTrade = (currency) => {
 
 };
 
-// This space will hold the new command functions to make a new exit trade.
-//=======================================================================================================================================
-
 // "newExitTrade()" function
 // This function runs when the user wants to create a new exit (sell) trade.
 newExitTrade = (currency) => {
@@ -677,7 +674,7 @@ newExitTrade = (currency) => {
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
                 Sold ${response.coinName} at: $${response.coinPrice} (USDT)
                 Final divestment (USDT): $${actualUSDT.toFixed(5)} (factoring in Binance fee)
-                Exit price (USDT): $${exitPriceUSDT.toFixed(5)} (factoring in Binance)
+                Exit price (USDT): $${exitPriceUSDT.toFixed(5)} (factoring in Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
                 logTradePrompt(`logs/exits_log/exits_USDT/exits_USDT.txt`, output);
@@ -738,7 +735,43 @@ newExitTrade = (currency) => {
 
     // This function runs if the user chooses to trade alts in BTC, ETH, or BNB.
     cryptoExitTrade = () => {
-
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "altName",
+                message: "Enter name of altcoin sold:"
+            },
+            {
+                type: "input",
+                name: "numCoinsSold",
+                message: "Enter amount of coins / tokens sold:"
+            },
+            {
+                type: "input",
+                name: "altPrice",
+                message: `Enter price altcoin was sold at (${currency}):`
+            }
+        ]).then(response => {
+            var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+            var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
+            var exitPriceCrypto = actualCrypto / parseFloat(response.numCoinsSold);
+            if (currency === "BNB") {
+                actualCrypto = actualCrypto.toFixed(5);
+                exitPriceCrypto = exitPriceCrypto.toFixed(5);
+            } else {
+                actualCrypto = actualCrypto.toFixed(8);
+                exitPriceCrypto = exitPriceCrypto.toFixed(8);
+            };
+            var output = `* New exit trade (${currency}) *
+            Cryptocurrency: ${response.altName}
+            Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
+            Sold ${response.altName} at: ${response.altPrice} ${currency}
+            Final divestment: ${actualCrypto} ${currency} (factoring in Binance fee)
+            Exit price: ${exitPriceCrypto} ${currency} (factoring in Binance fee)
+            Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
+            console.log(output);
+            logTradePrompt(`logs/exits_log/exits_CRYPTO/exits_${currency}.txt`, output);
+        });
     };
 
     // Logic that determines which function to run: if the currency chosen is USD, prompt user to choose trading pair and call the 
@@ -770,107 +803,6 @@ newExitTrade = (currency) => {
     } else {
         cryptoExitTrade();
     };
-
-};
-
-//=======================================================================================================================================
-
-// "newExitTradeUSDT()" function
-// This function runs when the user wants to create a new exit (sell) trade back to USDT (Tether). By using inquirer, the user is prompted 
-// for the name of the altcoin they sold, the amount of conis / tokens they sold, the price they sold the altcoin at (altcoin price is in 
-// BTC), then the price they sold Bitcoin at in the end. This function assumes the user is selling altcoin on Binance with a 0.1% trade 
-// fee, charged a 0.00000700 BTC transfer fee to Coinbase, and a 4% trade fee at Coinbase when selling Bitcoin.
-newExitTradeUSDT = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin sold: "
-        },
-        {
-            type: "input",
-            name: "numCoinsSold",
-            message: "Enter amount of coins / tokens sold: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price altcoin was sold at (in BTC): "
-        },
-        {
-            type: "input",
-            name: "btcPrice",
-            message: "Enter Bitcoin price (sold): "
-        }
-    ]).then(response => {
-        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-        var exchFee = totalBTC * .001;
-        var actualBTC = totalBTC - exchFee;
-        var totalUSDT = actualBTC * parseFloat(response.btcPrice);
-        var exchFee2 = totalUSDT * .001;
-        var actualUSDT = totalUSDT - exchFee2;
-        var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
-        var output = `* New exit trade (USDT) *
-        Cryptocurrency: ${response.altName}
-        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
-        Sold ${response.altName} at: ${response.altPrice} BTC
-        Sold Bitcoin at: $${response.btcPrice} per BTC
-        Total Bitcoin sold: ${actualBTC.toFixed(8)} BTC
-        Total USDT: $${actualUSDT.toFixed(5)} (factoring in Binance fees)
-        Exit price: $${exitPriceUSDT.toFixed(5)} (factoring in Binance fees)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-        console.log(output);
-        logTradePrompt('logs/exits_log/exits_USDT.txt', output);
-    });
-};
-
-// "newExitTradeBTC()" function
-// This function runs when the user wants to create a new exit (sell) trade strictly in BTC. By using inquirer, the user is prompted for 
-// the name of the altcoin they bought, the number of coins / tokens sold, and the price they sold the altcoin at (price is in BTC). This 
-// function assumes the user is trading the altcoin on Binance with a 0.1% trade fee when selling altcoins.
-newExitTradeBTC = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "altName",
-            message: "Enter name of altcoin sold: "
-        },
-        {
-            type: "input",
-            name: "numCoinsSold",
-            message: "Enter amount of coins / tokens sold: "
-        },
-        {
-            type: "input",
-            name: "altPrice",
-            message: "Enter price altcoin was sold at (in BTC): "
-        }
-    ]).then(response => {
-        var totalBTC = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-        var exchFee = totalBTC * .001;
-        var actualBTC = totalBTC - exchFee;
-        var exitPriceBTC = actualBTC / parseFloat(response.numCoinsSold);
-        var output = `* New exit trade (BTC) *
-        Cryptocurrency: ${response.altName}
-        Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
-        Sold ${response.altName} at: ${response.altPrice} BTC
-        Total BTC: ${actualBTC.toFixed(8)} BTC (factoring in Binance fee)
-        Exit price: ${exitPriceBTC.toFixed(8)} BTC (factoring in Binance fee)
-        Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-        console.log(output);
-        logTradePrompt('logs/exits_log/exits_BTC.txt', output);
-    });
-};
-
-// "newExitTradeETH() function"
-// This function runs when the user...
-newExitTradeETH = () => {
-
-};
-
-// "newExitTradeBNB() function"
-// This function runs when the user...
-newExitTradeBNB = () => {
 
 };
 
