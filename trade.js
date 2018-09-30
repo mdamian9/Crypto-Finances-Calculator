@@ -1090,13 +1090,13 @@ calcRoi = (currency) => {
                     message: `Enter final divesment (in ${currency}): `
                 }
             ]).then(response => {
-                var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
-                var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
-                var roiPercentUSD = (roiDecimalUSD - 1) * 100;
-                var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
-                var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
-                var roiPercentCoin = (roiDecimalCoin - 1) * 100;
-                var output;
+                let netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+                const roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
+                const roiPercentUSD = (roiDecimalUSD - 1) * 100;
+                let netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
+                const roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
+                const roiPercentCoin = (roiDecimalCoin - 1) * 100;
+                let output;
                 if (netChangeUSD >= 0 && netChangeCoin >= 0) {
                     if (currency === "BNB") {
                         netChangeCoin = netChangeCoin.toFixed(5);
@@ -1186,9 +1186,9 @@ getTargetPrice = (currency) => {
             message: "Enter percent gain you're looking for:"
         }
     ]).then(response => {
-        var convertedPercentChange = parseFloat(response.targetPercentChange) * .01;
-        var targetPrice = parseFloat(response.entryPrice) + (parseFloat(response.entryPrice) * convertedPercentChange);
-        var entryPriceOutput, percentChangeOutput, targetPriceOutput;
+        const convertedPercentChange = parseFloat(response.targetPercentChange) * .01;
+        const targetPrice = parseFloat(response.entryPrice) + (parseFloat(response.entryPrice) * convertedPercentChange);
+        let entryPriceOutput, percentChangeOutput, targetPriceOutput;
         switch (currency) {
             case "USD":
                 entryPriceOutput = `Entry price: $${response.entryPrice}`;
@@ -1230,9 +1230,9 @@ getPercentChange = (currency) => {
             message: `Enter exit price (in ${currency}):`
         }
     ]).then(response => {
-        var decimalChange = parseFloat(response.exitPrice) / parseFloat(response.entryPrice);
-        var percentChange = (decimalChange - 1) * 100;
-        var entryOutput, exitOutput;
+        const decimalChange = parseFloat(response.exitPrice) / parseFloat(response.entryPrice);
+        const percentChange = (decimalChange - 1) * 100;
+        let entryOutput, exitOutput;
         if (currency === "USD") {
             entryOutput = `Entry price: $${response.entryPrice}`;
             exitOutput = `Exit price: $${response.exitPrice}`;
