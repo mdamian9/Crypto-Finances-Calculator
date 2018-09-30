@@ -621,8 +621,8 @@ newExitTrade = (currency) => {
                     message: "Enter price cryptocurrency was sold at:"
                 }
             ]).then(response => {
-                var divestment = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
-                var output = `* New exit trade (USD) - Robinhood *
+                const divestment = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
+                const output = `* New exit trade (USD) - Robinhood *
                 Cryptocurrency: ${response.coinName} 
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
                 Sold ${response.coinName} at: $${response.coinPrice}
@@ -666,10 +666,10 @@ newExitTrade = (currency) => {
                     message: `Enter price cryptocurrency was sold at (USDT):`
                 }
             ]).then(response => {
-                var totalUSDT = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
-                var actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
-                var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
-                var output = `* New exit trade (USDT) *
+                const totalUSDT = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
+                const actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
+                const exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
+                const output = `* New exit trade (USDT) *
                 Cryptocurrency: ${response.coinName}
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
                 Sold ${response.coinName} at: $${response.coinPrice} (USDT)
@@ -705,12 +705,12 @@ newExitTrade = (currency) => {
                     message: `Enter ${tradingPair} price (sold):`
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-                var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
-                var totalUSDT = actualCrypto * parseFloat(response.coinPrice);
-                var actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
-                var exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
-                var output = `* New exit trade (USDT/${tradingPair}) *
+                const totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
+                const totalUSDT = actualCrypto * parseFloat(response.coinPrice);
+                const actualUSDT = totalUSDT - (totalUSDT * .001); // -1% Binance trading fee
+                const exitPriceUSDT = actualUSDT / parseFloat(response.numCoinsSold);
+                const output = `* New exit trade (USDT/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
                 Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
@@ -752,9 +752,9 @@ newExitTrade = (currency) => {
                 message: `Enter price altcoin was sold at (${currency}):`
             }
         ]).then(response => {
-            var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-            var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
-            var exitPriceCrypto = actualCrypto / parseFloat(response.numCoinsSold);
+            const totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+            let actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
+            let exitPriceCrypto = actualCrypto / parseFloat(response.numCoinsSold);
             if (currency === "BNB") {
                 actualCrypto = actualCrypto.toFixed(5);
                 exitPriceCrypto = exitPriceCrypto.toFixed(5);
@@ -762,7 +762,7 @@ newExitTrade = (currency) => {
                 actualCrypto = actualCrypto.toFixed(8);
                 exitPriceCrypto = exitPriceCrypto.toFixed(8);
             };
-            var output = `* New exit trade (${currency}) *
+            const output = `* New exit trade (${currency}) *
             Cryptocurrency: ${response.altName}
             Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
             Sold ${response.altName} at: ${response.altPrice} ${currency}
@@ -835,24 +835,24 @@ calcAvgEntryPriceUSD = () => {
             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
         }
     ]).then(response => {
-        var entryPricesUSDArr = response.entryPricesUSD.split(", ");
-        var entryPricesBTCArr = response.entryPricesBTC.split(", ");
-        var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+        const entryPricesUSDArr = response.entryPricesUSD.split(", ");
+        const entryPricesBTCArr = response.entryPricesBTC.split(", ");
+        const numCoinsArr = response.numCoinsPerInvestment.split(", ");
         if (entryPricesUSDArr.length !== entryPricesBTCArr.length || entryPricesUSDArr.length !== numCoinsArr.length
             || entryPricesBTCArr.length !== numCoinsArr.length) {
             console.log("\nERROR: There was an error in your input");
             calcAvgEntryPriceUSD();
         } else {
-            var numOfInvestments = entryPricesUSDArr.length;
-            var convertedPricesUSDArr = [];
-            var convertedPricesBTCArr = [];
-            var convertedNumCoinsArr = [];
-            var sumTotalCoins = 0;
-            var weightedAvgNumeratorUSD = 0;
-            var weightedAvgNumeratorBTC = 0;
-            var entryPricesStrUSD = "";
-            var entryPricesStrBTC = "";
-            for (var i = 0; i < numOfInvestments; i++) {
+            const numOfInvestments = entryPricesUSDArr.length;
+            let convertedPricesUSDArr = [];
+            let convertedPricesBTCArr = [];
+            let convertedNumCoinsArr = [];
+            let sumTotalCoins = 0;
+            let weightedAvgNumeratorUSD = 0;
+            let weightedAvgNumeratorBTC = 0;
+            let entryPricesStrUSD = "";
+            let entryPricesStrBTC = "";
+            for (let i = 0; i < numOfInvestments; i++) {
                 convertedPricesUSDArr.push(parseFloat(entryPricesUSDArr[i]));
                 convertedPricesBTCArr.push(parseFloat(entryPricesBTCArr[i]));
                 convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
@@ -862,9 +862,9 @@ calcAvgEntryPriceUSD = () => {
                 entryPricesStrUSD = entryPricesStrUSD + " $" + entryPricesUSDArr[i] + ",";
                 entryPricesStrBTC = entryPricesStrBTC + " " + entryPricesBTCArr[i] + " BTC,";
             };
-            var avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
-            var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
-            var output = `* New average entry calculation *
+            const avgEntryPriceUSD = weightedAvgNumeratorUSD / sumTotalCoins;
+            const avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
+            const output = `* New average entry calculation *
             Cryptocurrency: ${response.altName}
             Entries (USD): ${entryPricesStrUSD.trim().slice(0, -1)}
             Entries (BTC): ${entryPricesStrBTC.trim().slice(0, -1)}
@@ -902,19 +902,19 @@ calcAvgEntryPriceBTC = () => {
             message: "Enter the amount of altcoins / tokens obtained on each investment one at a time, separated by a comma: "
         }
     ]).then(response => {
-        var entryPricesBTCArr = response.entryPricesBTC.split(", ");
-        var numCoinsArr = response.numCoinsPerInvestment.split(", ");
+        const entryPricesBTCArr = response.entryPricesBTC.split(", ");
+        const numCoinsArr = response.numCoinsPerInvestment.split(", ");
         // Error check: make sure num of entry prices is the same as num of times tokens were obtained (bought)
         if (entryPricesBTCArr.length !== numCoinsArr.length) {
             console.log("\nERROR: There was an error in your input");
             calcAvgEntryPriceBTC();
         } else {
-            var numOfInvestments = entryPricesBTCArr.length;
-            var convertedPricesBTCArr = [];
-            var convertedNumCoinsArr = [];
-            var sumTotalCoins = 0;
-            var weightedAvgNumeratorBTC = 0;
-            var entryPricesStrBTC = "";
+            const numOfInvestments = entryPricesBTCArr.length;
+            let convertedPricesBTCArr = [];
+            let convertedNumCoinsArr = [];
+            let sumTotalCoins = 0;
+            let weightedAvgNumeratorBTC = 0;
+            let entryPricesStrBTC = "";
             for (var i = 0; i < numOfInvestments; i++) {
                 convertedPricesBTCArr.push(parseFloat(entryPricesBTCArr[i]));
                 convertedNumCoinsArr.push(parseFloat(numCoinsArr[i]));
@@ -922,8 +922,8 @@ calcAvgEntryPriceBTC = () => {
                 sumTotalCoins = sumTotalCoins + convertedNumCoinsArr[i];
                 entryPricesStrBTC = entryPricesStrBTC + " " + entryPricesBTCArr[i] + " BTC,";
             };
-            var avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
-            var output = `* New average entry calculation *
+            const avgEntryPriceBTC = weightedAvgNumeratorBTC / sumTotalCoins;
+            const output = `* New average entry calculation *
             Cryptocurrency: ${response.altName}
             Entries (BTC): ${entryPricesStrBTC.trim().slice(0, -1)}
             Sum of total investments (BTC): ${weightedAvgNumeratorBTC.toFixed(8)} BTC
@@ -971,10 +971,10 @@ calcRoi = (currency) => {
                 message: "Enter final divesment (in USD): "
             },
         ]).then(response => {
-            var netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
-            var roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
-            var roiPercentUSD = (roiDecimalUSD - 1) * 100;
-            var output;
+            let netChangeUSD = parseFloat(response.divestmentUSD) - parseFloat(response.investmentUSD);
+            const roiDecimalUSD = parseFloat(response.divestmentUSD) / parseFloat(response.investmentUSD);
+            const roiPercentUSD = (roiDecimalUSD - 1) * 100;
+            let output;
             if (netChangeUSD >= 0) {
                 output = `* New ROI calculation *
                 Cryptocurrency: ${response.cryptoName}
@@ -1022,10 +1022,10 @@ calcRoi = (currency) => {
                     message: `Enter final divesment (in ${currency}): `
                 }
             ]).then(response => {
-                var netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
-                var roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
-                var roiPercentCoin = (roiDecimalCoin - 1) * 100;
-                var output;
+                let netChangeCoin = parseFloat(response.divestmentCoin) - parseFloat(response.investmentCoin);
+                const roiDecimalCoin = parseFloat(response.divestmentCoin) / parseFloat(response.investmentCoin);
+                const roiPercentCoin = (roiDecimalCoin - 1) * 100;
+                let output;
                 if (netChangeCoin >= 0) {
                     if (currency === "BNB") {
                         netChangeCoin = netChangeCoin.toFixed(5);
@@ -1046,7 +1046,7 @@ calcRoi = (currency) => {
                     } else {
                         netChangeCoin = netChangeCoin.toFixed(8) * -1;
                     };
-                    netChangeUSD = netChangeUSD * -1;
+                    netChangeCoin = netChangeCoin * -1;
                     output = `* New ROI calculation *
                     Cryptocurrency: ${response.altName}
                     Initial investment: ${response.investmentCoin} ${currency}
