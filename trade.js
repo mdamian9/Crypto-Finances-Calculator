@@ -1,7 +1,7 @@
 // Require npm inquirer, moment and fs packages
-var inquirer = require("inquirer");
-var moment = require("moment");
-var fs = require("fs");
+const inquirer = require("inquirer");
+const moment = require("moment");
+const fs = require("fs");
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
@@ -15,7 +15,7 @@ beginApp = () => {
                 "Calculate ROI (return of investment)", "Get target price ($)", "Get percent change (%)"]
         }
     ]).then(response => {
-        var userCommand = response.command;
+        const userCommand = response.command;
         switch (userCommand) {
             case "Make new entry trade":
                 newEntryPrompt();
@@ -111,7 +111,7 @@ calcAvgEntryPrompt = () => {
 
         }
     ]).then(response => {
-        var userCommand = response.command;
+        const userCommand = response.command;
         switch (userCommand) {
             case "Average entry price (USD)":
                 calcAvgEntryPriceUSD();
@@ -232,8 +232,8 @@ newEntryTrade = (currency) => {
                     message: "Enter total investment (USD):",
                     // validate: validateNumber(investment)
                     validate: validateInvestment = (investment) => {
-                        var flag = true;
-                        var values = /^[\d.]+$/;
+                        let flag = true;
+                        const values = /^[\d.]+$/;
                         if (!values.test(investment)) {
                             flag = "Please enter valid input.";
                         };
@@ -246,8 +246,8 @@ newEntryTrade = (currency) => {
                     message: `Enter ${tradingPair} price (bought):`,
                     // validate: validateNumber(btcPrice)
                     validate: validateCoinPrice = (coinPrice) => {
-                        var flag = true;
-                        var values = /^[\d.]+$/;
+                        let flag = true;
+                        const values = /^[\d.]+$/;
                         if (!values.test(coinPrice)) {
                             flag = "Please enter valid input.";
                         };
@@ -260,8 +260,8 @@ newEntryTrade = (currency) => {
                     message: "Enter name of altcoin bought:",
                     // validate: validateName(altName)
                     validate: validateAltName = (altName) => {
-                        var flag = true;
-                        var values = /^[\a-zA-z]+$/;
+                        let flag = true;
+                        const values = /^[\a-zA-z]+$/;
                         if (!values.test(altName)) {
                             flag = "Please enter valid input.";
                         };
@@ -274,8 +274,8 @@ newEntryTrade = (currency) => {
                     message: `Enter price of altcoin (in ${tradingPair}):`,
                     // validate: validateNumber(altPrice)
                     validate: validateAltPrice = (altPrice) => {
-                        var flag = true;
-                        var values = /^[\d.]+$/;
+                        let flag = true;
+                        const values = /^[\d.]+$/;
                         if (!values.test(altPrice)) {
                             flag = "Please enter valid input.";
                         };
@@ -283,15 +283,15 @@ newEntryTrade = (currency) => {
                     }
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
-                var actualCrypto = totalCrypto - (totalCrypto * .04);
-                var transferredCrypto = actualCrypto - .00000700;
-                var totalCoins = transferredCrypto / parseFloat(response.altPrice);
-                var exchFee = totalCoins * .001;
-                var actualCoins = totalCoins - exchFee;
-                var entryPriceUSD = parseFloat(response.investment) / actualCoins;
-                var entryPriceCrypto = transferredCrypto / actualCoins;
-                var output = `* New entry trade (USD/${tradingPair}) *
+                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .04);
+                const transferredCrypto = actualCrypto - .00000700;
+                const totalCoins = transferredCrypto / parseFloat(response.altPrice);
+                const exchFee = totalCoins * .001;
+                const actualCoins = totalCoins - exchFee;
+                const entryPriceUSD = parseFloat(response.investment) / actualCoins;
+                const entryPriceCrypto = transferredCrypto / actualCoins;
+                const output = `* New entry trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment}
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
@@ -316,8 +316,8 @@ newEntryTrade = (currency) => {
                     message: "Enter total investment (USD):",
                     // validate: validateNumber(investment)
                     validate: validateInvestment = (investment) => {
-                        var flag = true;
-                        var values = /^[\d.]+$/;
+                        let flag = true;
+                        const values = /^[\d.]+$/;
                         if (!values.test(investment)) {
                             flag = "Please enter valid input.";
                         };
@@ -330,8 +330,8 @@ newEntryTrade = (currency) => {
                     message: "Enter name of cryptocurrency bought:",
                     // validate: validateName(coinName)
                     validate: validateCoinName = (coinName) => {
-                        var flag = true;
-                        var values = /^[\a-zA-z]+$/;
+                        let flag = true;
+                        const values = /^[\a-zA-z]+$/;
                         if (!values.test(coinName)) {
                             flag = "Please enter valid input.";
                         };
@@ -344,8 +344,8 @@ newEntryTrade = (currency) => {
                     message: "Enter price of cryptocurrency:",
                     // validate: validateNumber(coinPrice)
                     validate: validateCoinPrice = (coinPrice) => {
-                        var flag = true;
-                        var values = /^[\d.]+$/;
+                        let flag = true;
+                        const values = /^[\d.]+$/;
                         if (!values.test(coinPrice)) {
                             flag = "Please enter valid input.";
                         };
@@ -353,8 +353,8 @@ newEntryTrade = (currency) => {
                     }
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
-                var output = `* New entry trade (USD) - Robinhood *
+                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const output = `* New entry trade (USD) - Robinhood *
                 Cryptocurrency: ${response.coinName}
                 Initial investment: $${response.investment}
                 Bought ${response.coinName} at: $${response.coinPrice}
@@ -398,10 +398,10 @@ newEntryTrade = (currency) => {
                     message: "Enter price of cryptocurrency:"
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
-                var actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
-                var entryPriceUSDT = parseFloat(response.investment) / actualCrypto;
-                var output = `* New entry trade (USDT) *
+                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
+                const entryPriceUSDT = parseFloat(response.investment) / actualCrypto;
+                const output = `* New entry trade (USDT) *
                 Cryptocurrency: ${response.coinName}
                 Initial investment: $${response.investment} (USDT)
                 Bought ${response.coinName} at: $${response.coinPrice} (USDT)
@@ -438,13 +438,13 @@ newEntryTrade = (currency) => {
                     message: `Enter price of altcoin (in ${tradingPair}):`
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
-                var actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
-                var totalCoins = actualCrypto / parseFloat(response.altPrice);
-                var actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
-                var entryPriceUSDT = parseFloat(response.investment) / actualCoins;
-                var entryPriceCrypto = actualCrypto / actualCoins;
-                var output = `* New entry trade (USDT/${tradingPair}) *
+                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
+                const totalCoins = actualCrypto / parseFloat(response.altPrice);
+                const actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
+                const entryPriceUSDT = parseFloat(response.investment) / actualCoins;
+                const entryPriceCrypto = actualCrypto / actualCoins;
+                const output = `* New entry trade (USDT/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment} (USDT)
                 Bought ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
@@ -487,9 +487,9 @@ newEntryTrade = (currency) => {
                 message: `Enter price of altcoin (in ${currency}):`
             }
         ]).then(response => {
-            var totalCoins = parseFloat(response.investment) / parseFloat(response.altPrice);
-            var actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
-            var entryPrice = parseFloat(response.investment) / actualCoins;
+            const totalCoins = parseFloat(response.investment) / parseFloat(response.altPrice);
+            const actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
+            const entryPrice = parseFloat(response.investment) / actualCoins;
             switch (currency) {
                 case "BTC":
                 case "ETH":
@@ -499,7 +499,7 @@ newEntryTrade = (currency) => {
                     entryPrice = entryPrice.toFixed(5)
                     break;
             };
-            var output = `* New entry trade (${currency}) *
+            const output = `* New entry trade (${currency}) *
             Cryptocurrency: ${response.altName}
             Initial investment: ${response.investment} ${currency}
             Bought ${response.altName} at: ${response.altPrice} ${currency}
@@ -575,19 +575,19 @@ newExitTrade = (currency) => {
                     message: `Enter ${tradingPair} price (sold):`
                 }
             ]).then(response => {
-                var totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-                var actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trade fee
-                var transferFee;
+                const totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trade fee
+                let transferFee;
                 if (tradingPair === "BTC") {
                     transferFee = .0005; // if trading pair is BTC, transter fee from Binance to Coinbase is .0005 BTC
                 } else {
                     transferFee = .01; // if trading pair is ETH, transter fee from Binance to Coinbase is .01 ETH
                 };
-                var transferredCrypto = actualCrypto - transferFee; // -.0005 BTC transfer fee from Binance
-                var divestment = transferredCrypto * parseFloat(response.coinPrice);
-                var actualDivestment = divestment - (divestment * .04); // -4% Coinbase trade fee
-                var exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
-                var output = `* New exit trade (USD/${tradingPair}) *
+                const transferredCrypto = actualCrypto - transferFee; // -.0005 BTC transfer fee from Binance
+                const divestment = transferredCrypto * parseFloat(response.coinPrice);
+                const actualDivestment = divestment - (divestment * .04); // -4% Coinbase trade fee
+                const exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
+                const output = `* New exit trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName} 
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
                 Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
