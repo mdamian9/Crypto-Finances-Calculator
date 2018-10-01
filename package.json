@@ -4,8 +4,6 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.3",
     "fs": "0.0.1-security",
     "inquirer": "^6.0.0",
     "moment": "^2.22.2",

@@ -2,6 +2,13 @@
 const inquirer = require("inquirer");
 const moment = require("moment");
 const fs = require("fs");
+const mongoose = require("mongoose");
+
+// If deployed, use the deployed database. Otherwise use the local cryptoData database
+let MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/movie";
+// Connect to the Mongo DB
+mongoose.connect(MONGODB_URI);
+
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
