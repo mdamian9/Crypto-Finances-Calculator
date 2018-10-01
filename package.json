@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "console.table": "^0.10.0",
     "fs": "0.0.1-security",
     "inquirer": "^6.0.0",
     "moment": "^2.22.2",

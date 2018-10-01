@@ -9,24 +9,21 @@ const Schema = mongoose.Schema;
 // Trade schema with ustBtcEntryTrade object
 const tradeSchema = new Schema({
     initialInvestment: {
-        type: String,
-        trim: true,
-        require: true
+        type: Number,
+        required: true
     },
     btcPriceBought: {
-        type: String,
-        trim: true,
-        require: true
+        type: Number,
+        required: true
     },
     altName: {
         type: String,
         trim: true,
-        require: true
+        required: true
     },
     altPrice: {
-        type: String,
-        trim: true,
-        require: true
+        type: Number,
+        required: true
     }
 });
 

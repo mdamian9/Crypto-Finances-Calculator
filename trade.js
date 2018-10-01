@@ -3,12 +3,35 @@ const inquirer = require("inquirer");
 const moment = require("moment");
 const fs = require("fs");
 const mongoose = require("mongoose");
+const cTable = require("console.table");
 
-// If deployed, use the deployed database. Otherwise use the local cryptoData database
-let MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/movie";
-// Connect to the Mongo DB
-mongoose.connect(MONGODB_URI);
+// Models route
+let db = require("./models");
 
+// Connect to database
+mongoose.connect('mongodb://localhost:27017/cryptoDataDB');
+
+// Testing space for MongoDB
+//=============================================================================
+
+const newTrade = new db.UsdBtcEntryTrade({
+    initialInvestment: 100,
+    btcPriceBought: 6550.54,
+    altName: "OCN",
+    altPrice: .00000220
+});
+
+db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
+    if (err) return handleError(err);
+});
+
+db.UsdBtcEntryTrade.find({ altName: "OCN" }, (err, docs) => {
+    if (err) return handleError(err);
+    console.log(docs[1]);
+});
+
+// Add date to document
+//=============================================================================
 
 // "beginApp()" function
 // This function holds the main prompt: which asks the user for command to start app.
