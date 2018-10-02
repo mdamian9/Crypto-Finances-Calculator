@@ -49,7 +49,7 @@ const tradeSchema = new Schema({
 });
 
 // Create the USDT -> ETH entry trade model using the trade schema
-const UsdtEthEntryTrade = mongoose.model("UsdEthEntryTrade", tradeSchema);
+const UsdtEthEntryTrade = mongoose.model("UsdtEthEntryTrade", tradeSchema);
 
 // Export the USDT -> ETH entry trade model
 module.exports = UsdtEthEntryTrade;

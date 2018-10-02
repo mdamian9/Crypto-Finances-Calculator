@@ -49,7 +49,7 @@ const tradeSchema = new Schema({
 });
 
 // Create the USDT -> BTC entry trade model using the trade schema
-const UsdtBtcEntryTrade = mongoose.model("UsdBtcEntryTrade", tradeSchema);
+const UsdtBtcEntryTrade = mongoose.model("UsdtBtcEntryTrade", tradeSchema);
 
 // Export the USDT -> BTC entry trade model
 module.exports = UsdtBtcEntryTrade;
