@@ -1,4 +1,4 @@
-// USD -> ETH entry trade model
+// USD -> ETH entry trade model (Coinbase -> Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");

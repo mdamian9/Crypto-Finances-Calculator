@@ -1,4 +1,4 @@
-// USDT entry trade model (Robinhood)
+// USDT entry trade model (Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");

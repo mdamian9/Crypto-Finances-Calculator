@@ -1,4 +1,4 @@
-// USDT -> ETH entry trade model
+// USDT -> ETH entry trade model (Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");

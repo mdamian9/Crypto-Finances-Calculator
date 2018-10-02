@@ -1,4 +1,4 @@
-// BNB entry trade model (Robinhood)
+// BNB entry trade model (Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");
