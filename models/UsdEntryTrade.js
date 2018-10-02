@@ -1,4 +1,4 @@
-// USD -> BTC entry trade model
+// USD entry trade model (Robinhood)
 
 // Require "mongoose"
 const mongoose = require("mongoose");
@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // Schema class created with mongoose schema method
 const Schema = mongoose.Schema;
 
-// Trade schema with UsdBtcEntryTrade object
+// Trade schema with UsdEntryTrade object
 const tradeSchema = new Schema({
     cryptocurrency: {
         type: String,
@@ -17,27 +17,15 @@ const tradeSchema = new Schema({
         type: Number,
         required: true
     },
-    btcPriceBought: {
+    cryptoPrice: {
         type: Number,
         required: true
     },
-    totalBTC: {
-        type: Number,
-        required: true
-    },
-    altPrice: {
-        type: Number,
-        required: true
-    },
-    totalAlt: {
+    totalCrypto: {
         type: Number,
         required: true
     },
     entryPriceUSD: {
-        type: Number,
-        required: true
-    },
-    entryPriceBTC: {
         type: Number,
         required: true
     },
@@ -48,8 +36,8 @@ const tradeSchema = new Schema({
     }
 });
 
-// Create the USD -> BTC entry trade model using the trade schema
-const UsdBtcEntryTrade = mongoose.model("UsdBtcEntryTrade", tradeSchema);
+// Create the USD entry trade model using the trade schema
+const UsdEntryTrade = mongoose.model("UsdEntryTrade", tradeSchema);
 
-// Export the USD -> BTC entry trade model
-module.exports = UsdBtcEntryTrade;
+// Export the USD entry trade model
+module.exports = UsdEntryTrade;

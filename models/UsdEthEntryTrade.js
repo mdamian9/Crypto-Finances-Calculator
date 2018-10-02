@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // Schema class created with mongoose schema method
 const Schema = mongoose.Schema;
 
-// Trade schema with UstBtcEntryTrade object
+// Trade schema with UsdEthEntryTrade object
 const tradeSchema = new Schema({
     cryptocurrency: {
         type: String,
