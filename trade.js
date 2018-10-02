@@ -205,24 +205,37 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                 if (error) throw error;
             });
             if (tradeType === "entry") {
-                if (tradingPair === "BTC") {
-                    const newTrade = new db.UsdBtcEntryTrade(newTradeObject);
-                    db.UsdBtcEntryTrade.create(newTrade, (error, newTrade) => {
-                        if (error) return handleError(error);
-                    });
-                } else {
-                    const newTrade = new db.UsdEthEntryTrade(newTradeObject);
-                    db.UsdEthEntryTrade.create(newTrade, (error, newTrade) => {
-                        if (error) return handleError(error);
-                    });
-                }
-            } else {
-                if (tradingPair === "BTC") {
-
-                } else {
-
-                }
-            }
+                console.log("check trade type");
+                let newTrade;
+                switch (currency) {
+                    case "USD":
+                        console.log("switch currency");
+                        switch (tradingPair) {
+                            case "BTC":
+                                console.log("switch trading pair");
+                                newTrade = new db.UsdBtcEntryTrade(newTradeObject);
+                                db.UsdBtcEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                            case "ETH":
+                                newTrade = new db.UsdEthEntryTrade(newTradeObject);
+                                db.UsdEthEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                            case "none":
+                                newTrade = new db.UsdEntryTrade(newTradeObject);
+                                db.UsdEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                        };
+                        break;
+                    case "USDT":
+                        break;
+                };
+            }; // else exit
         };
         askIfDone();
     });
@@ -352,9 +365,9 @@ newEntryTrade = (currency) => {
                     //     entryPriceBTC: entryPriceCrypto.toFixed(8),
                     //     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
                     // });
-                    db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
-                        if (err) return handleError(err);
-                    });
+                    // db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
+                    //     if (err) return handleError(err);
+                    // });
                     newTradeObject = {
                         cryptocurrency: response.altName,
                         initialInvestment: parseFloat(response.investment),
@@ -397,7 +410,7 @@ newEntryTrade = (currency) => {
 
                 //=======================================================================================================================
 
-                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output, "entry", tradingPair, currency,
+                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output, "entry", currency, tradingPair, 
                     newTradeObject);
             });
         };
