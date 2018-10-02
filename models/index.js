@@ -1,3 +1,3 @@
 module.exports = {
-    UsdBtcEntryTrade: require("./UsdBtcEntryTrade")
+    UsdBtcEntryTrade: require("./entries_USD/UsdBtcEntryTrade")
 };
