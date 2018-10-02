@@ -191,7 +191,7 @@ percentChangePrompt = () => {
 
 // "logTradePrompt" function
 // This function asks the user if they would like to log their trade to the respective .txt file.
-logTradePrompt = (txtFileName, output) => {
+logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTradeObject) => {
     inquirer.prompt([
         {
             type: "list",
@@ -204,6 +204,25 @@ logTradePrompt = (txtFileName, output) => {
             fs.appendFile(txtFileName, `${output}\n`, (error) => {
                 if (error) throw error;
             });
+            if (tradeType === "entry") {
+                if (tradingPair === "BTC") {
+                    const newTrade = new db.UsdBtcEntryTrade(newTradeObject);
+                    db.UsdBtcEntryTrade.create(newTrade, (error, newTrade) => {
+                        if (error) return handleError(error);
+                    });
+                } else {
+                    const newTrade = new db.UsdEthEntryTrade(newTradeObject);
+                    db.UsdEthEntryTrade.create(newTrade, (error, newTrade) => {
+                        if (error) return handleError(error);
+                    });
+                }
+            } else {
+                if (tradingPair === "BTC") {
+
+                } else {
+
+                }
+            }
         };
         askIfDone();
     });
@@ -320,8 +339,23 @@ newEntryTrade = (currency) => {
 
                 //=======================================================================================================================
 
+                let newTradeObject;
                 if (tradingPair === "BTC") {
-                    const newTrade = new db.UsdBtcEntryTrade({
+                    // const newTrade = new db.UsdBtcEntryTrade({
+                    //     cryptocurrency: response.altName,
+                    //     initialInvestment: parseFloat(response.investment),
+                    //     btcPriceBought: parseFloat(response.coinPrice),
+                    //     totalBTC: transferredCrypto.toFixed(8),
+                    //     altPrice: parseFloat(response.altPrice),
+                    //     totalAlt: actualCoins,
+                    //     entryPriceUSD: entryPriceUSD.toFixed(5),
+                    //     entryPriceBTC: entryPriceCrypto.toFixed(8),
+                    //     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    // });
+                    db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
+                        if (err) return handleError(err);
+                    });
+                    newTradeObject = {
                         cryptocurrency: response.altName,
                         initialInvestment: parseFloat(response.investment),
                         btcPriceBought: parseFloat(response.coinPrice),
@@ -331,30 +365,40 @@ newEntryTrade = (currency) => {
                         entryPriceUSD: entryPriceUSD.toFixed(5),
                         entryPriceBTC: entryPriceCrypto.toFixed(8),
                         dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    });
-                    db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
-                        if (err) return handleError(err);
-                    });
+                    };
+
                 } else {
-                    const newTrade = new db.UsdEthEntryTrade({
+                    // const newTrade = new db.UsdEthEntryTrade({
+                    //     cryptocurrency: response.altName,
+                    //     initialInvestment: parseFloat(response.investment),
+                    //     ethPriceBought: parseFloat(response.coinPrice),
+                    //     totalETH: transferredCrypto.toFixed(8),
+                    //     altPrice: parseFloat(response.altPrice),
+                    //     totalAlt: actualCoins,
+                    //     entryPriceUSD: entryPriceUSD.toFixed(5),
+                    //     entryPriceETH: entryPriceCrypto.toFixed(8),
+                    //     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    // });
+                    // db.UsdEthEntryTrade.create(newTrade, function (err, newTrade) {
+                    //     if (err) return handleError(err);
+                    // });
+                    newTradeObject = {
                         cryptocurrency: response.altName,
                         initialInvestment: parseFloat(response.investment),
-                        ethPriceBought: parseFloat(response.coinPrice),
-                        totalETH: transferredCrypto.toFixed(8),
+                        btcPriceBought: parseFloat(response.coinPrice),
+                        totalBTC: transferredCrypto.toFixed(8),
                         altPrice: parseFloat(response.altPrice),
                         totalAlt: actualCoins,
                         entryPriceUSD: entryPriceUSD.toFixed(5),
-                        entryPriceETH: entryPriceCrypto.toFixed(8),
+                        entryPriceBTC: entryPriceCrypto.toFixed(8),
                         dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    });
-                    db.UsdEthEntryTrade.create(newTrade, function (err, newTrade) {
-                        if (err) return handleError(err);
-                    });
+                    };
                 };
 
                 //=======================================================================================================================
 
-                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output);
+                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output, "entry", tradingPair, currency,
+                    newTradeObject);
             });
         };
 
