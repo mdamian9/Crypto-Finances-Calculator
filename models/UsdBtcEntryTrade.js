@@ -6,8 +6,13 @@ const mongoose = require("mongoose");
 // Schema class created with mongoose schema method
 const Schema = mongoose.Schema;
 
-// Trade schema with ustBtcEntryTrade object
+// Trade schema with UstBtcEntryTrade object
 const tradeSchema = new Schema({
+    cryptocurrency: {
+        type: String,
+        trim: true,
+        required: true
+    },
     initialInvestment: {
         type: Number,
         required: true
@@ -16,13 +21,29 @@ const tradeSchema = new Schema({
         type: Number,
         required: true
     },
-    altName: {
-        type: String,
-        trim: true,
+    totalBTC: {
+        type: Number,
         required: true
     },
     altPrice: {
         type: Number,
+        required: true
+    },
+    totalAlt: {
+        type: Number,
+        required: true
+    },
+    entryPriceUSD: {
+        type: Number,
+        required: true
+    },
+    entryPriceBTC: {
+        type: Number,
+        required: true
+    },
+    dateLogged: {
+        type: String,
+        trim: true,
         required: true
     }
 });

@@ -14,23 +14,8 @@ mongoose.connect('mongodb://localhost:27017/cryptoDataDB');
 // Testing space for MongoDB
 //=============================================================================
 
-const newTrade = new db.UsdBtcEntryTrade({
-    initialInvestment: 100,
-    btcPriceBought: 6550.54,
-    altName: "OCN",
-    altPrice: .00000220
-});
 
-db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
-    if (err) return handleError(err);
-});
 
-db.UsdBtcEntryTrade.find({ altName: "OCN" }, (err, docs) => {
-    if (err) return handleError(err);
-    console.log(docs[1]);
-});
-
-// Add date to document
 //=============================================================================
 
 // "beginApp()" function
@@ -217,6 +202,7 @@ askIfDone = () => {
         }
     ]).then(response => {
         if (response.doneWithApp === "Yes") {
+            mongoose.connection.close();
             console.log("Good luck trading.");
         } else {
             beginApp();
@@ -330,8 +316,29 @@ newEntryTrade = (currency) => {
                 Total ${response.altName} bought: ${actualCoins} ${response.altName}
                 Entry price (USD): $${entryPriceUSD.toFixed(5)} (factoring in Coinbase fee, transfer fee and Binance fee)
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Coinbase fee, transfer fee and Binance fee)
-                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
+
+                //=======================================================================================================================
+                if (tradingPair === "BTC") {
+                    const newTrade = new db.UsdBtcEntryTrade({
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        btcPriceBought: parseFloat(response.coinPrice),
+                        totalBTC: transferredCrypto.toFixed(8),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceUSD: entryPriceUSD.toFixed(5),
+                        entryPriceBTC: entryPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    });
+                    db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
+                        if (err) return handleError(err);
+                    });
+                }; // else { ETH }
+
+                //=======================================================================================================================
+
                 logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output);
             });
         };
@@ -390,7 +397,7 @@ newEntryTrade = (currency) => {
                 Bought ${response.coinName} at: $${response.coinPrice}
                 Total ${response.coinName} bought: ${totalCrypto} ${response.coinName}
                 Entry price: $${parseFloat(response.coinPrice).toFixed(6)}
-                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '')
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
                 logTradePrompt("logs/entries_log/entries_USD/entries_USD_RH.txt", output);
             });
