@@ -892,6 +892,20 @@ newExitTrade = (currency) => {
                         exitPriceBTC: exitPriceCrypto.toFixed(8),
                         dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
                     };
+                } else {
+                    newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
+                        cryptocurrency: response.altName,
+                        totalAlt: parseFloat(response.numCoinsSold),
+                        altPrice: parseFloat(response.altPrice),
+                        totalETH: transferredCrypto.toFixed(8),
+                        ethPriceSold: parseFloat(response.coinPrice),
+                        finalDivestmentUSD: actualDivestment.toFixed(2),
+                        exitPriceUSD: exitPriceUSD.toFixed(5),
+                        exitPriceETH: exitPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
                 };
                 const output = `* New exit trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName} 
@@ -929,6 +943,16 @@ newExitTrade = (currency) => {
                 }
             ]).then(response => {
                 const divestment = parseFloat(response.numCoinsSold) * parseFloat(response.coinPrice);
+                const newTradeObject = {
+                    currency: currency,
+                    tradingPair: tradingPair,
+                    cryptocurrency: response.coinName,
+                    totalCrypto: parseFloat(response.numCoinsSold),
+                    cryptoPrice: parseFloat(response.coinPrice),
+                    finalDivestmentUSD: divestment.toFixed(2),
+                    exitPriceUSD: parseFloat(response.coinPrice),
+                    dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                }
                 const output = `* New exit trade (USD) - Robinhood *
                 Cryptocurrency: ${response.coinName} 
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.coinName}
@@ -937,7 +961,7 @@ newExitTrade = (currency) => {
                 Exit price: $${response.coinPrice}
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
-                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_RH.txt`, output);
+                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_RH.txt`, output, "exit", currency, tradingPair, newTradeObject);
             });
         };
 
