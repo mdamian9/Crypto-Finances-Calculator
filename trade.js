@@ -226,7 +226,7 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                                 });
                                 console.log("logged trade")
                                 break;
-                            case "None (Robinhood Trade)":
+                            case "None":
                                 console.log("case none");
                                 newTrade = new db.UsdEntryTrade(newTradeObject);
                                 db.UsdEntryTrade.create(newTrade, (error, newTrade) => {
@@ -484,7 +484,7 @@ newEntryTrade = (currency) => {
         };
 
         // Logic that determines what trading pair was used / what function to be executed.
-        if (tradingPair === "None (Robinhood Trade)") {
+        if (tradingPair === "None") {
             robinhoodEntry();
         } else {
             coinbaseEntry();
@@ -678,7 +678,7 @@ newEntryTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "None (Robinhood Trade)"]
+                choices: ["BTC", "ETH", "None"]
             }
         ]).then(response => {
             usdEntryTrade(response.tradingPair);
@@ -792,7 +792,7 @@ newExitTrade = (currency) => {
         };
 
         // Logic that determines what trading pair was used / what function to be executed.
-        if (tradingPair === "None (Robinhood Trade)") {
+        if (tradingPair === "None") {
             robinhoodExit();
         } else {
             coinbaseExit();
@@ -941,7 +941,7 @@ newExitTrade = (currency) => {
                 type: "list",
                 name: "tradingPair",
                 message: "Choose your trading pair:",
-                choices: ["BTC", "ETH", "None (Robinhood Trade)"]
+                choices: ["BTC", "ETH", "None"]
             }
         ]).then(response => {
             usdExitTrade(response.tradingPair);
@@ -1409,9 +1409,6 @@ getPercentChange = (currency) => {
 beginApp();
 
 // To do:
-// 1. Complete option to trade in Ethereum
-// 2. Complete option to trade in BNB
-// 3. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
-// 4. Double check average entry functions - sum total investments may have bug
-// 5. Create database on MongoDB to make calculating avg entry prices easier
-// 6. ES6 - use const and let instead of var
+// 1. Complete all database queries / add a command to let user search through trades in DB
+// 2. Add validation to all functions, make sure to check for input errors --- check why validating functions won't work
+// 3. Double check average entry functions - sum total investments may have bug
