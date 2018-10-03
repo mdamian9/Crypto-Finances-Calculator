@@ -232,6 +232,7 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                                 db.UsdEntryTrade.create(newTrade, (error, newTrade) => {
                                     if (error) return handleError(error);
                                 });
+                                console.log("log trade")
                                 break;
                         };
                         break;
@@ -432,10 +433,10 @@ newEntryTrade = (currency) => {
             ]).then(response => {
                 const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
                 const newTradeObject = {
-                    cryptocurrency: response.altName,
+                    cryptocurrency: response.coinName,
                     initialInvestment: parseFloat(response.investment),
                     cryptoPrice: parseFloat(response.coinPrice),
-                    totalCrypto: parseFloat(totalCrypto),
+                    totalCrypto: totalCrypto,
                     entryPriceUSD: parseFloat(response.coinPrice),
                     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
                 };
