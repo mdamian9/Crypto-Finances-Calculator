@@ -237,6 +237,31 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                         };
                         break;
                     case "USDT":
+                        switch (tradingPair) {
+                            case "BTC":
+                                console.log("case btc");
+                                newTrade = new db.UsdtBtcEntryTrade(newTradeObject);
+                                db.UsdtBtcEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                            case "ETH":
+                                console.log("case eth");
+                                newTrade = new db.UsdtEthEntryTrade(newTradeObject);
+                                db.UsdtEthEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("logged trade")
+                                break;
+                            case "None":
+                                console.log("case none");
+                                newTrade = new db.UsdtEntryTrade(newTradeObject);
+                                db.UsdtEntryTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("log trade")
+                                break;
+                        };
                         break;
                 };
             }; // else exit
@@ -536,6 +561,36 @@ newEntryTrade = (currency) => {
                 const actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
                 const entryPriceUSDT = parseFloat(response.investment) / actualCoins;
                 const entryPriceCrypto = actualCrypto / actualCoins;
+                let newTradeObject;
+                if (tradingPair === "BTC") {
+                    newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        btcPriceBought: parseFloat(response.coinPrice),
+                        totalBTC: actualCrypto.toFixed(8),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceUSDT: entryPriceUSDT.toFixed(5),
+                        entryPriceBTC: entryPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                } else {
+                    newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        ethPriceBought: parseFloat(response.coinPrice),
+                        totalETH: actualCrypto.toFixed(8),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceUSDT: entryPriceUSDT.toFixed(5),
+                        entryPriceETH: entryPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                };
                 const output = `* New entry trade (USDT/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment} (USDT)
