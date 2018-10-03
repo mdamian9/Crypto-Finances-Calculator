@@ -212,19 +212,22 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                         console.log("switch currency");
                         switch (tradingPair) {
                             case "BTC":
-                                console.log("switch trading pair");
+                                console.log("case btc");
                                 newTrade = new db.UsdBtcEntryTrade(newTradeObject);
                                 db.UsdBtcEntryTrade.create(newTrade, (error, newTrade) => {
                                     if (error) return handleError(error);
                                 });
                                 break;
                             case "ETH":
+                                console.log("case eth");
                                 newTrade = new db.UsdEthEntryTrade(newTradeObject);
                                 db.UsdEthEntryTrade.create(newTrade, (error, newTrade) => {
                                     if (error) return handleError(error);
                                 });
+                                console.log("logged trade")
                                 break;
-                            case "none":
+                            case "None (Robinhood Trade)":
+                                console.log("case none");
                                 newTrade = new db.UsdEntryTrade(newTradeObject);
                                 db.UsdEntryTrade.create(newTrade, (error, newTrade) => {
                                     if (error) return handleError(error);
@@ -338,6 +341,32 @@ newEntryTrade = (currency) => {
                 const actualCoins = totalCoins - exchFee;
                 const entryPriceUSD = parseFloat(response.investment) / actualCoins;
                 const entryPriceCrypto = transferredCrypto / actualCoins;
+                let newTradeObject;
+                if (tradingPair === "BTC") {
+                    newTradeObject = {
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        btcPriceBought: parseFloat(response.coinPrice),
+                        totalBTC: transferredCrypto.toFixed(8),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceUSD: entryPriceUSD.toFixed(5),
+                        entryPriceBTC: entryPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                } else {
+                    newTradeObject = {
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        ethPriceBought: parseFloat(response.coinPrice),
+                        totalETH: transferredCrypto.toFixed(8),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceUSD: entryPriceUSD.toFixed(5),
+                        entryPriceETH: entryPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                };
                 const output = `* New entry trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName}
                 Initial investment: $${response.investment}
@@ -349,68 +378,7 @@ newEntryTrade = (currency) => {
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Coinbase fee, transfer fee and Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
-
-                //=======================================================================================================================
-
-                let newTradeObject;
-                if (tradingPair === "BTC") {
-                    // const newTrade = new db.UsdBtcEntryTrade({
-                    //     cryptocurrency: response.altName,
-                    //     initialInvestment: parseFloat(response.investment),
-                    //     btcPriceBought: parseFloat(response.coinPrice),
-                    //     totalBTC: transferredCrypto.toFixed(8),
-                    //     altPrice: parseFloat(response.altPrice),
-                    //     totalAlt: actualCoins,
-                    //     entryPriceUSD: entryPriceUSD.toFixed(5),
-                    //     entryPriceBTC: entryPriceCrypto.toFixed(8),
-                    //     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    // });
-                    // db.UsdBtcEntryTrade.create(newTrade, function (err, newTrade) {
-                    //     if (err) return handleError(err);
-                    // });
-                    newTradeObject = {
-                        cryptocurrency: response.altName,
-                        initialInvestment: parseFloat(response.investment),
-                        btcPriceBought: parseFloat(response.coinPrice),
-                        totalBTC: transferredCrypto.toFixed(8),
-                        altPrice: parseFloat(response.altPrice),
-                        totalAlt: actualCoins,
-                        entryPriceUSD: entryPriceUSD.toFixed(5),
-                        entryPriceBTC: entryPriceCrypto.toFixed(8),
-                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    };
-
-                } else {
-                    // const newTrade = new db.UsdEthEntryTrade({
-                    //     cryptocurrency: response.altName,
-                    //     initialInvestment: parseFloat(response.investment),
-                    //     ethPriceBought: parseFloat(response.coinPrice),
-                    //     totalETH: transferredCrypto.toFixed(8),
-                    //     altPrice: parseFloat(response.altPrice),
-                    //     totalAlt: actualCoins,
-                    //     entryPriceUSD: entryPriceUSD.toFixed(5),
-                    //     entryPriceETH: entryPriceCrypto.toFixed(8),
-                    //     dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    // });
-                    // db.UsdEthEntryTrade.create(newTrade, function (err, newTrade) {
-                    //     if (err) return handleError(err);
-                    // });
-                    newTradeObject = {
-                        cryptocurrency: response.altName,
-                        initialInvestment: parseFloat(response.investment),
-                        btcPriceBought: parseFloat(response.coinPrice),
-                        totalBTC: transferredCrypto.toFixed(8),
-                        altPrice: parseFloat(response.altPrice),
-                        totalAlt: actualCoins,
-                        entryPriceUSD: entryPriceUSD.toFixed(5),
-                        entryPriceBTC: entryPriceCrypto.toFixed(8),
-                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    };
-                };
-
-                //=======================================================================================================================
-
-                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output, "entry", currency, tradingPair, 
+                logTradePrompt(`logs/entries_log/entries_USD/entries_USD_${tradingPair}.txt`, output, "entry", currency, tradingPair,
                     newTradeObject);
             });
         };
@@ -463,6 +431,14 @@ newEntryTrade = (currency) => {
                 }
             ]).then(response => {
                 const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const newTradeObject = {
+                    cryptocurrency: response.altName,
+                    initialInvestment: parseFloat(response.investment),
+                    cryptoPrice: parseFloat(response.coinPrice),
+                    totalCrypto: parseFloat(totalCrypto),
+                    entryPriceUSD: parseFloat(response.coinPrice),
+                    dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                };
                 const output = `* New entry trade (USD) - Robinhood *
                 Cryptocurrency: ${response.coinName}
                 Initial investment: $${response.investment}
@@ -471,7 +447,7 @@ newEntryTrade = (currency) => {
                 Entry price: $${parseFloat(response.coinPrice).toFixed(6)}
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
-                logTradePrompt("logs/entries_log/entries_USD/entries_USD_RH.txt", output);
+                logTradePrompt("logs/entries_log/entries_USD/entries_USD_RH.txt", output, "entry", currency, tradingPair, newTradeObject);
             });
         };
 
