@@ -263,6 +263,24 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                                 break;
                         };
                         break;
+                    case "BTC":
+                        newTrade = new db.BtcEntryTrade(newTradeObject);
+                        db.BtcEntryTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
+                    case "ETH":
+                        newTrade = new db.EthEntryTrade(newTradeObject);
+                        db.EthEntryTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
+                    case "BNB":
+                        newTrade = new db.BnbEntryTrade(newTradeObject);
+                        db.BnbEntryTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
                 };
             }; // else exit
         };
@@ -646,7 +664,7 @@ newEntryTrade = (currency) => {
         ]).then(response => {
             const totalCoins = parseFloat(response.investment) / parseFloat(response.altPrice);
             const actualCoins = totalCoins - (totalCoins * .001); // 1% trading fee
-            const entryPrice = parseFloat(response.investment) / actualCoins;
+            let entryPrice = parseFloat(response.investment) / actualCoins;
             switch (currency) {
                 case "BTC":
                 case "ETH":
@@ -654,6 +672,20 @@ newEntryTrade = (currency) => {
                     break;
                 case "BNB":
                     entryPrice = entryPrice.toFixed(5)
+                    break;
+            };
+            let newTradeObject;
+            switch (currency) {
+                case "BTC":
+                    newTradeObject = {
+                        currency: currency,
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceBTC: entryPrice,
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    }
                     break;
             };
             const output = `* New entry trade (${currency}) *
@@ -664,7 +696,7 @@ newEntryTrade = (currency) => {
             Entry price (${currency}): ${entryPrice} ${currency} (factoring in Binance fee)
             Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
             console.log(output);
-            logTradePrompt(`logs/entries_log/entries_CRYPTO/entries_${currency}.txt`, output);
+            logTradePrompt(`logs/entries_log/entries_CRYPTO/entries_${currency}.txt`, output, "entry", currency, "N/A", newTradeObject);
         });
     };
 
