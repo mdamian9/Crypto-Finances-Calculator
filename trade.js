@@ -345,6 +345,8 @@ newEntryTrade = (currency) => {
                 let newTradeObject;
                 if (tradingPair === "BTC") {
                     newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
                         cryptocurrency: response.altName,
                         initialInvestment: parseFloat(response.investment),
                         btcPriceBought: parseFloat(response.coinPrice),
@@ -357,6 +359,8 @@ newEntryTrade = (currency) => {
                     };
                 } else {
                     newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
                         cryptocurrency: response.altName,
                         initialInvestment: parseFloat(response.investment),
                         ethPriceBought: parseFloat(response.coinPrice),
@@ -433,6 +437,8 @@ newEntryTrade = (currency) => {
             ]).then(response => {
                 const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
                 const newTradeObject = {
+                    currency: currency,
+                    tradingPair: tradingPair,
                     cryptocurrency: response.coinName,
                     initialInvestment: parseFloat(response.investment),
                     cryptoPrice: parseFloat(response.coinPrice),
