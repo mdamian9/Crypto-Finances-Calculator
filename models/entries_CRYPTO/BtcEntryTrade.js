@@ -8,6 +8,11 @@ const Schema = mongoose.Schema;
 
 // Trade schema with BtcEntryTrade object
 const tradeSchema = new Schema({
+    currency: {
+        type: String,
+        trim: true,
+        required: true
+    },
     cryptocurrency: {
         type: String,
         trim: true,

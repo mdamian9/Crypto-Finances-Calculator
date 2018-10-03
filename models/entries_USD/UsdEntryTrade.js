@@ -8,6 +8,16 @@ const Schema = mongoose.Schema;
 
 // Trade schema with UsdEntryTrade object
 const tradeSchema = new Schema({
+    currency: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    tradingPair: {
+        type: String,
+        trim: true,
+        required: true
+    },
     cryptocurrency: {
         type: String,
         trim: true,
