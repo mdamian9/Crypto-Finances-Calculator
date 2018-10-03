@@ -282,7 +282,85 @@ logTradePrompt = (txtFileName, output, tradeType, currency, tradingPair, newTrad
                         });
                         break;
                 };
-            }; // else exit
+            } else {
+                console.log("check trade type");
+                let newTrade;
+                switch (currency) {
+                    case "USD":
+                        console.log("switch currency");
+                        switch (tradingPair) {
+                            case "BTC":
+                                console.log("case btc");
+                                newTrade = new db.UsdBtcExitTrade(newTradeObject);
+                                db.UsdBtcExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                            case "ETH":
+                                console.log("case eth");
+                                newTrade = new db.UsdEthExitTrade(newTradeObject);
+                                db.UsdEthExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("logged trade")
+                                break;
+                            case "None":
+                                console.log("case none");
+                                newTrade = new db.UsdExitTrade(newTradeObject);
+                                db.UsdExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("log trade")
+                                break;
+                        };
+                        break;
+                    case "USDT":
+                        switch (tradingPair) {
+                            case "BTC":
+                                console.log("case btc");
+                                newTrade = new db.UsdtBtcExitTrade(newTradeObject);
+                                db.UsdtBtcExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                break;
+                            case "ETH":
+                                console.log("case eth");
+                                newTrade = new db.UsdtEthExitTrade(newTradeObject);
+                                db.UsdtEthExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("logged trade")
+                                break;
+                            case "None":
+                                console.log("case none");
+                                newTrade = new db.UsdtExitTrade(newTradeObject);
+                                db.UsdtExitTrade.create(newTrade, (error, newTrade) => {
+                                    if (error) return handleError(error);
+                                });
+                                console.log("log trade")
+                                break;
+                        };
+                        break;
+                    case "BTC":
+                        newTrade = new db.BtcExitTrade(newTradeObject);
+                        db.BtcExitTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
+                    case "ETH":
+                        newTrade = new db.EthExitTrade(newTradeObject);
+                        db.EthExitTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
+                    case "BNB":
+                        newTrade = new db.BnbExitTrade(newTradeObject);
+                        db.BnbExitTrade.create(newTrade, (error, newTrade) => {
+                            if (error) return handleError(error);
+                        });
+                        break;
+                };
+            };
         };
         askIfDone();
     });
