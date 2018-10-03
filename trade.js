@@ -685,7 +685,29 @@ newEntryTrade = (currency) => {
                         totalAlt: actualCoins,
                         entryPriceBTC: entryPrice,
                         dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
-                    }
+                    };
+                    break;
+                case "ETH":
+                    newTradeObject = {
+                        currency: currency,
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceETH: entryPrice,
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                    break;
+                case "BNB":
+                    newTradeObject = {
+                        currency: currency,
+                        cryptocurrency: response.altName,
+                        initialInvestment: parseFloat(response.investment),
+                        altPrice: parseFloat(response.altPrice),
+                        totalAlt: actualCoins,
+                        entryPriceBNB: entryPrice,
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
                     break;
             };
             const output = `* New entry trade (${currency}) *
