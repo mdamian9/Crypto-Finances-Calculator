@@ -6,6 +6,7 @@ module.exports = {
     UsdEntryTrade: require("./entries_USD/UsdEntryTrade"),
     UsdExitTrade: require("./exits_USD/UsdExitTrade"),
     UsdtBtcEntryTrade: require("./entries_USDT/UsdtBtcEntryTrade"),
+    UsdtBtcExitTrade: require("./exits_USDT/UsdtBtcExitTrade"),
     UsdtEthEntryTrade: require("./entries_USDT/UsdtEthEntryTrade"),
     UsdtEntryTrade: require("./entries_USDT/UsdtEntryTrade"),
     BtcEntryTrade: require("./entries_CRYPTO/BtcEntryTrade"),
