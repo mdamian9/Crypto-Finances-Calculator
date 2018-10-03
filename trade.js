@@ -787,7 +787,8 @@ newExitTrade = (currency) => {
                 }
             ]).then(response => {
                 const totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
-                const actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trade fee
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // -.1% Binance trade fee
+                const exitPriceCrypto = actualCrypto / parseFloat(response.numCoinsSold);
                 let transferFee;
                 if (tradingPair === "BTC") {
                     transferFee = .0005; // if trading pair is BTC, transter fee from Binance to Coinbase is .0005 BTC
@@ -797,18 +798,35 @@ newExitTrade = (currency) => {
                 const transferredCrypto = actualCrypto - transferFee; // -.0005 BTC transfer fee from Binance
                 const divestment = transferredCrypto * parseFloat(response.coinPrice);
                 const actualDivestment = divestment - (divestment * .04); // -4% Coinbase trade fee
-                const exitPrice = actualDivestment / parseFloat(response.numCoinsSold);
+                const exitPriceUSD = actualDivestment / parseFloat(response.numCoinsSold);
+                let newTradeObject;
+                if (tradingPair === "BTC") {
+                    newTradeObject = {
+                        currency: currency,
+                        tradingPair: tradingPair,
+                        cryptocurrency: response.altName,
+                        totalAlt: parseFloat(response.numCoinsSold),
+                        altPrice: parseFloat(response.altPrice),
+                        totalBTC: transferredCrypto.toFixed(8),
+                        btcPriceSold: parseFloat(response.coinPrice),
+                        finalDivestmentUSD: actualDivestment.toFixed(2),
+                        exitPriceUSD: exitPriceUSD.toFixed(5),
+                        exitPriceBTC: exitPriceCrypto.toFixed(8),
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                };
                 const output = `* New exit trade (USD/${tradingPair}) *
                 Cryptocurrency: ${response.altName} 
                 Amount of coins / tokens sold: ${response.numCoinsSold} ${response.altName}
                 Sold ${response.altName} at: ${response.altPrice} ${tradingPair}
+                Total ${tradingPair} obtained / sold: ${transferredCrypto.toFixed(8)} ${tradingPair}
                 Sold ${tradingPair} at: $${response.coinPrice} per ${tradingPair}
-                Total ${tradingPair} sold: ${transferredCrypto.toFixed(8)} ${tradingPair}
                 Final divestment: $${actualDivestment.toFixed(2)} (factoring in Binance fee, transfer fee and Coinbase fee)
-                Exit price: $${exitPrice.toFixed(5)} (factoring in Binance fee, transfer fee and Coinbase fee)
+                Exit price: $${exitPriceUSD.toFixed(5)} (factoring in Binance fee, transfer fee and Coinbase fee)
+                Exit price (${tradingPair}): ${exitPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Binance fee)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
                 console.log(output);
-                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_${tradingPair}.txt`, output);
+                logTradePrompt(`logs/exits_log/exits_USD/exits_USD_${tradingPair}.txt`, output, "exit", currency, tradingPair, newTradeObject);
             });
         };
 
