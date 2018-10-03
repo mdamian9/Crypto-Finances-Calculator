@@ -496,41 +496,6 @@ newEntryTrade = (currency) => {
     // USDT paired with an alt.
     usdtEntryTrade = (tradingPair) => {
 
-        // If the user chooses to make an entry strictly with USDT (tradingPair === "None")
-        usdtOnlyEntry = () => {
-            inquirer.prompt([
-                {
-                    type: "input",
-                    name: "investment",
-                    message: "Enter total investment (USDT):"
-                },
-                {
-                    type: "input",
-                    name: "coinName",
-                    message: "Enter name of cryptocurrency bought:"
-                },
-                {
-                    type: "input",
-                    name: "coinPrice",
-                    message: "Enter price of cryptocurrency:"
-                }
-            ]).then(response => {
-                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
-                const actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
-                const entryPriceUSDT = parseFloat(response.investment) / actualCrypto;
-                const output = `* New entry trade (USDT) *
-                Cryptocurrency: ${response.coinName}
-                Initial investment: $${response.investment} (USDT)
-                Bought ${response.coinName} at: $${response.coinPrice} (USDT)
-                Total ${response.coinName} bought: ${actualCrypto} ${response.coinName}
-                Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fee)
-                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
-                console.log(output);
-                logTradePrompt("logs/entries_log/entries_USDT/entries_USDT.txt", output);
-            });
-        };
-
-
         // If the user chooses to make a USDT entry through BTC or ETH (tradingPair === "BTC" || tradingPair === "ETH")
         cryptoPairEntry = () => {
             inquirer.prompt([
@@ -602,7 +567,52 @@ newEntryTrade = (currency) => {
                 Entry price (${tradingPair}): ${entryPriceCrypto.toFixed(8)} ${tradingPair} (factoring in Binance fees)
                 Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
                 console.log(output);
-                logTradePrompt(`logs/entries_log/entries_USDT/entries_USDT_${tradingPair}.txt`, output);
+                logTradePrompt(`logs/entries_log/entries_USDT/entries_USDT_${tradingPair}.txt`, output, "entry", currency, tradingPair,
+                    newTradeObject);
+            });
+        };
+
+        // If the user chooses to make an entry strictly with USDT (tradingPair === "None")
+        usdtOnlyEntry = () => {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "investment",
+                    message: "Enter total investment (USDT):"
+                },
+                {
+                    type: "input",
+                    name: "coinName",
+                    message: "Enter name of cryptocurrency bought:"
+                },
+                {
+                    type: "input",
+                    name: "coinPrice",
+                    message: "Enter price of cryptocurrency:"
+                }
+            ]).then(response => {
+                const totalCrypto = parseFloat(response.investment) / parseFloat(response.coinPrice);
+                const actualCrypto = totalCrypto - (totalCrypto * .001); // 1% trading fee
+                const entryPriceUSDT = parseFloat(response.investment) / actualCrypto;
+                const newTradeObject = {
+                    currency: currency,
+                    tradingPair: tradingPair,
+                    cryptocurrency: response.coinName,
+                    initialInvestment: parseFloat(response.investment),
+                    cryptoPrice: parseFloat(response.coinPrice),
+                    totalCrypto: actualCrypto,
+                    entryPriceUSDT: entryPriceUSDT,
+                    dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                };
+                const output = `* New entry trade (USDT) *
+                Cryptocurrency: ${response.coinName}
+                Initial investment: $${response.investment} (USDT)
+                Bought ${response.coinName} at: $${response.coinPrice} (USDT)
+                Total ${response.coinName} bought: ${actualCrypto} ${response.coinName}
+                Entry price (USDT): $${entryPriceUSDT.toFixed(5)} (factoring in Binance fee)
+                Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{2})+/gm, '');
+                console.log(output);
+                logTradePrompt("logs/entries_log/entries_USDT/entries_USDT.txt", output, "entry", currency, tradingPair, newTradeObject);
             });
         };
 
