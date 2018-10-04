@@ -1127,12 +1127,43 @@ newExitTrade = (currency) => {
             const totalCrypto = parseFloat(response.numCoinsSold) * parseFloat(response.altPrice);
             let actualCrypto = totalCrypto - (totalCrypto * .001); // -1% Binance trading fee
             let exitPriceCrypto = actualCrypto / parseFloat(response.numCoinsSold);
+            let newTradeObject;
             if (currency === "BNB") {
                 actualCrypto = actualCrypto.toFixed(5);
                 exitPriceCrypto = exitPriceCrypto.toFixed(5);
+                newTradeObject = {
+                    currency: currency,
+                    cryptocurrency: response.altName,
+                    totalAlt: parseFloat(response.numCoinsSold),
+                    altPrice: parseFloat(response.altPrice),
+                    finalDivestmentBNB: actualCrypto,
+                    exitPriceBNB: exitPriceCrypto,
+                    dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                };
             } else {
                 actualCrypto = actualCrypto.toFixed(8);
                 exitPriceCrypto = exitPriceCrypto.toFixed(8);
+                if (currency === "BTC") {
+                    newTradeObject = {
+                        currency: currency,
+                        cryptocurrency: response.altName,
+                        totalAlt: parseFloat(response.numCoinsSold),
+                        altPrice: parseFloat(response.altPrice),
+                        finalDivestmentBTC: actualCrypto,
+                        exitPriceBTC: exitPriceCrypto,
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                } else {
+                    newTradeObject = {
+                        currency: currency,
+                        cryptocurrency: response.altName,
+                        totalAlt: parseFloat(response.numCoinsSold),
+                        altPrice: parseFloat(response.altPrice),
+                        finalDivestmentETH: actualCrypto,
+                        exitPriceETH: exitPriceCrypto,
+                        dateLogged: moment().format('MMMM Do YYYY, h:mm:ss a')
+                    };
+                };
             };
             const output = `* New exit trade (${currency}) *
             Cryptocurrency: ${response.altName}
