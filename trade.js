@@ -1142,7 +1142,7 @@ newExitTrade = (currency) => {
             Exit price: ${exitPriceCrypto} ${currency} (factoring in Binance fee)
             Date logged: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`.replace(/^(\s{4})+/gm, '');
             console.log(output);
-            logTradePrompt(`logs/exits_log/exits_CRYPTO/exits_${currency}.txt`, output);
+            logTradePrompt(`logs/exits_log/exits_CRYPTO/exits_${currency}.txt`, output, "exit", currency, "N/A", newTradeObject);
         });
     };
 
