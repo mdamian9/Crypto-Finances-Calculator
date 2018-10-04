@@ -1,4 +1,4 @@
-// USDT / BTC exit trade model (Binance)
+// USDT / ETH exit trade model (Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");
@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // Schema class created with mongoose schema method
 const Schema = mongoose.Schema;
 
-// Trade schema with UsdtBtcExitTrade object
+// Trade schema with UsdtEthExitTrade object
 const tradeSchema = new Schema({
     currency: {
         type: String,
@@ -31,11 +31,11 @@ const tradeSchema = new Schema({
         type: Number,
         required: true
     },
-    totalBTC: {
+    totalETH: {
         type: Number,
         required: true
     },
-    btcPriceSold: {
+    ethPriceSold: {
         type: Number,
         required: true,
     },
@@ -47,7 +47,7 @@ const tradeSchema = new Schema({
         type: Number,
         required: true
     },
-    exitPriceBTC: {
+    exitPriceETH: {
         type: Number,
         required: true
     },
@@ -59,7 +59,7 @@ const tradeSchema = new Schema({
 });
 
 // Create the USDT / BTC exit trade model using the trade schema
-const UsdtBtcExitTrade = mongoose.model("UsdtBtcExitTrade", tradeSchema);
+const UsdtEthExitTrade = mongoose.model("UsdtEthExitTrade", tradeSchema);
 
-// Export the USDT / BTC exit trade model
-module.exports = UsdtBtcExitTrade;
+// Export the USDT / ETH exit trade model
+module.exports = UsdtEthExitTrade;
