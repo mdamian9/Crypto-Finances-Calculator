@@ -10,6 +10,7 @@ module.exports = {
     UsdtEthEntryTrade: require("./entries_USDT/UsdtEthEntryTrade"),
     UsdtEthExitTrade: require("./exits_USDT/UsdtEthExitTrade"),
     UsdtEntryTrade: require("./entries_USDT/UsdtEntryTrade"),
+    UsdtExitTrade: require("./exits_USDT/UsdtExitTrade"),
     BtcEntryTrade: require("./entries_CRYPTO/BtcEntryTrade"),
     EthEntryTrade: require("./entries_CRYPTO/EthEntryTrade"),
     BnbEntryTrade: require("./entries_CRYPTO/BnbEntryTrade")
