@@ -1,4 +1,4 @@
-// BTC exit trade model (Binance)
+// ETH exit trade model (Binance)
 
 // Require "mongoose"
 const mongoose = require("mongoose");
@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // Schema class created with mongoose schema method
 const Schema = mongoose.Schema;
 
-// Trade schema with BtcExitTrade object
+// Trade schema with EthExitTrade object
 const tradeSchema = new Schema({
     currency: {
         type: String,
@@ -26,11 +26,11 @@ const tradeSchema = new Schema({
         type: Number,
         required: true
     },
-    finalDivestmentBTC: {
+    finalDivestmentETH: {
         type: Number,
         required: true
     },
-    exitPriceBTC: {
+    exitPriceETH: {
         type: Number,
         required: true
     },
@@ -41,8 +41,8 @@ const tradeSchema = new Schema({
     }
 });
 
-// Create the BTC exit trade model using the trade schema
-const BtcExitTrade = mongoose.model("BtcExitTrade", tradeSchema);
+// Create the ETH exit trade model using the trade schema
+const EthExitTrade = mongoose.model("EthExitTrade", tradeSchema);
 
-// Export the BTC entry trade model
-module.exports = BtcExitTrade;
+// Export the ETH entry trade model
+module.exports = EthExitTrade;
