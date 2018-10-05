@@ -15,5 +15,6 @@ module.exports = {
     BtcExitTrade: require("./exits_CRYPTO/BtcExitTrade"),
     EthEntryTrade: require("./entries_CRYPTO/EthEntryTrade"),
     EthExitTrade: require("./exits_CRYPTO/EthExitTrade"),
-    BnbEntryTrade: require("./entries_CRYPTO/BnbEntryTrade")
+    BnbEntryTrade: require("./entries_CRYPTO/BnbEntryTrade"),
+    BnbExitTrade: require("./exits_CRYPTO/BnbExitTrade")
 };
